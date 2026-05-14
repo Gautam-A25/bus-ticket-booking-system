@@ -1,50 +1,33 @@
-# ===============================
-# Java / Maven
-# ===============================
+HELP.md
 target/
-*.log
-*.class
-*.jar
-*.war
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# ===============================
-# IDE Files
-# ===============================
-# IntelliJ
-.idea/
-*.iml
-
-# VS Code
-.vscode/
-
-# Eclipse
-.project
+### STS ###
+.apt_generated
 .classpath
-.settings/
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
-# ===============================
-# OS Files
-# ===============================
-.DS_Store
-Thumbs.db
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 
-# ===============================
-# Logs
-# ===============================
-logs/
-*.log
-
-# ===============================
-# Environment Files
-# ===============================
-.env
-
-# ===============================
-# Build
-# ===============================
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-# ===============================
-# Node (if frontend added later)
-# ===============================
-node_modules/
+### VS Code ###
+.vscode/
