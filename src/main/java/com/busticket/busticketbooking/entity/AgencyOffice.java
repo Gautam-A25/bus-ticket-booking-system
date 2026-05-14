@@ -27,7 +27,7 @@ public class AgencyOffice {
     @Column(name = "office_contact_person_name", length = 50)
     private String officeContactPersonName;
 
-    @Column(name = "office_contact_number", length = 10)
+    @Column(name = "office_contact_number", columnDefinition = "CHAR(10)")
     private String officeContactNumber;
 
     @OneToOne
