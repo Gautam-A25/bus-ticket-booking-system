@@ -2,15 +2,18 @@ server:
   port: 8080
 
 spring:
+  application:
+    name: BusTicketBooking
+
   datasource:
     url: jdbc:mysql://localhost:3306/busticketbooking
     username: root
-    password: pass
+    password: AayushCode@5252
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
