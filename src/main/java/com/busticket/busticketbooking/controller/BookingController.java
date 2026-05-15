@@ -1,7 +1,8 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.entity.Booking;
+import com.busticket.busticketbooking.dto.BookingDTO;
 import com.busticket.busticketbooking.service.BookingService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,40 +16,36 @@ public class BookingController {
     private BookingService bookingService;
 
     @PostMapping
-    public Booking createBooking(
-            @RequestBody Booking booking) {
+    public BookingDTO createBooking(
+            @Valid @RequestBody BookingDTO bookingDTO) {
 
-        return bookingService.createBooking(booking);
-    }
-
-    @GetMapping("/{bookingId}")
-    public Booking getBookingById(
-            @PathVariable Integer bookingId) {
-
-        return bookingService.getBookingById(bookingId);
+        return bookingService.createBooking(bookingDTO);
     }
 
     @GetMapping
-    public List<Booking> getAllBookings() {
+    public List<BookingDTO> getAllBookings() {
+
         return bookingService.getAllBookings();
     }
 
-    @PutMapping("/{bookingId}")
-    public Booking updateBooking(
-            @PathVariable Integer bookingId,
-            @RequestBody Booking booking) {
+    @GetMapping("/{id}")
+    public BookingDTO getBookingById(@PathVariable Integer id) {
 
-        return bookingService.updateBooking(
-                bookingId,
-                booking
-        );
+        return bookingService.getBookingById(id);
     }
 
-    @DeleteMapping("/{bookingId}")
-    public String deleteBooking(
-            @PathVariable Integer bookingId) {
+    @PutMapping("/{id}")
+    public BookingDTO updateBooking(
+            @PathVariable Integer id,
+            @Valid @RequestBody BookingDTO bookingDTO) {
 
-        bookingService.deleteBooking(bookingId);
+        return bookingService.updateBooking(id, bookingDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteBooking(@PathVariable Integer id) {
+
+        bookingService.deleteBooking(id);
 
         return "Booking deleted successfully";
     }

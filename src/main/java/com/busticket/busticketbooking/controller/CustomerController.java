@@ -1,7 +1,8 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.entity.Customer;
+import com.busticket.busticketbooking.dto.CustomerDTO;
 import com.busticket.busticketbooking.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,35 +16,36 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
-    public Customer createCustomer(@RequestBody Customer customer) {
-        return customerService.createCustomer(customer);
-    }
+    public CustomerDTO createCustomer(
+            @Valid @RequestBody CustomerDTO customerDTO) {
 
-    @GetMapping("/{customerId}")
-    public Customer getCustomerById(
-            @PathVariable Integer customerId) {
-
-        return customerService.getCustomerById(customerId);
+        return customerService.createCustomer(customerDTO);
     }
 
     @GetMapping
-    public List<Customer> getAllCustomers() {
+    public List<CustomerDTO> getAllCustomers() {
+
         return customerService.getAllCustomers();
     }
 
-    @PutMapping("/{customerId}")
-    public Customer updateCustomer(
-            @PathVariable Integer customerId,
-            @RequestBody Customer customer) {
+    @GetMapping("/{id}")
+    public CustomerDTO getCustomerById(@PathVariable Integer id) {
 
-        return customerService.updateCustomer(customerId, customer);
+        return customerService.getCustomerById(id);
     }
 
-    @DeleteMapping("/{customerId}")
-    public String deleteCustomer(
-            @PathVariable Integer customerId) {
+    @PutMapping("/{id}")
+    public CustomerDTO updateCustomer(
+            @PathVariable Integer id,
+            @Valid @RequestBody CustomerDTO customerDTO) {
 
-        customerService.deleteCustomer(customerId);
+        return customerService.updateCustomer(id, customerDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteCustomer(@PathVariable Integer id) {
+
+        customerService.deleteCustomer(id);
 
         return "Customer deleted successfully";
     }
