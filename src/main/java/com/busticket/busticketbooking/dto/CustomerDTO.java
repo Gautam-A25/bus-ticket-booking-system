@@ -52,33 +52,27 @@ public class CustomerDTO {
         this.name = name;
     }
 
-    public @Email(message = "Customer email format is invalid") @NotBlank(message = "Customer email is required") String getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(@Email(message = "Customer email format is invalid") @NotBlank(message = "Customer email is required") String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public @Pattern(
-            regexp = "^[0-9]{10}$",
-            message = "Customer phone number must contain exactly 10 digits"
-    ) String getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(@Pattern(
-            regexp = "^[0-9]{10}$",
-            message = "Customer phone number must contain exactly 10 digits"
-    ) String phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public @NotNull(message = "Customer address ID is required") Integer getAddressId() {
+    public Integer getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(@NotNull(message = "Customer address ID is required") Integer addressId) {
+    public void setAddressId(Integer addressId) {
         this.addressId = addressId;
     }
 }
