@@ -1,15 +1,9 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "bookings")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Booking {
 
     @Id
@@ -28,7 +22,72 @@ public class Booking {
     @Column(columnDefinition = "ENUM('Available', 'Booked') DEFAULT 'Available'")
     private BookingStatus status = BookingStatus.Available;
 
+    public Booking() {
+    }
+
+    public Booking(Integer id, Trip trip, Integer seatNumber, BookingStatus status) {
+        this.id = id;
+        this.trip = trip;
+        this.seatNumber = seatNumber;
+        this.status = status;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Trip getTrip() {
+        return trip;
+    }
+
+    public void setTrip(Trip trip) {
+        this.trip = trip;
+    }
+
+    public Integer getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(Integer seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
+    public BookingStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.status = status;
+    }
+
     public enum BookingStatus {
         Available, Booked
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return id != null && id.equals(booking.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "id=" + id +
+                ", tripId=" + (trip != null ? trip.getId() : null) +
+                ", seatNumber=" + seatNumber +
+                ", status=" + status +
+                '}';
     }
 }

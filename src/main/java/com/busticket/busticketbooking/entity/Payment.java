@@ -1,18 +1,12 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "payments")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Payment {
 
     @Id
@@ -28,6 +22,7 @@ public class Payment {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @Column
     private BigDecimal amount;
 
     @Column(name = "payment_date")
@@ -37,7 +32,92 @@ public class Payment {
     @Column(name = "payment_status", columnDefinition = "ENUM('Success', 'Failed')")
     private PaymentStatus paymentStatus;
 
+    public Payment() {
+    }
+
+    public Payment(Integer id, Booking booking, Customer customer, BigDecimal amount, LocalDateTime paymentDate, PaymentStatus paymentStatus) {
+        this.id = id;
+        this.booking = booking;
+        this.customer = customer;
+        this.amount = amount;
+        this.paymentDate = paymentDate;
+        this.paymentStatus = paymentStatus;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public LocalDateTime getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDateTime paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
     public enum PaymentStatus {
         Success, Failed
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Payment payment = (Payment) o;
+        return id != null && id.equals(payment.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", bookingId=" + (booking != null ? booking.getId() : null) +
+                ", customerId=" + (customer != null ? customer.getId() : null) +
+                ", amount=" + amount +
+                ", paymentDate=" + paymentDate +
+                ", paymentStatus=" + paymentStatus +
+                '}';
     }
 }

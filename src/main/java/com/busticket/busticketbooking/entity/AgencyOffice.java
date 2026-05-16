@@ -1,15 +1,9 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "agency_offices")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class AgencyOffice {
 
     @Id
@@ -30,7 +24,92 @@ public class AgencyOffice {
     @Column(name = "office_contact_number", columnDefinition = "CHAR(10)")
     private String officeContactNumber;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "office_address_id")
     private Address address;
+
+    public AgencyOffice() {
+    }
+
+    public AgencyOffice(Integer id, Agency agency, String officeMail, String officeContactPersonName, String officeContactNumber, Address address) {
+        this.id = id;
+        this.agency = agency;
+        this.officeMail = officeMail;
+        this.officeContactPersonName = officeContactPersonName;
+        this.officeContactNumber = officeContactNumber;
+        this.address = address;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
+    }
+
+    public String getOfficeMail() {
+        return officeMail;
+    }
+
+    public void setOfficeMail(String officeMail) {
+        this.officeMail = officeMail;
+    }
+
+    public String getOfficeContactPersonName() {
+        return officeContactPersonName;
+    }
+
+    public void setOfficeContactPersonName(String officeContactPersonName) {
+        this.officeContactPersonName = officeContactPersonName;
+    }
+
+    public String getOfficeContactNumber() {
+        return officeContactNumber;
+    }
+
+    public void setOfficeContactNumber(String officeContactNumber) {
+        this.officeContactNumber = officeContactNumber;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AgencyOffice that = (AgencyOffice) o;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "AgencyOffice{" +
+                "id=" + id +
+                ", agencyId=" + (agency != null ? agency.getId() : null) +
+                ", officeMail='" + officeMail + '\'' +
+                ", officeContactPersonName='" + officeContactPersonName + '\'' +
+                ", officeContactNumber='" + officeContactNumber + '\'' +
+                ", addressId=" + (address != null ? address.getId() : null) +
+                '}';
+    }
 }
