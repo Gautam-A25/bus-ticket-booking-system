@@ -1,6 +1,7 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.entity.Payment;
+import com.busticket.busticketbooking.dto.PaymentRequestDTO;
+import com.busticket.busticketbooking.dto.PaymentResponseDTO;
 import com.busticket.busticketbooking.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,31 +18,31 @@ public class PaymentController {
     }
 
     @PostMapping("/payments")
-    public ResponseEntity<Payment> makePayment(@RequestBody Payment payment) {
-        return ResponseEntity.ok(paymentService.makePayment(payment));
+    public ResponseEntity<PaymentResponseDTO> makePayment(@RequestBody PaymentRequestDTO requestDTO) {
+        return ResponseEntity.ok(paymentService.makePayment(requestDTO));
     }
 
     @GetMapping("/payments/{paymentId}")
-    public ResponseEntity<Payment> getPaymentDetails(@PathVariable Integer paymentId) {
+    public ResponseEntity<PaymentResponseDTO> getPaymentDetails(@PathVariable Integer paymentId) {
         return paymentService.getPaymentDetails(paymentId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/customers/{customerId}/payments")
-    public ResponseEntity<List<Payment>> getCustomerPaymentHistory(@PathVariable Integer customerId) {
+    public ResponseEntity<List<PaymentResponseDTO>> getCustomerPaymentHistory(@PathVariable Integer customerId) {
         return ResponseEntity.ok(paymentService.getCustomerPaymentHistory(customerId));
     }
 
     @GetMapping("/bookings/{bookingId}/payment")
-    public ResponseEntity<Payment> getBookingPaymentInfo(@PathVariable Integer bookingId) {
+    public ResponseEntity<PaymentResponseDTO> getBookingPaymentInfo(@PathVariable Integer bookingId) {
         return paymentService.getBookingPaymentInfo(bookingId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/payments/{paymentId}/status")
-    public ResponseEntity<Payment> updatePaymentStatus(@PathVariable Integer paymentId, @RequestParam String status) {
+    public ResponseEntity<PaymentResponseDTO> updatePaymentStatus(@PathVariable Integer paymentId, @RequestParam String status) {
         try {
             return ResponseEntity.ok(paymentService.updatePaymentStatus(paymentId, status));
         } catch (Exception e) {

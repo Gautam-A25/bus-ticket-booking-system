@@ -13,6 +13,7 @@ src/main/resources/application.yml
 .settings
 .springBeans
 .sts4-cache
+*.txt
 
 ### IntelliJ IDEA ###
 .idea
