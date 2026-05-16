@@ -1,14 +1,14 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.entity.Trip;
+import com.busticket.busticketbooking.dto.TripDto;
 
 import java.util.List;
 
 public interface TripService {
 
-    List<Trip> getAllTrips();
+    List<TripDto> getAllTrips();
 
-    Trip getTripById(Integer id);
+    TripDto getTripById(Integer id);
 
-    Trip addTrip(Trip trip);
+    TripDto addTrip(TripDto dto);
 }
