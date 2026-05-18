@@ -2,7 +2,6 @@ package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

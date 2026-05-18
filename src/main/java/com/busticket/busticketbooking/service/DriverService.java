@@ -1,18 +1,21 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.dto.DriverDto;
+import com.busticket.busticketbooking.dto.DriverDto.DriverRequestDto;
+import com.busticket.busticketbooking.dto.DriverDto.DriverResponseDto;
 
 import java.util.List;
 
 public interface DriverService {
 
-    DriverDto registerDriver(Integer officeId, DriverDto driverDto);
+    DriverResponseDto createDriver(DriverRequestDto dto);
 
-    List<DriverDto> getDriversByOffice(Integer officeId);
+    List<DriverResponseDto> getAllDrivers();
 
-    DriverDto getDriverById(Integer driverId);
+    DriverResponseDto getDriverById(Integer id);
 
-    DriverDto updateDriver(Integer driverId, DriverDto driverDto);
+    List<DriverResponseDto> getDriversByOffice(Integer officeId);
 
-    void deleteDriver(Integer driverId);
+    DriverResponseDto updateDriver(Integer driverId, DriverRequestDto dto);
+
+    void deleteDriver(Integer id);
 }

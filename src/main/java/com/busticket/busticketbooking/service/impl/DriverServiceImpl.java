@@ -1,9 +1,15 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.DriverDto;
+import com.busticket.busticketbooking.dto.DriverDto.DriverRequestDto;
+import com.busticket.busticketbooking.dto.DriverDto.DriverResponseDto;
+import com.busticket.busticketbooking.entity.Address;
+import com.busticket.busticketbooking.entity.AgencyOffice;
 import com.busticket.busticketbooking.entity.Driver;
+import com.busticket.busticketbooking.repo.AddressRepo;
+import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
 import com.busticket.busticketbooking.repo.DriverRepo;
 import com.busticket.busticketbooking.service.DriverService;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,69 +19,129 @@ import java.util.stream.Collectors;
 public class DriverServiceImpl implements DriverService {
 
     private final DriverRepo driverRepo;
+    private final AgencyOfficeRepo officeRepo;
+    private final AddressRepo addressRepo;
 
-    public DriverServiceImpl(DriverRepo driverRepo) {
+    public DriverServiceImpl(
+            DriverRepo driverRepo,
+            AgencyOfficeRepo officeRepo,
+            AddressRepo addressRepo
+    ) {
         this.driverRepo = driverRepo;
+        this.officeRepo = officeRepo;
+        this.addressRepo = addressRepo;
     }
 
     @Override
-    public DriverDto registerDriver(Integer officeId, DriverDto driverDto) {
+    public DriverResponseDto createDriver(DriverRequestDto dto) {
+
+        AgencyOffice office = officeRepo.findById(dto.getOfficeId())
+                .orElseThrow(() -> new RuntimeException("Office not found"));
+
+        Address address = null;
+
+        if (dto.getAddressId() != null) {
+            address = addressRepo.findById(dto.getAddressId())
+                    .orElseThrow(() -> new RuntimeException("Address not found"));
+        }
 
         Driver driver = new Driver();
 
-        driver.setLicenseNumber(driverDto.getLicenseNumber());
-        driver.setName(driverDto.getName());
-        driver.setPhone(driverDto.getPhone());
+        driver.setLicenseNumber(dto.getLicenseNumber());
+        driver.setName(dto.getName());
+        driver.setPhone(dto.getPhone());
+        driver.setOffice(office);
+        driver.setAddress(address);
 
         Driver savedDriver = driverRepo.save(driver);
 
-        return mapToDto(savedDriver);
+        return mapToResponseDto(savedDriver);
     }
 
     @Override
-    public List<DriverDto> getDriversByOffice(Integer officeId) {
+    public List<DriverResponseDto> getAllDrivers() {
 
-        return driverRepo.findByOffice_id(officeId)
+        return driverRepo.findAll()
                 .stream()
-                .map(this::mapToDto)
+                .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public DriverDto getDriverById(Integer driverId) {
+    public DriverResponseDto getDriverById(Integer id) {
+
+        Driver driver = driverRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+
+        return mapToResponseDto(driver);
+    }
+
+    @Override
+    public List<DriverResponseDto> getDriversByOffice(Integer officeId) {
+
+        List<Driver> drivers = driverRepo.findAll()
+                .stream()
+                .filter(driver ->
+                        driver.getOffice() != null &&
+                        driver.getOffice().getId().equals(officeId)
+                )
+                .collect(Collectors.toList());
+
+        return drivers.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public DriverResponseDto updateDriver(Integer driverId, DriverRequestDto dto) {
 
         Driver driver = driverRepo.findById(driverId)
-                .orElseThrow(() -> new RuntimeException("Driver Not Found"));
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
 
-        return mapToDto(driver);
+        AgencyOffice office = officeRepo.findById(dto.getOfficeId())
+                .orElseThrow(() -> new RuntimeException("Office not found"));
+
+        Address address = null;
+
+        if (dto.getAddressId() != null) {
+            address = addressRepo.findById(dto.getAddressId())
+                    .orElseThrow(() -> new RuntimeException("Address not found"));
+        }
+
+        driver.setLicenseNumber(dto.getLicenseNumber());
+        driver.setName(dto.getName());
+        driver.setPhone(dto.getPhone());
+        driver.setOffice(office);
+        driver.setAddress(address);
+
+        Driver updatedDriver = driverRepo.save(driver);
+
+        return mapToResponseDto(updatedDriver);
     }
 
     @Override
-    public DriverDto updateDriver(Integer driverId, DriverDto driverDto) {
+    public void deleteDriver(Integer id) {
 
-        Driver existingDriver = driverRepo.findById(driverId)
-                .orElseThrow(() -> new RuntimeException("Driver Not Found"));
+        Driver driver = driverRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
 
-        existingDriver.setLicenseNumber(driverDto.getLicenseNumber());
-        existingDriver.setName(driverDto.getName());
-        existingDriver.setPhone(driverDto.getPhone());
-
-        Driver updatedDriver = driverRepo.save(existingDriver);
-
-        return mapToDto(updatedDriver);
+        driverRepo.delete(driver);
     }
 
-    @Override
-    public void deleteDriver(Integer driverId) {
+    private DriverResponseDto mapToResponseDto(Driver driver) {
 
-        driverRepo.deleteById(driverId);
-    }
+        DriverResponseDto dto = new DriverResponseDto();
 
-    private DriverDto mapToDto(Driver driver) {
+        dto.setId(driver.getId());
 
-        DriverDto dto = new DriverDto();
+        if (driver.getOffice() != null) {
+            dto.setOfficeId(driver.getOffice().getId());
+        }
 
-        dto.setDriverId(driver.getId());
+        if (driver.getAddress() != null) {
+            dto.setAddressId(driver.getAddress().getId());
+        }
+
         dto.setLicenseNumber(driver.getLicenseNumber());
         dto.setName(driver.getName());
         dto.setPhone(driver.getPhone());
