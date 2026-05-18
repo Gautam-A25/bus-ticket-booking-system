@@ -1,6 +1,14 @@
 package com.busticket.busticketbooking.service;
 
-public interface AddressService {
+import com.busticket.busticketbooking.dto.addressDTO.AddressRequestDTO;
+import com.busticket.busticketbooking.dto.addressDTO.AddressResponseDTO;
 
-    String getAddressCount();
+import java.util.List;
+
+public interface AddressService {
+    AddressResponseDTO addAddress(AddressRequestDTO addressRequestDTO);
+    AddressResponseDTO getAddressById(Integer id);
+    List<AddressResponseDTO> getAllAddresses();
+    AddressResponseDTO updateAddress(Integer id, AddressRequestDTO addressRequestDTO);
+    String deleteAddress(Integer id);
 }
