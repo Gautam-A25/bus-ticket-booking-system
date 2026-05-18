@@ -1,34 +1,36 @@
-package com.busticket.busticketbooking.dto;
+package com.busticket.busticketbooking.dto.customerDTO;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+// DTO used for customer response data
+public class CustomerResponseDTO {
 
-public class CustomerDTO {
-
+    // Customer ID
     private Integer id;
 
-    @NotBlank(message = "Customer name is required")
+    // Customer name
     private String name;
 
-    @Email(message = "Customer email format is invalid")
-    @NotBlank(message = "Customer email is required")
+    // Customer email
     private String email;
 
-    @Pattern(
-            regexp = "^[0-9]{10}$",
-            message = "Customer phone number must contain exactly 10 digits"
-    )
+    // Customer phone number
     private String phone;
 
-    @NotNull(message = "Customer address ID is required")
+    // Address ID associated with customer
     private Integer addressId;
 
-    public CustomerDTO() {
+    // Default constructor
+    public CustomerResponseDTO() {
     }
 
-    public CustomerDTO(Integer id, String name, String email, String phone, Integer addressId) {
+    // Parameterized constructor
+    public CustomerResponseDTO(
+            Integer id,
+            String name,
+            String email,
+            String phone,
+            Integer addressId
+    ) {
+
         this.id = id;
         this.name = name;
         this.email = email;
@@ -36,42 +38,52 @@ public class CustomerDTO {
         this.addressId = addressId;
     }
 
+    // Getter for customer ID
     public Integer getId() {
         return id;
     }
 
+    // Setter for customer ID
     public void setId(Integer id) {
         this.id = id;
     }
 
+    // Getter for customer name
     public String getName() {
         return name;
     }
 
+    // Setter for customer name
     public void setName(String name) {
         this.name = name;
     }
 
+    // Getter for customer email
     public String getEmail() {
         return email;
     }
 
+    // Setter for customer email
     public void setEmail(String email) {
         this.email = email;
     }
 
+    // Getter for customer phone number
     public String getPhone() {
         return phone;
     }
 
+    // Setter for customer phone number
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
+    // Getter for address ID
     public Integer getAddressId() {
         return addressId;
     }
 
+    // Setter for address ID
     public void setAddressId(Integer addressId) {
         this.addressId = addressId;
     }

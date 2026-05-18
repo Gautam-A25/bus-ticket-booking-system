@@ -1,61 +1,50 @@
-package com.busticket.busticketbooking.dto;
+package com.busticket.busticketbooking.dto.bookingDTO;
 
 import com.busticket.busticketbooking.entity.Booking.BookingStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public class BookingDTO {
+// DTO used for booking request data
+public class BookingRequestDTO {
 
-    private Integer id;
-
-    @NotNull(message = "Trip ID is required for booking")
-    private Integer tripId;
-
-    @NotNull(message = "Seat number is required for booking")
+    // Seat number for booking
+    @NotNull(message = "Seat number is required")
     @Min(value = 1, message = "Seat number must be greater than 0")
     private Integer seatNumber;
 
+    // Booking status
     @NotNull(message = "Booking status is required")
     private BookingStatus status;
 
-    public BookingDTO() {
+    // Default constructor
+    public BookingRequestDTO() {
     }
 
-    public BookingDTO(Integer id, Integer tripId, Integer seatNumber, BookingStatus status) {
-        this.id = id;
-        this.tripId = tripId;
+    // Parameterized constructor
+    public BookingRequestDTO(
+            Integer seatNumber,
+            BookingStatus status
+    ) {
         this.seatNumber = seatNumber;
         this.status = status;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getTripId() {
-        return tripId;
-    }
-
-    public void setTripId(Integer tripId) {
-        this.tripId = tripId;
-    }
-
+    // Getter for seat number
     public Integer getSeatNumber() {
         return seatNumber;
     }
 
+    // Setter for seat number
     public void setSeatNumber(Integer seatNumber) {
         this.seatNumber = seatNumber;
     }
 
+    // Getter for booking status
     public BookingStatus getStatus() {
         return status;
     }
 
+    // Setter for booking status
     public void setStatus(BookingStatus status) {
         this.status = status;
     }
