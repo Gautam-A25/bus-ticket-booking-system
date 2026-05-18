@@ -1,7 +1,7 @@
-server:
-  port: 8080
-
 spring:
+  application:
+    name: BusTicketBooking
+
   datasource:
     url: jdbc:mysql://localhost:3306/busticketbooking
     username: root
@@ -16,7 +16,13 @@ spring:
 
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
 
-  thymeleaf:
-    cache: false
+  security:
+    user:
+      name: admin
+      password: admin123
+
+server:
+  port: 8080
