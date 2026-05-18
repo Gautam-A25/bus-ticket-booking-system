@@ -1,6 +1,10 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
@@ -20,12 +24,16 @@ public class Review {
     @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
+    @Min(value = 1, message = "Rating must be at least 1")
+    @Max(value = 5, message = "Rating must not be greater than 5")
     @Column(nullable = false)
     private Integer rating;
 
+    @Size(max = 5000, message = "Comment must not exceed 5000 characters")
     @Column(columnDefinition = "TEXT")
     private String comment;
 
+    @PastOrPresent(message = "Review date cannot be in the future")
     @Column(name = "review_date")
     private LocalDateTime reviewDate;
 

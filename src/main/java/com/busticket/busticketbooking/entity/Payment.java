@@ -1,6 +1,10 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,9 +26,12 @@ public class Payment {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column
+    @Positive(message = "Amount must be greater than 0")
+    @Digits(integer = 8, fraction = 2, message = "Amount must have up to 8 integer digits and 2 decimal places")
+    @Column(precision = 10, scale = 2)
     private BigDecimal amount;
 
+    @PastOrPresent(message = "Payment date cannot be in the future")
     @Column(name = "payment_date")
     private LocalDateTime paymentDate;
 
