@@ -1,6 +1,6 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.entity.Driver;
+import com.busticket.busticketbooking.dto.DriverDto;
 import com.busticket.busticketbooking.service.DriverService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,29 +17,29 @@ public class DriverController {
     }
 
     @PostMapping("/offices/{officeId}/drivers")
-    public Driver registerDriver(@PathVariable Integer officeId,
-                                 @RequestBody Driver driver) {
+    public DriverDto registerDriver(@PathVariable Integer officeId,
+                                    @RequestBody DriverDto driverDto) {
 
-        return driverService.registerDriver(officeId, driver);
+        return driverService.registerDriver(officeId, driverDto);
     }
 
     @GetMapping("/offices/{officeId}/drivers")
-    public List<Driver> getDriversByOffice(@PathVariable Integer officeId) {
+    public List<DriverDto> getDriversByOffice(@PathVariable Integer officeId) {
 
         return driverService.getDriversByOffice(officeId);
     }
 
     @GetMapping("/drivers/{driverId}")
-    public Driver getDriverById(@PathVariable Integer driverId) {
+    public DriverDto getDriverById(@PathVariable Integer driverId) {
 
         return driverService.getDriverById(driverId);
     }
 
     @PutMapping("/drivers/{driverId}")
-    public Driver updateDriver(@PathVariable Integer driverId,
-                               @RequestBody Driver driver) {
+    public DriverDto updateDriver(@PathVariable Integer driverId,
+                                  @RequestBody DriverDto driverDto) {
 
-        return driverService.updateDriver(driverId, driver);
+        return driverService.updateDriver(driverId, driverDto);
     }
 
     @DeleteMapping("/drivers/{driverId}")
