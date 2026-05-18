@@ -1,6 +1,8 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "addresses")
@@ -11,15 +13,23 @@ public class Address {
     @Column(name = "address_id")
     private Integer id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Address is required")
+    @Size(max = 255, message = "Address must not exceed 255 characters")
+    @Column(nullable = false, length = 255)
     private String address;
 
-    @Column(nullable = false)
+    @NotBlank(message = "City is required")
+    @Size(max = 255, message = "City must not exceed 255 characters")
+    @Column(nullable = false, length = 255)
     private String city;
 
-    @Column(nullable = false)
+    @NotBlank(message = "State is required")
+    @Size(max = 255, message = "State must not exceed 255 characters")
+    @Column(nullable = false, length = 255)
     private String state;
 
+    @NotBlank(message = "Zip code is required")
+    @Size(max = 10, message = "Zip code must not exceed 10 characters")
     @Column(name = "zip_code", nullable = false, length = 10)
     private String zipCode;
 

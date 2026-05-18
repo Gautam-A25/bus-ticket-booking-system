@@ -1,6 +1,9 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "routes")
@@ -11,15 +14,21 @@ public class Route {
     @Column(name = "route_id")
     private Integer id;
 
-    @Column(name = "from_city", nullable = false)
+    @NotBlank(message = "From city is required")
+    @Size(max = 255, message = "From city must not exceed 255 characters")
+    @Column(name = "from_city", nullable = false, length = 255)
     private String fromCity;
 
-    @Column(name = "to_city", nullable = false)
+    @NotBlank(message = "To city is required")
+    @Size(max = 255, message = "To city must not exceed 255 characters")
+    @Column(name = "to_city", nullable = false, length = 255)
     private String toCity;
 
+    @PositiveOrZero(message = "Break points cannot be negative")
     @Column(name = "break_points")
     private Integer breakPoints;
 
+    @PositiveOrZero(message = "Duration cannot be negative")
     @Column(name = "duration")
     private Integer duration;
 
