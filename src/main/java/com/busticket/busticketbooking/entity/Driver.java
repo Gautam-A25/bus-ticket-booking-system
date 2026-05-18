@@ -1,6 +1,10 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "drivers")
@@ -11,12 +15,20 @@ public class Driver {
     @Column(name = "driver_id")
     private Integer id;
 
+    @NotBlank(message = "License number is required")
+    @Size(max = 20, message = "License number must not exceed 20 characters")
+    @Pattern(regexp = "^[A-Za-z0-9\\- ]{3,20}$", message = "License number format is invalid")
     @Column(name = "license_number", nullable = false, length = 20)
     private String licenseNumber;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Driver name is required")
+    @Size(max = 255, message = "Driver name must not exceed 255 characters")
+    @Column(nullable = false, length = 255)
     private String name;
 
+    @NotBlank(message = "Phone number is required")
+    @Pattern(regexp = "^[0-9]{10,15}$", message = "Phone number must contain 10 to 15 digits")
+    @Size(max = 15, message = "Phone number must not exceed 15 characters")
     @Column(nullable = false, length = 15)
     private String phone;
 

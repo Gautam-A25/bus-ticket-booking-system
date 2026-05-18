@@ -1,6 +1,6 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.entity.Bus;
+import com.busticket.busticketbooking.dto.BusDto;
 import com.busticket.busticketbooking.service.BusService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,29 +18,29 @@ public class BusController {
     }
 
     @PostMapping("/offices/{officeId}/buses")
-    public ResponseEntity<Bus> registerBus(@PathVariable Integer officeId,
-                           @RequestBody Bus bus) {
+    public BusDto registerBus(@PathVariable Integer officeId,
+                              @RequestBody BusDto busDto) {
 
-        return ResponseEntity.ok(busService.registerBus(officeId, bus));
+        return busService.registerBus(officeId, busDto);
     }
 
     @GetMapping("/offices/{officeId}/buses")
-    public ResponseEntity<List<Bus>> getBusesByOffice(@PathVariable Integer officeId) {
+    public List<BusDto> getBusesByOffice(@PathVariable Integer officeId) {
 
         return ResponseEntity.ok(busService.getBusesByOffice(officeId));
     }
 
     @GetMapping("/buses/{busId}")
-    public ResponseEntity<Bus> getBusById(@PathVariable Integer busId) {
+    public BusDto getBusById(@PathVariable Integer busId) {
 
         return ResponseEntity.ok(busService.getBusById(busId));
     }
 
     @PutMapping("/buses/{busId}")
-    public ResponseEntity<Bus> updateBus(@PathVariable Integer busId,
-                         @RequestBody Bus bus) {
+    public BusDto updateBus(@PathVariable Integer busId,
+                            @RequestBody BusDto busDto) {
 
-        return ResponseEntity.ok(busService.updateBus(busId, bus));
+        return busService.updateBus(busId, busDto);
     }
 
     @DeleteMapping("/buses/{busId}")

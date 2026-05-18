@@ -1,6 +1,9 @@
 package com.busticket.busticketbooking.service.impl;
 
+import com.busticket.busticketbooking.dto.CustomerDTO;
+import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.Customer;
+import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.repo.CustomerRepo;
 import com.busticket.busticketbooking.service.CustomerService;
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
@@ -15,37 +18,81 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepo customerRepo;
 
+    @Autowired
+    private AddressRepo addressRepo;
+
     @Override
-    public Customer createCustomer(Customer customer) {
-        return customerRepo.save(customer);
+    public CustomerDTO createCustomer(CustomerDTO customerDTO) {
+
+        Address address = addressRepo.findById(customerDTO.getAddressId())
+                .orElseThrow(() -> new RuntimeException("Address not found"));
+
+        Customer customer = new Customer();
+
+        customer.setName(customerDTO.getName());
+        customer.setEmail(customerDTO.getEmail());
+        customer.setPhone(customerDTO.getPhone());
+        customer.setAddress(address);
+
+        Customer savedCustomer = customerRepo.save(customer);
+
+        return mapToDTO(savedCustomer);
     }
 
     @Override
-    public Customer getCustomerById(Integer customerId) {
-        return customerRepo.findById(customerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + customerId + " not found"));
+    public List<CustomerDTO> getAllCustomers() {
+
+        return customerRepo.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     @Override
-    public List<Customer> getAllCustomers() {
-        return customerRepo.findAll();
+    public CustomerDTO getCustomerById(Integer id) {
+
+        Customer customer = customerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        return mapToDTO(customer);
     }
 
     @Override
-    public Customer updateCustomer(Integer customerId, Customer customer) {
+    public CustomerDTO updateCustomer(Integer id, CustomerDTO customerDTO) {
 
-        Customer existingCustomer = getCustomerById(customerId);
+        Customer customer = customerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        existingCustomer.setName(customer.getName());
-        existingCustomer.setEmail(customer.getEmail());
-        existingCustomer.setPhone(customer.getPhone());
-        existingCustomer.setAddress(customer.getAddress());
+        Address address = addressRepo.findById(customerDTO.getAddressId())
+                .orElseThrow(() -> new RuntimeException("Address not found"));
 
-        return customerRepo.save(existingCustomer);
+        customer.setName(customerDTO.getName());
+        customer.setEmail(customerDTO.getEmail());
+        customer.setPhone(customerDTO.getPhone());
+        customer.setAddress(address);
+
+        Customer updatedCustomer = customerRepo.save(customer);
+
+        return mapToDTO(updatedCustomer);
     }
 
     @Override
-    public void deleteCustomer(Integer customerId) {
-        customerRepo.deleteById(customerId);
+    public void deleteCustomer(Integer id) {
+
+        Customer customer = customerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        customerRepo.delete(customer);
+    }
+
+    private CustomerDTO mapToDTO(Customer customer) {
+
+        return new CustomerDTO(
+                customer.getId(),
+                customer.getName(),
+                customer.getEmail(),
+                customer.getPhone(),
+                customer.getAddress().getId()
+        );
     }
 }

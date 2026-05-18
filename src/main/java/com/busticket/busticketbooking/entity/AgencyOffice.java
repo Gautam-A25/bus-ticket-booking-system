@@ -1,6 +1,9 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "agency_offices")
@@ -15,13 +18,18 @@ public class AgencyOffice {
     @JoinColumn(name = "agency_id")
     private Agency agency;
 
+    @Email(message = "Office email must be valid")
+    @Size(max = 100, message = "Office email must not exceed 100 characters")
     @Column(name = "office_mail", length = 100)
     private String officeMail;
 
+    @Size(max = 50, message = "Office contact person name must not exceed 50 characters")
     @Column(name = "office_contact_person_name", length = 50)
     private String officeContactPersonName;
 
-    @Column(name = "office_contact_number", columnDefinition = "CHAR(10)")
+    @Pattern(regexp = "^\\d{10}$", message = "Office contact number must contain exactly 10 digits")
+    @Size(max = 10, message = "Office contact number must not exceed 10 characters")
+    @Column(name = "office_contact_number", columnDefinition = "CHAR(10)", length = 10)
     private String officeContactNumber;
 
     @ManyToOne

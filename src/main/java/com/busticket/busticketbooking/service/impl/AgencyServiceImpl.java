@@ -1,18 +1,69 @@
 package com.busticket.busticketbooking.service.impl;
 
+import com.busticket.busticketbooking.dto.agencyDTO.AgencyRequestDTO;
+import com.busticket.busticketbooking.dto.agencyDTO.AgencyResponseDTO;
+import com.busticket.busticketbooking.entity.Agency;
+import com.busticket.busticketbooking.mapper.AgencyMapper;
 import com.busticket.busticketbooking.repo.AgencyRepo;
 import com.busticket.busticketbooking.service.AgencyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AgencyServiceImpl implements AgencyService {
 
-    @Autowired
-    private AgencyRepo agencyRepo;
+    private final AgencyRepo agencyRepo;
+
+    public AgencyServiceImpl(AgencyRepo agencyRepo) {
+        this.agencyRepo = agencyRepo;
+    }
 
     @Override
-    public String getAgencyCount() {
-        return "Total agencies: " + agencyRepo.count();
+    public AgencyResponseDTO addAgency(AgencyRequestDTO agencyRequestDTO) {
+        Agency agency = AgencyMapper.toEntity(agencyRequestDTO);
+        Agency savedAgency = agencyRepo.save(agency);
+        return AgencyMapper.toResponseDTO(savedAgency);
+    }
+
+    @Override
+    public AgencyResponseDTO getAgencyById(Integer id) {
+        Agency agency = agencyRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found"));
+        return AgencyMapper.toResponseDTO(agency);
+    }
+
+    @Override
+    public List<AgencyResponseDTO> getAllAgencies() {
+        return agencyRepo.findAll()
+                .stream()
+                .map(AgencyMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public AgencyResponseDTO updateAgency(Integer id, AgencyRequestDTO agencyRequestDTO) {
+        Agency existingAgency = agencyRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found"));
+
+        existingAgency.setName(agencyRequestDTO.getName());
+        existingAgency.setContactPersonName(agencyRequestDTO.getContactPersonName());
+        existingAgency.setEmail(agencyRequestDTO.getEmail());
+        existingAgency.setPhone(agencyRequestDTO.getPhone());
+
+        Agency updatedAgency = agencyRepo.save(existingAgency);
+        return AgencyMapper.toResponseDTO(updatedAgency);
+    }
+
+    @Override
+    public String deleteAgency(Integer id) {
+        if (!agencyRepo.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found");
+        }
+        agencyRepo.deleteById(id);
+        return "Agency deleted successfully";
     }
 }

@@ -1,18 +1,18 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.entity.Booking;
+import com.busticket.busticketbooking.dto.BookingDTO;
 
 import java.util.List;
 
 public interface BookingService {
 
-    Booking createBooking(Booking booking);
+    BookingDTO createBooking(BookingDTO bookingDTO);
 
-    Booking getBookingById(Integer bookingId);
+    List<BookingDTO> getAllBookings();
 
-    List<Booking> getAllBookings();
+    BookingDTO getBookingById(Integer id);
 
-    Booking updateBooking(Integer bookingId, Booking booking);
+    BookingDTO updateBooking(Integer id, BookingDTO bookingDTO);
 
-    void deleteBooking(Integer bookingId);
+    void deleteBooking(Integer id);
 }

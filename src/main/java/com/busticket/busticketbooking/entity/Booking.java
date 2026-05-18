@@ -1,6 +1,7 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "bookings")
@@ -15,6 +16,7 @@ public class Booking {
     @JoinColumn(name = "trip_id")
     private Trip trip;
 
+    @Positive(message = "Seat number must be greater than 0")
     @Column(name = "seat_number", nullable = false)
     private Integer seatNumber;
 

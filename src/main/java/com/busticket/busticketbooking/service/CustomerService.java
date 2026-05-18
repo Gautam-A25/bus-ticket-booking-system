@@ -1,18 +1,18 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.entity.Customer;
+import com.busticket.busticketbooking.dto.CustomerDTO;
 
 import java.util.List;
 
 public interface CustomerService {
 
-    Customer createCustomer(Customer customer);
+    CustomerDTO createCustomer(CustomerDTO customerDTO);
 
-    Customer getCustomerById(Integer customerId);
+    List<CustomerDTO> getAllCustomers();
 
-    List<Customer> getAllCustomers();
+    CustomerDTO getCustomerById(Integer id);
 
-    Customer updateCustomer(Integer customerId, Customer customer);
+    CustomerDTO updateCustomer(Integer id, CustomerDTO customerDTO);
 
-    void deleteCustomer(Integer customerId);
+    void deleteCustomer(Integer id);
 }
