@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.controller;
 
 import com.busticket.busticketbooking.entity.Trip;
 import com.busticket.busticketbooking.service.TripService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,17 +15,17 @@ public class TripController {
     private TripService tripService;
 
     @GetMapping("/trips")
-    public List<Trip> getAllTrips() {
-        return tripService.getAllTrips();
+    public ResponseEntity<List<Trip>> getAllTrips() {
+        return ResponseEntity.ok(tripService.getAllTrips());
     }
 
     @GetMapping("/trips/{id}")
-    public Trip getTripById(@PathVariable Integer id) {
-        return tripService.getTripById(id);
+    public ResponseEntity<Trip> getTripById(@PathVariable Integer id) {
+        return ResponseEntity.ok(tripService.getTripById(id));
     }
 
     @PostMapping("/trips")
-    public Trip addTrip(@RequestBody Trip trip) {
-        return tripService.addTrip(trip);
+    public ResponseEntity<Trip> addTrip(@RequestBody Trip trip) {
+        return ResponseEntity.ok(tripService.addTrip(trip));
     }
 }

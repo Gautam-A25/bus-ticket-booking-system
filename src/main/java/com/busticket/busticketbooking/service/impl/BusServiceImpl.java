@@ -3,6 +3,7 @@ package com.busticket.busticketbooking.service.impl;
 import com.busticket.busticketbooking.entity.Bus;
 import com.busticket.busticketbooking.repo.BusRepo;
 import com.busticket.busticketbooking.service.BusService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class BusServiceImpl implements BusService {
     public Bus getBusById(Integer busId) {
 
         return busRepo.findById(busId)
-                .orElseThrow(() -> new RuntimeException("Bus Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Bus with ID " + busId + " not found"));
     }
 
     @Override

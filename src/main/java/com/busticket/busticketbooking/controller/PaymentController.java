@@ -3,6 +3,7 @@ package com.busticket.busticketbooking.controller;
 import com.busticket.busticketbooking.dto.PaymentRequestDTO;
 import com.busticket.busticketbooking.dto.PaymentResponseDTO;
 import com.busticket.busticketbooking.service.PaymentService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +25,8 @@ public class PaymentController {
 
     @GetMapping("/payments/{paymentId}")
     public ResponseEntity<PaymentResponseDTO> getPaymentDetails(@PathVariable Integer paymentId) {
-        return paymentService.getPaymentDetails(paymentId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(paymentService.getPaymentDetails(paymentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment with ID " + paymentId + " not found")));
     }
 
     @GetMapping("/customers/{customerId}/payments")
@@ -36,9 +36,8 @@ public class PaymentController {
 
     @GetMapping("/bookings/{bookingId}/payment")
     public ResponseEntity<PaymentResponseDTO> getBookingPaymentInfo(@PathVariable Integer bookingId) {
-        return paymentService.getBookingPaymentInfo(bookingId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(paymentService.getBookingPaymentInfo(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("No payment found for Booking ID " + bookingId)));
     }
 
     @PatchMapping("/payments/{paymentId}/status")

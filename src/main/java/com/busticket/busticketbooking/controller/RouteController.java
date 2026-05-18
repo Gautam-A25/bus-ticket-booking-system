@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.controller;
 
 import com.busticket.busticketbooking.entity.Route;
 import com.busticket.busticketbooking.service.RouteService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,28 +15,25 @@ public class RouteController {
     private RouteService routeService;
 
     @GetMapping("/routes")
-    public List<Route> getAllRoutes() {
-        return routeService.getAllRoutes();
+    public ResponseEntity<List<Route>> getAllRoutes() {
+        return ResponseEntity.ok(routeService.getAllRoutes());
     }
 
     @GetMapping("/routes/{id}")
-    public Route getRouteById(@PathVariable Integer id) {
-        return routeService.getRouteById(id);
+    public ResponseEntity<Route> getRouteById(@PathVariable Integer id) {
+        return ResponseEntity.ok(routeService.getRouteById(id));
     }
 
     @PostMapping("/routes")
-    public Route addRoute(@RequestBody Route route) {
-        return routeService.addRoute(route);
+    public ResponseEntity<Route> addRoute(@RequestBody Route route) {
+        return ResponseEntity.ok(routeService.addRoute(route));
     }
 
     @GetMapping("/routes/search")
-    public List<Route> searchRoutes(
+    public ResponseEntity<List<Route>> searchRoutes(
             @RequestParam String fromCity,
             @RequestParam String toCity) {
 
-        return routeService.searchRoutes(
-                fromCity,
-                toCity
-        );
+        return ResponseEntity.ok(routeService.searchRoutes(fromCity, toCity));
     }
 }

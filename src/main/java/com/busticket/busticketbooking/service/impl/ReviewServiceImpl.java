@@ -9,6 +9,7 @@ import com.busticket.busticketbooking.repo.CustomerRepo;
 import com.busticket.busticketbooking.repo.ReviewRepo;
 import com.busticket.busticketbooking.repo.TripRepo;
 import com.busticket.busticketbooking.service.ReviewService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,9 +32,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewResponseDTO submitReview(Integer tripId, ReviewRequestDTO requestDTO) {
         Trip trip = tripRepo.findById(tripId)
-                .orElseThrow(() -> new RuntimeException("Trip not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Trip not found"));
         Customer customer = customerRepo.findById(requestDTO.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
         Review review = new Review();
         review.setTrip(trip);

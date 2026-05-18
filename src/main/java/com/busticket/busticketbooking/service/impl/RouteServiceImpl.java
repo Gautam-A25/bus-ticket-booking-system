@@ -3,6 +3,7 @@ package com.busticket.busticketbooking.service.impl;
 import com.busticket.busticketbooking.entity.Route;
 import com.busticket.busticketbooking.repo.RouteRepo;
 import com.busticket.busticketbooking.service.RouteService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public Route getRouteById(Integer id) {
-        return routeRepo.findById(id).orElse(null);
+        return routeRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Route with ID " + id + " not found"));
     }
 
     @Override

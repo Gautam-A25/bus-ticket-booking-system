@@ -3,6 +3,7 @@ package com.busticket.busticketbooking.service.impl;
 import com.busticket.busticketbooking.entity.Driver;
 import com.busticket.busticketbooking.repo.DriverRepo;
 import com.busticket.busticketbooking.service.DriverService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class DriverServiceImpl implements DriverService {
     public Driver getDriverById(Integer driverId) {
 
         return driverRepo.findById(driverId)
-                .orElseThrow(() -> new RuntimeException("Driver Not Found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Driver with ID " + driverId + " not found"));
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.busticket.busticketbooking.service.impl;
 import com.busticket.busticketbooking.entity.Customer;
 import com.busticket.busticketbooking.repo.CustomerRepo;
 import com.busticket.busticketbooking.service.CustomerService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer getCustomerById(Integer customerId) {
-        return customerRepo.findById(customerId).orElse(null);
+        return customerRepo.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + customerId + " not found"));
     }
 
     @Override
@@ -32,20 +34,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer updateCustomer(Integer customerId, Customer customer) {
 
-        Customer existingCustomer =
-                customerRepo.findById(customerId).orElse(null);
+        Customer existingCustomer = getCustomerById(customerId);
 
-        if (existingCustomer != null) {
+        existingCustomer.setName(customer.getName());
+        existingCustomer.setEmail(customer.getEmail());
+        existingCustomer.setPhone(customer.getPhone());
+        existingCustomer.setAddress(customer.getAddress());
 
-            existingCustomer.setName(customer.getName());
-            existingCustomer.setEmail(customer.getEmail());
-            existingCustomer.setPhone(customer.getPhone());
-            existingCustomer.setAddress(customer.getAddress());
-
-            return customerRepo.save(existingCustomer);
-        }
-
-        return null;
+        return customerRepo.save(existingCustomer);
     }
 
     @Override

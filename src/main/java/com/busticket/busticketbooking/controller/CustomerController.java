@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.controller;
 
 import com.busticket.busticketbooking.entity.Customer;
 import com.busticket.busticketbooking.service.CustomerService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,28 +16,28 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
-    public Customer createCustomer(@RequestBody Customer customer) {
-        return customerService.createCustomer(customer);
+    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
+        return ResponseEntity.ok(customerService.createCustomer(customer));
     }
 
     @GetMapping("/{customerId}")
-    public Customer getCustomerById(
+    public ResponseEntity<Customer> getCustomerById(
             @PathVariable Integer customerId) {
 
-        return customerService.getCustomerById(customerId);
+        return ResponseEntity.ok(customerService.getCustomerById(customerId));
     }
 
     @GetMapping
-    public List<Customer> getAllCustomers() {
-        return customerService.getAllCustomers();
+    public ResponseEntity<List<Customer>> getAllCustomers() {
+        return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
     @PutMapping("/{customerId}")
-    public Customer updateCustomer(
+    public ResponseEntity<Customer> updateCustomer(
             @PathVariable Integer customerId,
             @RequestBody Customer customer) {
 
-        return customerService.updateCustomer(customerId, customer);
+        return ResponseEntity.ok(customerService.updateCustomer(customerId, customer));
     }
 
     @DeleteMapping("/{customerId}")

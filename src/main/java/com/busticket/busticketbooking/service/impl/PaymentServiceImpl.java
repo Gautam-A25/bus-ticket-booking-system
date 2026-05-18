@@ -9,6 +9,7 @@ import com.busticket.busticketbooking.repo.BookingRepo;
 import com.busticket.busticketbooking.repo.CustomerRepo;
 import com.busticket.busticketbooking.repo.PaymentRepo;
 import com.busticket.busticketbooking.service.PaymentService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,9 +33,9 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponseDTO makePayment(PaymentRequestDTO requestDTO) {
         Booking booking = bookingRepo.findById(requestDTO.getBookingId())
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
         Customer customer = customerRepo.findById(requestDTO.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
         Payment payment = new Payment();
         payment.setBooking(booking);
@@ -67,7 +68,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentResponseDTO updatePaymentStatus(Integer paymentId, String status) {
         Payment payment = paymentRepo.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found"));
         payment.setPaymentStatus(Payment.PaymentStatus.valueOf(status));
         return mapToResponseDTO(paymentRepo.save(payment));
     }

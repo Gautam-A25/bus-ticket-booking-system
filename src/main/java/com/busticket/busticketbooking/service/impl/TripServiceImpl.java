@@ -3,6 +3,7 @@ package com.busticket.busticketbooking.service.impl;
 import com.busticket.busticketbooking.entity.Trip;
 import com.busticket.busticketbooking.repo.TripRepo;
 import com.busticket.busticketbooking.service.TripService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public Trip getTripById(Integer id) {
-        return tripRepo.findById(id).orElse(null);
+        return tripRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip with ID " + id + " not found"));
     }
 
     @Override
