@@ -1,32 +1,21 @@
-package com.busticket.busticketbooking.dto;
+package com.busticket.busticketbooking.dto.TripDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class TripDto {
+public class TripResponseDto {
 
     private Integer id;
-
     private Integer routeId;
-
     private Integer busId;
-
     private Integer boardingAddressId;
-
     private Integer droppingAddressId;
-
     private LocalDateTime departureTime;
-
     private LocalDateTime arrivalTime;
-
     private Integer driver1Id;
-
     private Integer driver2Id;
-
     private Integer availableSeats;
-
     private BigDecimal fare;
-
     private LocalDateTime tripDate;
 
     public Integer getId() {

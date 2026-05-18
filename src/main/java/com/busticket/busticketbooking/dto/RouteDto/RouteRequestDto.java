@@ -1,24 +1,24 @@
-package com.busticket.busticketbooking.dto;
+package com.busticket.busticketbooking.dto.RouteDto;
 
-public class RouteDto {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-    private Integer id;
+public class RouteRequestDto {
 
+    @NotBlank(message = "From city is required")
     private String fromCity;
 
+    @NotBlank(message = "To city is required")
     private String toCity;
 
+    @NotNull(message = "Break points required")
+    @Positive(message = "Break points must be positive")
     private Integer breakPoints;
 
+    @NotNull(message = "Duration required")
+    @Positive(message = "Duration must be positive")
     private Integer duration;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getFromCity() {
         return fromCity;
