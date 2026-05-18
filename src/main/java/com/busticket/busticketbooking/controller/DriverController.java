@@ -1,14 +1,17 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.DriverDto;
+import com.busticket.busticketbooking.dto.DriverDto.DriverRequestDto;
+import com.busticket.busticketbooking.dto.DriverDto.DriverResponseDto;
 import com.busticket.busticketbooking.service.DriverService;
-import org.springframework.http.ResponseEntity;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/drivers")
 public class DriverController {
 
     private final DriverService driverService;
@@ -17,37 +20,28 @@ public class DriverController {
         this.driverService = driverService;
     }
 
-    @PostMapping("/offices/{officeId}/drivers")
-    public DriverDto registerDriver(@PathVariable Integer officeId,
-                                    @RequestBody DriverDto driverDto) {
+    @PostMapping
+    public DriverResponseDto createDriver(
+            @Valid @RequestBody DriverRequestDto dto) {
 
-        return driverService.registerDriver(officeId, driverDto);
+        return driverService.createDriver(dto);
     }
 
-    @GetMapping("/offices/{officeId}/drivers")
-    public List<DriverDto> getDriversByOffice(@PathVariable Integer officeId) {
+    @GetMapping
+    public List<DriverResponseDto> getAllDrivers() {
 
-        return ResponseEntity.ok(driverService.getDriversByOffice(officeId));
+        return driverService.getAllDrivers();
     }
 
-    @GetMapping("/drivers/{driverId}")
-    public DriverDto getDriverById(@PathVariable Integer driverId) {
+    @GetMapping("/{id}")
+    public DriverResponseDto getDriverById(@PathVariable Integer id) {
 
-        return ResponseEntity.ok(driverService.getDriverById(driverId));
+        return driverService.getDriverById(id);
     }
 
-    @PutMapping("/drivers/{driverId}")
-    public DriverDto updateDriver(@PathVariable Integer driverId,
-                                  @RequestBody DriverDto driverDto) {
+    @DeleteMapping("/{id}")
+    public void deleteDriver(@PathVariable Integer id) {
 
-        return driverService.updateDriver(driverId, driverDto);
-    }
-
-    @DeleteMapping("/drivers/{driverId}")
-    public String deleteDriver(@PathVariable Integer driverId) {
-
-        driverService.deleteDriver(driverId);
-
-        return "Driver Deleted Successfully";
+        driverService.deleteDriver(id);
     }
 }

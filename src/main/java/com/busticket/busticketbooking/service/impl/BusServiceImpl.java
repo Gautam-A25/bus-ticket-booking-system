@@ -1,10 +1,13 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.BusDto;
+import com.busticket.busticketbooking.dto.BusDto.BusRequestDto;
+import com.busticket.busticketbooking.dto.BusDto.BusResponseDto;
+import com.busticket.busticketbooking.entity.AgencyOffice;
 import com.busticket.busticketbooking.entity.Bus;
+import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
 import com.busticket.busticketbooking.repo.BusRepo;
 import com.busticket.busticketbooking.service.BusService;
-import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,69 +17,110 @@ import java.util.stream.Collectors;
 public class BusServiceImpl implements BusService {
 
     private final BusRepo busRepo;
+    private final AgencyOfficeRepo officeRepo;
 
-    public BusServiceImpl(BusRepo busRepo) {
+    public BusServiceImpl(BusRepo busRepo,
+                          AgencyOfficeRepo officeRepo) {
+
         this.busRepo = busRepo;
+        this.officeRepo = officeRepo;
     }
 
     @Override
-    public BusDto registerBus(Integer officeId, BusDto busDto) {
+    public BusResponseDto createBus(BusRequestDto dto) {
+
+        AgencyOffice office = officeRepo.findById(dto.getOfficeId())
+                .orElseThrow(() ->
+                        new RuntimeException("Office not found"));
 
         Bus bus = new Bus();
 
-        bus.setRegistrationNumber(busDto.getRegistrationNumber());
-        bus.setCapacity(busDto.getCapacity());
-        bus.setType(busDto.getType());
+        bus.setOffice(office);
+        bus.setRegistrationNumber(dto.getRegistrationNumber());
+        bus.setCapacity(dto.getCapacity());
+        bus.setType(dto.getType());
 
         Bus savedBus = busRepo.save(bus);
 
-        return mapToDto(savedBus);
+        return mapToResponseDto(savedBus);
     }
 
     @Override
-    public List<BusDto> getBusesByOffice(Integer officeId) {
+    public List<BusResponseDto> getAllBuses() {
 
-        return busRepo.findByOffice_id(officeId)
+        return busRepo.findAll()
                 .stream()
-                .map(this::mapToDto)
+                .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public BusDto getBusById(Integer busId) {
+    public BusResponseDto getBusById(Integer id) {
+
+        Bus bus = busRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Bus not found"));
+
+        return mapToResponseDto(bus);
+    }
+
+    @Override
+    public List<BusResponseDto> getBusesByOffice(Integer officeId) {
+
+        List<Bus> buses = busRepo.findAll()
+                .stream()
+                .filter(bus ->
+                        bus.getOffice() != null &&
+                        bus.getOffice().getId().equals(officeId))
+                .collect(Collectors.toList());
+
+        return buses.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BusResponseDto updateBus(Integer busId,
+                                    BusRequestDto dto) {
 
         Bus bus = busRepo.findById(busId)
-                .orElseThrow(() -> new RuntimeException("Bus Not Found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Bus not found"));
 
-        return mapToDto(bus);
+        AgencyOffice office = officeRepo.findById(dto.getOfficeId())
+                .orElseThrow(() ->
+                        new RuntimeException("Office not found"));
+
+        bus.setOffice(office);
+        bus.setRegistrationNumber(dto.getRegistrationNumber());
+        bus.setCapacity(dto.getCapacity());
+        bus.setType(dto.getType());
+
+        Bus updatedBus = busRepo.save(bus);
+
+        return mapToResponseDto(updatedBus);
     }
 
     @Override
-    public BusDto updateBus(Integer busId, BusDto busDto) {
+    public void deleteBus(Integer id) {
 
-        Bus existingBus = busRepo.findById(busId)
-                .orElseThrow(() -> new RuntimeException("Bus Not Found"));
+        Bus bus = busRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Bus not found"));
 
-        existingBus.setRegistrationNumber(busDto.getRegistrationNumber());
-        existingBus.setCapacity(busDto.getCapacity());
-        existingBus.setType(busDto.getType());
-
-        Bus updatedBus = busRepo.save(existingBus);
-
-        return mapToDto(updatedBus);
+        busRepo.delete(bus);
     }
 
-    @Override
-    public void deleteBus(Integer busId) {
+    private BusResponseDto mapToResponseDto(Bus bus) {
 
-        busRepo.deleteById(busId);
-    }
+        BusResponseDto dto = new BusResponseDto();
 
-    private BusDto mapToDto(Bus bus) {
+        dto.setId(bus.getId());
 
-        BusDto dto = new BusDto();
+        if (bus.getOffice() != null) {
+            dto.setOfficeId(bus.getOffice().getId());
+        }
 
-        dto.setBusId(bus.getId());
         dto.setRegistrationNumber(bus.getRegistrationNumber());
         dto.setCapacity(bus.getCapacity());
         dto.setType(bus.getType());

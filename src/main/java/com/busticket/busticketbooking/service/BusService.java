@@ -1,18 +1,22 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.dto.BusDto;
+import com.busticket.busticketbooking.dto.BusDto.BusRequestDto;
+import com.busticket.busticketbooking.dto.BusDto.BusResponseDto;
 
 import java.util.List;
 
 public interface BusService {
 
-    BusDto registerBus(Integer officeId, BusDto busDto);
+    BusResponseDto createBus(BusRequestDto dto);
 
-    List<BusDto> getBusesByOffice(Integer officeId);
+    List<BusResponseDto> getAllBuses();
 
-    BusDto getBusById(Integer busId);
+    BusResponseDto getBusById(Integer id);
 
-    BusDto updateBus(Integer busId, BusDto busDto);
+    List<BusResponseDto> getBusesByOffice(Integer officeId);
 
-    void deleteBus(Integer busId);
+    BusResponseDto updateBus(Integer busId,
+                             BusRequestDto dto);
+
+    void deleteBus(Integer id);
 }
