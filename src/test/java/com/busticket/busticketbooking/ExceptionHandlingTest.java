@@ -8,18 +8,14 @@ import com.busticket.busticketbooking.service.BusService;
 import com.busticket.busticketbooking.service.PaymentService;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,43 +26,29 @@ public class ExceptionHandlingTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private BusService busService;
 
-    @MockBean
+    @MockitoBean
     private PaymentService paymentService;
-
-    // =====================================================
-    // BUS NOT FOUND TEST
-    // =====================================================
 
     @Test
     void shouldReturn404WhenBusNotFound() throws Exception {
-
         when(busService.getBusById(999))
                 .thenThrow(new ResourceNotFoundException("Bus not found"));
 
         mockMvc.perform(get("/api/v1/buses/999"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message")
-                        .value("Bus not found"));
+                .andExpect(jsonPath("$.message").value("Bus not found"));
     }
-
-    // =====================================================
-    // PAYMENT NOT FOUND TEST
-    // =====================================================
 
     @Test
     void shouldReturn404WhenPaymentNotFound() throws Exception {
-
         when(paymentService.getPaymentDetails(99999))
-                .thenThrow(new ResourceNotFoundException(
-                        "Payment not found"));
+                .thenThrow(new ResourceNotFoundException("Payment not found"));
 
-        // ONLY URL FIXED
         mockMvc.perform(get("/api/v1/payments/99999"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message")
-                        .value("Payment not found"));
+                .andExpect(jsonPath("$.message").value("Payment not found"));
     }
 }

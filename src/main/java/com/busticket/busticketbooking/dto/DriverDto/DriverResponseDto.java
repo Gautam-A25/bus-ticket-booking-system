@@ -1,4 +1,4 @@
-package com.busticket.busticketbooking.dto.DriverDTO;
+package com.busticket.busticketbooking.dto.DriverDto;
 
 import java.lang.Integer;
 

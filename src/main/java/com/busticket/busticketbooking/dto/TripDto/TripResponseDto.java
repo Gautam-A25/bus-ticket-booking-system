@@ -1,4 +1,4 @@
-package com.busticket.busticketbooking.dto.TripDTO;
+package com.busticket.busticketbooking.dto.TripDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

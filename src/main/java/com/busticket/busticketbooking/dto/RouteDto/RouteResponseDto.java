@@ -1,4 +1,4 @@
-package com.busticket.busticketbooking.dto.RouteDTO;
+package com.busticket.busticketbooking.dto.RouteDto;
 
 public class RouteResponseDto {
 
