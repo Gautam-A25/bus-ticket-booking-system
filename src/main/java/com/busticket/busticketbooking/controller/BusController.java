@@ -1,13 +1,17 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.BusDto;
+import com.busticket.busticketbooking.dto.BusDto.BusRequestDto;
+import com.busticket.busticketbooking.dto.BusDto.BusResponseDto;
 import com.busticket.busticketbooking.service.BusService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/buses")
 public class BusController {
 
     private final BusService busService;
@@ -16,37 +20,45 @@ public class BusController {
         this.busService = busService;
     }
 
-    @PostMapping("/offices/{officeId}/buses")
-    public BusDto registerBus(@PathVariable Integer officeId,
-                              @RequestBody BusDto busDto) {
+    @PostMapping
+    public BusResponseDto createBus(
+            @Valid @RequestBody BusRequestDto dto) {
 
-        return busService.registerBus(officeId, busDto);
+        return busService.createBus(dto);
     }
 
-    @GetMapping("/offices/{officeId}/buses")
-    public List<BusDto> getBusesByOffice(@PathVariable Integer officeId) {
+    @GetMapping
+    public List<BusResponseDto> getAllBuses() {
+
+        return busService.getAllBuses();
+    }
+
+    @GetMapping("/{id}")
+    public BusResponseDto getBusById(
+            @PathVariable Integer id) {
+
+        return busService.getBusById(id);
+    }
+
+    @GetMapping("/office/{officeId}")
+    public List<BusResponseDto> getBusesByOffice(
+            @PathVariable Integer officeId) {
 
         return busService.getBusesByOffice(officeId);
     }
 
-    @GetMapping("/buses/{busId}")
-    public BusDto getBusById(@PathVariable Integer busId) {
+    @PutMapping("/{id}")
+    public BusResponseDto updateBus(
+            @PathVariable Integer id,
+            @Valid @RequestBody BusRequestDto dto) {
 
-        return busService.getBusById(busId);
+        return busService.updateBus(id, dto);
     }
 
-    @PutMapping("/buses/{busId}")
-    public BusDto updateBus(@PathVariable Integer busId,
-                            @RequestBody BusDto busDto) {
+    @DeleteMapping("/{id}")
+    public void deleteBus(
+            @PathVariable Integer id) {
 
-        return busService.updateBus(busId, busDto);
-    }
-
-    @DeleteMapping("/buses/{busId}")
-    public String deleteBus(@PathVariable Integer busId) {
-
-        busService.deleteBus(busId);
-
-        return "Bus Deleted Successfully";
+        busService.deleteBus(id);
     }
 }

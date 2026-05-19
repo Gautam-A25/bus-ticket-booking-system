@@ -1,18 +1,69 @@
 package com.busticket.busticketbooking.service.impl;
 
+import com.busticket.busticketbooking.dto.addressDTO.AddressRequestDTO;
+import com.busticket.busticketbooking.dto.addressDTO.AddressResponseDTO;
+import com.busticket.busticketbooking.entity.Address;
+import com.busticket.busticketbooking.mapper.AddressMapper;
 import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.service.AddressService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AddressServiceImpl implements AddressService {
 
-    @Autowired
-    private AddressRepo addressRepo;
+    private final AddressRepo addressRepo;
+
+    public AddressServiceImpl(AddressRepo addressRepo) {
+        this.addressRepo = addressRepo;
+    }
 
     @Override
-    public String getAddressCount() {
-        return "Total addresses: " + addressRepo.count();
+    public AddressResponseDTO addAddress(AddressRequestDTO addressRequestDTO) {
+        Address address = AddressMapper.toEntity(addressRequestDTO);
+        Address savedAddress = addressRepo.save(address);
+        return AddressMapper.toResponseDTO(savedAddress);
+    }
+
+    @Override
+    public AddressResponseDTO getAddressById(Integer id) {
+        Address address = addressRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found"));
+        return AddressMapper.toResponseDTO(address);
+    }
+
+    @Override
+    public List<AddressResponseDTO> getAllAddresses() {
+        return addressRepo.findAll()
+                .stream()
+                .map(AddressMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public AddressResponseDTO updateAddress(Integer id, AddressRequestDTO addressRequestDTO) {
+        Address existingAddress = addressRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found"));
+
+        existingAddress.setAddress(addressRequestDTO.getAddress());
+        existingAddress.setCity(addressRequestDTO.getCity());
+        existingAddress.setState(addressRequestDTO.getState());
+        existingAddress.setZipCode(addressRequestDTO.getZipCode());
+
+        Address updatedAddress = addressRepo.save(existingAddress);
+        return AddressMapper.toResponseDTO(updatedAddress);
+    }
+
+    @Override
+    public String deleteAddress(Integer id) {
+        if (!addressRepo.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found");
+        }
+        addressRepo.deleteById(id);
+        return "Address deleted successfully";
     }
 }

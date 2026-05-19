@@ -1,18 +1,30 @@
-package com.busticket.busticketbooking.dto;
+package com.busticket.busticketbooking.dto.BusDto;
 
-public class BusDto {
+public class BusResponseDto {
 
-    private Integer busId;
+    private Integer id;
+    private Integer officeId;
     private String registrationNumber;
     private Integer capacity;
     private String type;
 
-    public Integer getBusId() {
-        return busId;
+    public BusResponseDto() {
     }
 
-    public void setBusId(Integer busId) {
-        this.busId = busId;
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(Integer officeId) {
+        this.officeId = officeId;
     }
 
     public String getRegistrationNumber() {
