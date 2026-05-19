@@ -1,3 +1,4 @@
+// Total tests: 4
 package com.busticket.busticketbooking.service;
 
 import com.busticket.busticketbooking.dto.PaymentDTO.PaymentRequestDTO;
@@ -26,13 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Test cases covered:
- * 1. testMakePayment_Success_CaseInsensitive - Verify that a payment is made successfully and status string casing is handled robustly.
- * 2. testMakePayment_FailedStatus_ThrowsPaymentFailedException - Verify that supplying FAILED status triggers PaymentFailedException (HTTP 402).
- * 3. testMakePayment_BookingNotFound_ThrowsResourceNotFoundException - Verify that payment attempts for non-existent bookings trigger ResourceNotFoundException.
- * 4. testGetPaymentDetails_Success - Verify that payment record details are retrieved successfully by ID.
- */
 @ExtendWith(MockitoExtension.class)
 public class PaymentServiceImplTest {
 

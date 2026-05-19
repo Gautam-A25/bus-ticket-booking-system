@@ -1,3 +1,4 @@
+// Total tests: 6
 package com.busticket.busticketbooking.service;
 
 import com.busticket.busticketbooking.dto.DriverDto.DriverRequestDto;
@@ -8,8 +9,8 @@ import com.busticket.busticketbooking.entity.Driver;
 import com.busticket.busticketbooking.exception.DuplicateResourceException;
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.repo.AddressRepo;
-import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
 import com.busticket.busticketbooking.repo.DriverRepo;
+import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
 import com.busticket.busticketbooking.service.impl.DriverServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,15 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Test cases covered:
- * 1. testCreateDriver_Success - Verify that a driver is created successfully when valid details are supplied.
- * 2. testCreateDriver_DuplicateLicense_ThrowsException - Verify that creating a driver with an existing license number throws DuplicateResourceException.
- * 3. testGetDriverById_Success - Verify that a driver is successfully retrieved by their unique ID.
- * 4. testGetDriverById_NotFound_ThrowsException - Verify that retrieving a non-existent driver ID throws ResourceNotFoundException.
- * 5. testGetAllDrivers - Verify that all driver records are retrieved successfully.
- * 6. testDeleteDriver_Success - Verify that a driver record is successfully deleted.
- */
 @ExtendWith(MockitoExtension.class)
 public class DriverServiceImplTest {
 
@@ -51,25 +43,25 @@ public class DriverServiceImplTest {
     private DriverServiceImpl driverService;
 
     private DriverRequestDto requestDto;
-    private Driver driver;
     private AgencyOffice office;
     private Address address;
+    private Driver driver;
 
     @BeforeEach
     public void setUp() {
         requestDto = new DriverRequestDto();
+        requestDto.setOfficeId(1);
+        requestDto.setAddressId(1);
         requestDto.setLicenseNumber("DL-12345");
         requestDto.setName("Harpreet Singh");
         requestDto.setPhone("9876543210");
-        requestDto.setOfficeId(1);
-        requestDto.setAddressId(1);
-        
+
         office = new AgencyOffice();
         office.setId(1);
-        
+
         address = new Address();
         address.setId(1);
-        address.setAddress("123 Terminal Blvd");
+        address.setAddress("123 Main St");
         address.setCity("New Delhi");
         address.setState("Delhi");
         address.setZipCode("110001");
