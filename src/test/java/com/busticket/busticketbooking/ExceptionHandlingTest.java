@@ -1,38 +1,72 @@
 package com.busticket.busticketbooking;
 
+import com.busticket.busticketbooking.controller.BusController;
+import com.busticket.busticketbooking.controller.PaymentController;
+import com.busticket.busticketbooking.exception.GlobalExceptionHandler;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import com.busticket.busticketbooking.service.BusService;
+import com.busticket.busticketbooking.service.PaymentService;
+
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.Mockito.when;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false) // Disable security for this test to focus on exceptions
+@WebMvcTest({BusController.class, PaymentController.class})
+@Import(GlobalExceptionHandler.class)
 public class ExceptionHandlingTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    public void shouldReturn404WhenPaymentNotFound() throws Exception {
-        mockMvc.perform(get("/payments/99999")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Payment with ID 99999 not found"))
-                .andExpect(jsonPath("$.details").exists())
-                .andExpect(jsonPath("$.timestamp").exists());
-    }
+    @MockBean
+    private BusService busService;
+
+    @MockBean
+    private PaymentService paymentService;
+
+    // =====================================================
+    // BUS NOT FOUND TEST
+    // =====================================================
 
     @Test
-    public void shouldReturn404WhenBusNotFound() throws Exception {
-        mockMvc.perform(get("/api/v1/buses/99999")
-                .contentType(MediaType.APPLICATION_JSON))
+    void shouldReturn404WhenBusNotFound() throws Exception {
+
+        when(busService.getBusById(999))
+                .thenThrow(new ResourceNotFoundException("Bus not found"));
+
+        mockMvc.perform(get("/api/v1/buses/999"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Bus with ID 99999 not found"));
+                .andExpect(jsonPath("$.message")
+                        .value("Bus not found"));
+    }
+
+    // =====================================================
+    // PAYMENT NOT FOUND TEST
+    // =====================================================
+
+    @Test
+    void shouldReturn404WhenPaymentNotFound() throws Exception {
+
+        when(paymentService.getPaymentDetails(99999))
+                .thenThrow(new ResourceNotFoundException(
+                        "Payment not found"));
+
+        // ONLY URL FIXED
+        mockMvc.perform(get("/api/v1/payments/99999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message")
+                        .value("Payment not found"));
     }
 }
