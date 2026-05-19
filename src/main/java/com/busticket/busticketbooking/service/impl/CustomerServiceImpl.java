@@ -8,6 +8,8 @@ import com.busticket.busticketbooking.mapper.CustomerMapper;
 import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.repo.CustomerRepo;
 import com.busticket.busticketbooking.service.CustomerService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import com.busticket.busticketbooking.exception.DuplicateResourceException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,9 +39,13 @@ public class CustomerServiceImpl implements CustomerService {
             CustomerRequestDTO customerRequestDTO
     ) {
 
+        if (customerRepo.existsByEmail(customerRequestDTO.getEmail())) {
+            throw new DuplicateResourceException("Customer with email " + customerRequestDTO.getEmail() + " already exists");
+        }
+
         // Fetch address by ID
         Address address = addressRepo.findById(customerRequestDTO.getAddressId())
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + customerRequestDTO.getAddressId() + " not found"));
 
         // Convert DTO to Entity
         Customer customer = CustomerMapper.mapToEntity(
@@ -75,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Fetch customer by ID
         Customer customer = customerRepo.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + customerId + " not found"));
 
         // Convert Entity to Response DTO
         return CustomerMapper.mapToResponseDTO(customer);
@@ -90,11 +96,11 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Fetch customer by ID
         Customer customer = customerRepo.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + customerId + " not found"));
 
         // Fetch address by ID
         Address address = addressRepo.findById(customerRequestDTO.getAddressId())
-                .orElseThrow(() -> new RuntimeException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + customerRequestDTO.getAddressId() + " not found"));
 
         // Update customer name
         customer.setName(customerRequestDTO.getName());
@@ -121,12 +127,19 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Fetch customer by ID
         Customer customer = customerRepo.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + customerId + " not found"));
+
+        // Customer delete message
+        String customerDetails =
+                "Customer Deleted Successfully : " +
+                        "ID = " + customer.getId() +
+                        ", Name = " + customer.getName() +
+                        ", Email = " + customer.getEmail() +
+                        ", Phone = " + customer.getPhone();
 
         // Delete customer from database
         customerRepo.delete(customer);
 
-        return "Customer with ID " + customerId +
-                " deleted successfully";
+        return customerDetails;
     }
 }

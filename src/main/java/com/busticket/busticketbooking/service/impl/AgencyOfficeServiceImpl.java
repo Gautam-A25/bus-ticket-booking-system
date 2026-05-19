@@ -10,9 +10,8 @@ import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
 import com.busticket.busticketbooking.repo.AgencyRepo;
 import com.busticket.busticketbooking.service.AgencyOfficeService;
-import org.springframework.http.HttpStatus;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +23,7 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     private final AgencyRepo agencyRepo;
     private final AddressRepo addressRepo;
 
+    
     public AgencyOfficeServiceImpl(AgencyOfficeRepo agencyOfficeRepo,
                                    AgencyRepo agencyRepo,
                                    AddressRepo addressRepo) {
@@ -35,10 +35,10 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     @Override
     public AgencyOfficeResponseDTO addAgencyOffice(Integer agencyId, AgencyOfficeRequestDTO agencyOfficeRequestDTO) {
         Agency agency = agencyRepo.findById(agencyId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + agencyId + " not found"));
 
         Address address = addressRepo.findById(agencyOfficeRequestDTO.getAddressId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
 
         AgencyOffice agencyOffice = AgencyOfficeMapper.toEntity(agencyOfficeRequestDTO, agency, address);
         AgencyOffice savedAgencyOffice = agencyOfficeRepo.save(agencyOffice);
@@ -49,14 +49,14 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     @Override
     public AgencyOfficeResponseDTO getAgencyOfficeById(Integer id) {
         AgencyOffice agencyOffice = agencyOfficeRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency office not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency Office with ID " + id + " not found"));
         return AgencyOfficeMapper.toResponseDTO(agencyOffice);
     }
 
     @Override
     public List<AgencyOfficeResponseDTO> getAgencyOfficesByAgencyId(Integer agencyId) {
         if (!agencyRepo.existsById(agencyId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found");
+            throw new ResourceNotFoundException("Agency with ID " + agencyId + " not found");
         }
 
         return agencyOfficeRepo.findByAgency_Id(agencyId)
@@ -68,13 +68,13 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     @Override
     public AgencyOfficeResponseDTO updateAgencyOffice(Integer id, AgencyOfficeRequestDTO agencyOfficeRequestDTO) {
         AgencyOffice existingAgencyOffice = agencyOfficeRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency office not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency Office with ID " + id + " not found"));
 
         Agency agency = agencyRepo.findById(existingAgencyOffice.getAgency().getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + existingAgencyOffice.getAgency().getId() + " not found"));
 
         Address address = addressRepo.findById(agencyOfficeRequestDTO.getAddressId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
 
         existingAgencyOffice.setAgency(agency);
         existingAgencyOffice.setOfficeMail(agencyOfficeRequestDTO.getOfficeMail());
@@ -89,7 +89,7 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     @Override
     public String deleteAgencyOffice(Integer id) {
         if (!agencyOfficeRepo.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency office not found");
+            throw new ResourceNotFoundException("Agency Office with ID " + id + " not found");
         }
         agencyOfficeRepo.deleteById(id);
         return "Agency office deleted successfully";

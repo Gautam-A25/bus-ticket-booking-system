@@ -19,14 +19,13 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
 
-  security:
-    user:
-      name: admin
-      password: admin123
-
 server:
   port: 8080
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+jwt:
+  secret: Ultra-Super-Duper-Mega-Secret-crazy-encrypted-password-do-not-mess-up
+  expiration-ms: 86400000

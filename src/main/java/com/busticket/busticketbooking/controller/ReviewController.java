@@ -3,12 +3,14 @@ package com.busticket.busticketbooking.controller;
 import com.busticket.busticketbooking.dto.ReviewDTO.ReviewRequestDTO;
 import com.busticket.busticketbooking.dto.ReviewDTO.ReviewResponseDTO;
 import com.busticket.busticketbooking.service.ReviewService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -18,7 +20,7 @@ public class ReviewController {
     }
 
     @PostMapping("/trips/{tripId}/reviews")
-    public ResponseEntity<ReviewResponseDTO> submitReview(@PathVariable Integer tripId, @RequestBody ReviewRequestDTO requestDTO) {
+    public ResponseEntity<ReviewResponseDTO> submitReview(@PathVariable Integer tripId, @Valid @RequestBody ReviewRequestDTO requestDTO) {
         return ResponseEntity.ok(reviewService.submitReview(tripId, requestDTO));
     }
 
