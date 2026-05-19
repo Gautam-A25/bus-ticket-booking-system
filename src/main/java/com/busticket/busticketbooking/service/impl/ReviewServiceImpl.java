@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.ReviewRequestDTO;
-import com.busticket.busticketbooking.dto.ReviewResponseDTO;
+import com.busticket.busticketbooking.dto.ReviewDTO.ReviewRequestDTO;
+import com.busticket.busticketbooking.dto.ReviewDTO.ReviewResponseDTO;
 import com.busticket.busticketbooking.entity.Customer;
 import com.busticket.busticketbooking.entity.Review;
 import com.busticket.busticketbooking.entity.Trip;
@@ -9,6 +9,10 @@ import com.busticket.busticketbooking.repo.CustomerRepo;
 import com.busticket.busticketbooking.repo.ReviewRepo;
 import com.busticket.busticketbooking.repo.TripRepo;
 import com.busticket.busticketbooking.service.ReviewService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import com.busticket.busticketbooking.exception.InvalidOperationException;
+import com.busticket.busticketbooking.exception.UnauthorizedActionException;
+import com.busticket.busticketbooking.mapper.ReviewMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,9 +35,17 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewResponseDTO submitReview(Integer tripId, ReviewRequestDTO requestDTO) {
         Trip trip = tripRepo.findById(tripId)
-                .orElseThrow(() -> new RuntimeException("Trip not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Trip with ID " + tripId + " not found"));
         Customer customer = customerRepo.findById(requestDTO.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + requestDTO.getCustomerId() + " not found"));
+
+        if (requestDTO.getRating() < 1 || requestDTO.getRating() > 5) {
+            throw new InvalidOperationException("Rating must be between 1 and 5 stars");
+        }
+
+        if (trip.getDepartureTime() != null && trip.getDepartureTime().isAfter(LocalDateTime.now())) {
+            throw new UnauthorizedActionException("Cannot review a trip that has not departed yet.");
+        }
 
         Review review = new Review();
         review.setTrip(trip);
@@ -43,36 +55,25 @@ public class ReviewServiceImpl implements ReviewService {
         review.setReviewDate(LocalDateTime.now());
 
         Review savedReview = reviewRepo.save(review);
-        return mapToResponseDTO(savedReview);
+        return ReviewMapper.mapToResponseDTO(savedReview);
     }
 
     @Override
     public List<ReviewResponseDTO> getTripReviews(Integer tripId) {
         return reviewRepo.findByTripId(tripId).stream()
-                .map(this::mapToResponseDTO)
+                .map(ReviewMapper::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<ReviewResponseDTO> getCustomerReviews(Integer customerId) {
         return reviewRepo.findByCustomerId(customerId).stream()
-                .map(this::mapToResponseDTO)
+                .map(ReviewMapper::mapToResponseDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public void removeReview(Integer reviewId) {
         reviewRepo.deleteById(reviewId);
-    }
-
-    private ReviewResponseDTO mapToResponseDTO(Review review) {
-        return new ReviewResponseDTO(
-                review.getId(),
-                review.getCustomer().getId(),
-                review.getTrip().getId(),
-                review.getRating(),
-                review.getComment(),
-                review.getReviewDate()
-        );
     }
 }

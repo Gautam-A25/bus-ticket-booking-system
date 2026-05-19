@@ -9,4 +9,5 @@ public interface DriverRepo extends JpaRepository<Driver, Integer> {
 
     List<Driver> findByOffice_id(Integer officeId);
 
+    boolean existsByLicenseNumber(String licenseNumber);
 }

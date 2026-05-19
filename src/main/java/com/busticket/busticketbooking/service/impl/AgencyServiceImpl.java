@@ -6,9 +6,8 @@ import com.busticket.busticketbooking.entity.Agency;
 import com.busticket.busticketbooking.mapper.AgencyMapper;
 import com.busticket.busticketbooking.repo.AgencyRepo;
 import com.busticket.busticketbooking.service.AgencyService;
-import org.springframework.http.HttpStatus;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class AgencyServiceImpl implements AgencyService {
     @Override
     public AgencyResponseDTO getAgencyById(Integer id) {
         Agency agency = agencyRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + id + " not found"));
         return AgencyMapper.toResponseDTO(agency);
     }
 
@@ -47,7 +46,7 @@ public class AgencyServiceImpl implements AgencyService {
     @Override
     public AgencyResponseDTO updateAgency(Integer id, AgencyRequestDTO agencyRequestDTO) {
         Agency existingAgency = agencyRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + id + " not found"));
 
         existingAgency.setName(agencyRequestDTO.getName());
         existingAgency.setContactPersonName(agencyRequestDTO.getContactPersonName());
@@ -61,7 +60,7 @@ public class AgencyServiceImpl implements AgencyService {
     @Override
     public String deleteAgency(Integer id) {
         if (!agencyRepo.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Agency not found");
+            throw new ResourceNotFoundException("Agency with ID " + id + " not found");
         }
         agencyRepo.deleteById(id);
         return "Agency deleted successfully";
