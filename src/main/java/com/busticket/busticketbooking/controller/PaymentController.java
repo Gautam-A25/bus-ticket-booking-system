@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.PaymentRequestDTO;
-import com.busticket.busticketbooking.dto.PaymentResponseDTO;
+import com.busticket.busticketbooking.dto.PaymentDTO.PaymentRequestDTO;
+import com.busticket.busticketbooking.dto.PaymentDTO.PaymentResponseDTO;
 import com.busticket.busticketbooking.service.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

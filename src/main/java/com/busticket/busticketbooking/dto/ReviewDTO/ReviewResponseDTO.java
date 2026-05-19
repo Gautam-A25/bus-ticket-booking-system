@@ -1,4 +1,4 @@
-package com.busticket.busticketbooking.dto;
+package com.busticket.busticketbooking.dto.ReviewDTO;
 
 import java.time.LocalDateTime;
 
