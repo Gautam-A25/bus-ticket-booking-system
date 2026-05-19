@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.dto.RouteDto.RouteRequestDto;
-import com.busticket.busticketbooking.dto.RouteDto.RouteResponseDto;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteRequestDto;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteResponseDto;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.ReviewRequestDTO;
-import com.busticket.busticketbooking.dto.ReviewResponseDTO;
+import com.busticket.busticketbooking.dto.ReviewDTO.ReviewRequestDTO;
+import com.busticket.busticketbooking.dto.ReviewDTO.ReviewResponseDTO;
 import com.busticket.busticketbooking.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

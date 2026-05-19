@@ -1,4 +1,4 @@
-package com.busticket.busticketbooking.dto.TripDto;
+package com.busticket.busticketbooking.dto.TripDTO;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;

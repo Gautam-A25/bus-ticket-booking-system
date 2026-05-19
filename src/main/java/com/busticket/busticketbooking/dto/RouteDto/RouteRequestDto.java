@@ -1,4 +1,4 @@
-package com.busticket.busticketbooking.dto.RouteDto;
+package com.busticket.busticketbooking.dto.RouteDTO;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
