@@ -1,52 +1,61 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.BookingDTO;
+import com.busticket.busticketbooking.dto.bookingDTO.BookingRequestDTO;
+import com.busticket.busticketbooking.dto.bookingDTO.BookingResponseDTO;
 import com.busticket.busticketbooking.service.BookingService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Marks this class as REST Controller
 @RestController
-@RequestMapping("/bookings")
+
+// Base URL for Booking APIs
+@RequestMapping("/api/v1")
 public class BookingController {
 
-    @Autowired
-    private BookingService bookingService;
+    // Service layer dependency
+    private final BookingService bookingService;
 
-    @PostMapping
-    public BookingDTO createBooking(
-            @Valid @RequestBody BookingDTO bookingDTO) {
-
-        return bookingService.createBooking(bookingDTO);
+    // Constructor Injection
+    public BookingController(BookingService bookingService) {
+        this.bookingService = bookingService;
     }
 
-    @GetMapping
-    public List<BookingDTO> getAllBookings() {
+    // API to create booking for a trip
+    @PostMapping("/trips/{tripId}/bookings")
+    public BookingResponseDTO createBooking(
+            @PathVariable Integer tripId,
+            @Valid @RequestBody BookingRequestDTO bookingRequestDTO) {
 
-        return bookingService.getAllBookings();
+        return bookingService.createBooking(
+                tripId,
+                bookingRequestDTO
+        );
     }
 
-    @GetMapping("/{id}")
-    public BookingDTO getBookingById(@PathVariable Integer id) {
+    // API to get all bookings of a customer
+    @GetMapping("/customers/{customerId}/bookings")
+    public List<BookingResponseDTO> getBookingsByCustomer(
+            @PathVariable Integer customerId) {
 
-        return bookingService.getBookingById(id);
+        return bookingService.getBookingsByCustomer(customerId);
     }
 
-    @PutMapping("/{id}")
-    public BookingDTO updateBooking(
-            @PathVariable Integer id,
-            @Valid @RequestBody BookingDTO bookingDTO) {
+    // API to get booking details by booking ID
+    @GetMapping("/bookings/{bookingId}")
+    public BookingResponseDTO getBookingById(
+            @PathVariable Integer bookingId) {
 
-        return bookingService.updateBooking(id, bookingDTO);
+        return bookingService.getBookingById(bookingId);
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteBooking(@PathVariable Integer id) {
+    // API to cancel booking
+    @PatchMapping("/bookings/{bookingId}/cancel")
+    public String cancelBooking(
+            @PathVariable Integer bookingId) {
 
-        bookingService.deleteBooking(id);
-
-        return "Booking deleted successfully";
+        return bookingService.cancelBooking(bookingId);
     }
 }

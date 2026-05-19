@@ -1,97 +1,132 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.CustomerDTO;
+import com.busticket.busticketbooking.dto.customerDTO.CustomerRequestDTO;
+import com.busticket.busticketbooking.dto.customerDTO.CustomerResponseDTO;
 import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.Customer;
+import com.busticket.busticketbooking.mapper.CustomerMapper;
 import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.repo.CustomerRepo;
 import com.busticket.busticketbooking.service.CustomerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Marks this class as Service layer component
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    @Autowired
-    private CustomerRepo customerRepo;
+    // Repository dependency for Customer table
+    private final CustomerRepo customerRepo;
 
-    @Autowired
-    private AddressRepo addressRepo;
+    // Repository dependency for Address table
+    private final AddressRepo addressRepo;
 
-    @Override
-    public CustomerDTO createCustomer(CustomerDTO customerDTO) {
-
-        Address address = addressRepo.findById(customerDTO.getAddressId())
-                .orElseThrow(() -> new RuntimeException("Address not found"));
-
-        Customer customer = new Customer();
-
-        customer.setName(customerDTO.getName());
-        customer.setEmail(customerDTO.getEmail());
-        customer.setPhone(customerDTO.getPhone());
-        customer.setAddress(address);
-
-        Customer savedCustomer = customerRepo.save(customer);
-
-        return mapToDTO(savedCustomer);
+    // Constructor Injection
+    public CustomerServiceImpl(
+            CustomerRepo customerRepo,
+            AddressRepo addressRepo
+    ) {
+        this.customerRepo = customerRepo;
+        this.addressRepo = addressRepo;
     }
 
+    // Method to create customer
     @Override
-    public List<CustomerDTO> getAllCustomers() {
+    public CustomerResponseDTO createCustomer(
+            CustomerRequestDTO customerRequestDTO
+    ) {
+
+        // Fetch address by ID
+        Address address = addressRepo.findById(customerRequestDTO.getAddressId())
+                .orElseThrow(() -> new RuntimeException("Address not found"));
+
+        // Convert DTO to Entity
+        Customer customer = CustomerMapper.mapToEntity(
+                customerRequestDTO,
+                address
+        );
+
+        // Save customer into database
+        Customer savedCustomer = customerRepo.save(customer);
+
+        // Convert Entity to Response DTO
+        return CustomerMapper.mapToResponseDTO(savedCustomer);
+    }
+
+    // Method to get all customers
+    @Override
+    public List<CustomerResponseDTO> getAllCustomers() {
 
         return customerRepo.findAll()
                 .stream()
-                .map(this::mapToDTO)
+
+                // Convert Entity to Response DTO
+                .map(CustomerMapper::mapToResponseDTO)
+
                 .toList();
     }
 
+    // Method to get customer by ID
     @Override
-    public CustomerDTO getCustomerById(Integer id) {
+    public CustomerResponseDTO getCustomerById(
+            Integer customerId
+    ) {
 
-        Customer customer = customerRepo.findById(id)
+        // Fetch customer by ID
+        Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        return mapToDTO(customer);
+        // Convert Entity to Response DTO
+        return CustomerMapper.mapToResponseDTO(customer);
     }
 
+    // Method to update customer details
     @Override
-    public CustomerDTO updateCustomer(Integer id, CustomerDTO customerDTO) {
+    public CustomerResponseDTO updateCustomer(
+            Integer customerId,
+            CustomerRequestDTO customerRequestDTO
+    ) {
 
-        Customer customer = customerRepo.findById(id)
+        // Fetch customer by ID
+        Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-        Address address = addressRepo.findById(customerDTO.getAddressId())
+        // Fetch address by ID
+        Address address = addressRepo.findById(customerRequestDTO.getAddressId())
                 .orElseThrow(() -> new RuntimeException("Address not found"));
 
-        customer.setName(customerDTO.getName());
-        customer.setEmail(customerDTO.getEmail());
-        customer.setPhone(customerDTO.getPhone());
+        // Update customer name
+        customer.setName(customerRequestDTO.getName());
+
+        // Update customer email
+        customer.setEmail(customerRequestDTO.getEmail());
+
+        // Update customer phone number
+        customer.setPhone(customerRequestDTO.getPhone());
+
+        // Update customer address
         customer.setAddress(address);
 
+        // Save updated customer into database
         Customer updatedCustomer = customerRepo.save(customer);
 
-        return mapToDTO(updatedCustomer);
+        // Convert Entity to Response DTO
+        return CustomerMapper.mapToResponseDTO(updatedCustomer);
     }
 
+    // Method to delete customer
     @Override
-    public void deleteCustomer(Integer id) {
+    public String deleteCustomer(Integer customerId) {
 
-        Customer customer = customerRepo.findById(id)
+        // Fetch customer by ID
+        Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
+        // Delete customer from database
         customerRepo.delete(customer);
-    }
 
-    private CustomerDTO mapToDTO(Customer customer) {
-
-        return new CustomerDTO(
-                customer.getId(),
-                customer.getName(),
-                customer.getEmail(),
-                customer.getPhone(),
-                customer.getAddress().getId()
-        );
+        return "Customer with ID " + customerId +
+                " deleted successfully";
     }
 }
