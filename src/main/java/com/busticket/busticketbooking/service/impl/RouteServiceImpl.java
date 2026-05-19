@@ -1,14 +1,16 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.RouteDto;
+import com.busticket.busticketbooking.dto.RouteDto.RouteRequestDto;
+import com.busticket.busticketbooking.dto.RouteDto.RouteResponseDto;
 import com.busticket.busticketbooking.entity.Route;
 import com.busticket.busticketbooking.repo.RouteRepo;
 import com.busticket.busticketbooking.service.RouteService;
-import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RouteServiceImpl implements RouteService {
@@ -17,33 +19,71 @@ public class RouteServiceImpl implements RouteService {
     private RouteRepo routeRepo;
 
     @Override
-    public List<RouteDto> getAllRoutes() {
+    public List<RouteResponseDto> getAllRoutes() {
 
-        return routeRepo.findAll()
-                .stream()
-                .map(this::mapToDto)
-                .toList();
+        List<Route> routes = routeRepo.findAll();
+
+        return routes.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public RouteDto getRouteById(Integer id) {
+    public RouteResponseDto getRouteById(Integer id) {
 
-        Route route = routeRepo.findById(id).orElse(null);
+        Route route = routeRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Route not found with id: " + id));
 
-        return mapToDto(route);
+        return mapToResponseDto(route);
     }
 
     @Override
-    public RouteDto addRoute(RouteDto dto) {
+    public RouteResponseDto addRoute(RouteRequestDto routeRequestDto) {
 
-        Route savedRoute = routeRepo.save(mapToEntity(dto));
+        Route route = new Route();
 
-        return mapToDto(savedRoute);
+        route.setFromCity(routeRequestDto.getFromCity());
+        route.setToCity(routeRequestDto.getToCity());
+        route.setBreakPoints(routeRequestDto.getBreakPoints());
+        route.setDuration(routeRequestDto.getDuration());
+
+        Route savedRoute = routeRepo.save(route);
+
+        return mapToResponseDto(savedRoute);
     }
 
-    private RouteDto mapToDto(Route route) {
+    @Override
+    public RouteResponseDto updateRoute(Integer id,
+                                        RouteRequestDto routeRequestDto) {
 
-        RouteDto dto = new RouteDto();
+        Route route = routeRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Route not found with id: " + id));
+
+        route.setFromCity(routeRequestDto.getFromCity());
+        route.setToCity(routeRequestDto.getToCity());
+        route.setBreakPoints(routeRequestDto.getBreakPoints());
+        route.setDuration(routeRequestDto.getDuration());
+
+        Route updatedRoute = routeRepo.save(route);
+
+        return mapToResponseDto(updatedRoute);
+    }
+
+    @Override
+    public void deleteRoute(Integer id) {
+
+        Route route = routeRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Route not found with id: " + id));
+
+        routeRepo.delete(route);
+    }
+
+    private RouteResponseDto mapToResponseDto(Route route) {
+
+        RouteResponseDto dto = new RouteResponseDto();
 
         dto.setId(route.getId());
         dto.setFromCity(route.getFromCity());
@@ -52,18 +92,5 @@ public class RouteServiceImpl implements RouteService {
         dto.setDuration(route.getDuration());
 
         return dto;
-    }
-
-    private Route mapToEntity(RouteDto dto) {
-
-        Route route = new Route();
-
-        route.setId(dto.getId());
-        route.setFromCity(dto.getFromCity());
-        route.setToCity(dto.getToCity());
-        route.setBreakPoints(dto.getBreakPoints());
-        route.setDuration(dto.getDuration());
-
-        return route;
     }
 }

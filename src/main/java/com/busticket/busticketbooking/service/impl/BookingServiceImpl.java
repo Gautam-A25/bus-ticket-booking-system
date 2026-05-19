@@ -1,95 +1,116 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.BookingDTO;
+import com.busticket.busticketbooking.dto.bookingDTO.BookingRequestDTO;
+import com.busticket.busticketbooking.dto.bookingDTO.BookingResponseDTO;
 import com.busticket.busticketbooking.entity.Booking;
+import com.busticket.busticketbooking.entity.Payment;
 import com.busticket.busticketbooking.entity.Trip;
+import com.busticket.busticketbooking.mapper.BookingMapper;
 import com.busticket.busticketbooking.repo.BookingRepo;
+import com.busticket.busticketbooking.repo.PaymentRepo;
 import com.busticket.busticketbooking.repo.TripRepo;
 import com.busticket.busticketbooking.service.BookingService;
-import com.busticket.busticketbooking.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Marks this class as Service layer component
 @Service
 public class BookingServiceImpl implements BookingService {
 
-    @Autowired
-    private BookingRepo bookingRepo;
+    // Repository dependency for Booking table
+    private final BookingRepo bookingRepo;
 
-    @Autowired
-    private TripRepo tripRepo;
+    // Repository dependency for Trip table
+    private final TripRepo tripRepo;
 
-    @Override
-    public BookingDTO createBooking(BookingDTO bookingDTO) {
+    // Repository dependency for Payment table
+    private final PaymentRepo paymentRepo;
 
-        Trip trip = tripRepo.findById(bookingDTO.getTripId())
-                .orElseThrow(() -> new RuntimeException("Trip not found"));
-
-        Booking booking = new Booking();
-
-        booking.setTrip(trip);
-        booking.setSeatNumber(bookingDTO.getSeatNumber());
-        booking.setStatus(bookingDTO.getStatus());
-
-        Booking savedBooking = bookingRepo.save(booking);
-
-        return mapToDTO(savedBooking);
+    // Constructor Injection
+    public BookingServiceImpl(
+            BookingRepo bookingRepo,
+            TripRepo tripRepo,
+            PaymentRepo paymentRepo
+    ) {
+        this.bookingRepo = bookingRepo;
+        this.tripRepo = tripRepo;
+        this.paymentRepo = paymentRepo;
     }
 
+    // Method to create booking
     @Override
-    public List<BookingDTO> getAllBookings() {
+    public BookingResponseDTO createBooking(
+            Integer tripId,
+            BookingRequestDTO bookingRequestDTO
+    ) {
 
-        return bookingRepo.findAll()
+        // Fetch trip by ID
+        Trip trip = tripRepo.findById(tripId)
+                .orElseThrow(() ->
+                        new RuntimeException("Trip not found"));
+
+        // Convert DTO to Entity
+        Booking booking = BookingMapper.mapToEntity(
+                bookingRequestDTO,
+                trip
+        );
+
+        // Save booking into database
+        Booking savedBooking = bookingRepo.save(booking);
+
+        // Convert Entity to Response DTO
+        return BookingMapper.mapToResponseDTO(savedBooking);
+    }
+
+    // Method to get all bookings of a customer
+    @Override
+    public List<BookingResponseDTO> getBookingsByCustomer(
+            Integer customerId
+    ) {
+
+        return paymentRepo.findByCustomerId(customerId)
                 .stream()
-                .map(this::mapToDTO)
+
+                // Get booking from payment
+                .map(Payment::getBooking)
+
+                // Convert Entity to Response DTO
+                .map(BookingMapper::mapToResponseDTO)
+
                 .toList();
     }
 
+    // Method to get booking by booking ID
     @Override
-    public BookingDTO getBookingById(Integer id) {
+    public BookingResponseDTO getBookingById(
+            Integer bookingId
+    ) {
 
-        Booking booking = bookingRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        // Fetch booking by ID
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() ->
+                        new RuntimeException("Booking not found"));
 
-        return mapToDTO(booking);
+        // Convert Entity to Response DTO
+        return BookingMapper.mapToResponseDTO(booking);
     }
 
+    // Method to cancel booking
     @Override
-    public BookingDTO updateBooking(Integer id, BookingDTO bookingDTO) {
+    public String cancelBooking(
+            Integer bookingId
+    ) {
 
-        Booking booking = bookingRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        // Fetch booking by ID
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() ->
+                        new RuntimeException("Booking not found"));
 
-        Trip trip = tripRepo.findById(bookingDTO.getTripId())
-                .orElseThrow(() -> new RuntimeException("Trip not found"));
-
-        booking.setTrip(trip);
-        booking.setSeatNumber(bookingDTO.getSeatNumber());
-        booking.setStatus(bookingDTO.getStatus());
-
-        Booking updatedBooking = bookingRepo.save(booking);
-
-        return mapToDTO(updatedBooking);
-    }
-
-    @Override
-    public void deleteBooking(Integer id) {
-
-        Booking booking = bookingRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
-
+        // Delete booking from database
         bookingRepo.delete(booking);
-    }
 
-    private BookingDTO mapToDTO(Booking booking) {
-
-        return new BookingDTO(
-                booking.getId(),
-                booking.getTrip().getId(),
-                booking.getSeatNumber(),
-                booking.getStatus()
-        );
+        return "Booking with ID " + bookingId +
+                " cancelled successfully";
     }
 }

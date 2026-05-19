@@ -1,52 +1,69 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.CustomerDTO;
+import com.busticket.busticketbooking.dto.customerDTO.CustomerRequestDTO;
+import com.busticket.busticketbooking.dto.customerDTO.CustomerResponseDTO;
 import com.busticket.busticketbooking.service.CustomerService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Marks this class as REST Controller
 @RestController
-@RequestMapping("/customers")
+
+// Base URL for Customer APIs
+@RequestMapping("/api/v1")
 public class CustomerController {
 
-    @Autowired
-    private CustomerService customerService;
+    // Service layer dependency
+    private final CustomerService customerService;
 
-    @PostMapping
-    public CustomerDTO createCustomer(
-            @Valid @RequestBody CustomerDTO customerDTO) {
-
-        return customerService.createCustomer(customerDTO);
+    // Constructor Injection
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
-    @GetMapping
-    public List<CustomerDTO> getAllCustomers() {
+    // API to create customer
+    @PostMapping("/customers")
+    public CustomerResponseDTO createCustomer(
+            @Valid @RequestBody CustomerRequestDTO customerRequestDTO) {
+
+        return customerService.createCustomer(customerRequestDTO);
+    }
+
+    // API to get all customers
+    @GetMapping("/customers")
+    public List<CustomerResponseDTO> getAllCustomers() {
 
         return customerService.getAllCustomers();
     }
 
-    @GetMapping("/{id}")
-    public CustomerDTO getCustomerById(@PathVariable Integer id) {
+    // API to get customer by ID
+    @GetMapping("/customers/{customerId}")
+    public CustomerResponseDTO getCustomerById(
+            @PathVariable Integer customerId) {
 
-        return customerService.getCustomerById(id);
+        return customerService.getCustomerById(customerId);
     }
 
-    @PutMapping("/{id}")
-    public CustomerDTO updateCustomer(
-            @PathVariable Integer id,
-            @Valid @RequestBody CustomerDTO customerDTO) {
+    // API to update customer details
+    @PutMapping("/customers/{customerId}")
+    public CustomerResponseDTO updateCustomer(
+            @PathVariable Integer customerId,
+            @Valid @RequestBody CustomerRequestDTO customerRequestDTO) {
 
-        return customerService.updateCustomer(id, customerDTO);
+        return customerService.updateCustomer(
+                customerId,
+                customerRequestDTO
+        );
     }
 
-    @DeleteMapping("/{id}")
-    public String deleteCustomer(@PathVariable Integer id) {
+    // API to delete customer
+    @DeleteMapping("/customers/{customerId}")
+    public String deleteCustomer(
+            @PathVariable Integer customerId
+    ) {
 
-        customerService.deleteCustomer(id);
-
-        return "Customer deleted successfully";
+        return customerService.deleteCustomer(customerId);
     }
 }

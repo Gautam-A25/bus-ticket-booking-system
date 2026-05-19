@@ -1,32 +1,53 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.RouteDto;
+import com.busticket.busticketbooking.dto.RouteDto.RouteRequestDto;
+import com.busticket.busticketbooking.dto.RouteDto.RouteResponseDto;
 import com.busticket.busticketbooking.service.RouteService;
-import org.springframework.http.ResponseEntity;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/routes")
+@RequestMapping("/api/v1/routes")
 public class RouteController {
 
     @Autowired
     private RouteService routeService;
 
     @GetMapping
-    public List<RouteDto> getAllRoutes() {
+    public List<RouteResponseDto> getAllRoutes() {
         return routeService.getAllRoutes();
     }
 
     @GetMapping("/{id}")
-    public RouteDto getRouteById(@PathVariable Integer id) {
+    public RouteResponseDto getRouteById(@PathVariable Integer id) {
         return routeService.getRouteById(id);
     }
 
     @PostMapping
-    public RouteDto addRoute(@RequestBody RouteDto dto) {
-        return routeService.addRoute(dto);
+    public RouteResponseDto addRoute(
+            @Valid @RequestBody RouteRequestDto routeRequestDto) {
+
+        return routeService.addRoute(routeRequestDto);
+    }
+
+    @PutMapping("/{id}")
+    public RouteResponseDto updateRoute(
+            @PathVariable Integer id,
+            @Valid @RequestBody RouteRequestDto routeRequestDto) {
+
+        return routeService.updateRoute(id, routeRequestDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteRoute(@PathVariable Integer id) {
+
+        routeService.deleteRoute(id);
+
+        return "Route deleted successfully";
     }
 }
