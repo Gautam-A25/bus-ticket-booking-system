@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.RouteDto.RouteRequestDto;
-import com.busticket.busticketbooking.dto.RouteDto.RouteResponseDto;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteRequestDto;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteResponseDto;
 import com.busticket.busticketbooking.service.RouteService;
 
 import jakarta.validation.Valid;

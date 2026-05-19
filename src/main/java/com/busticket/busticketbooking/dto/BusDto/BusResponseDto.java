@@ -1,4 +1,4 @@
-package com.busticket.busticketbooking.dto.BusDto;
+package com.busticket.busticketbooking.dto.BusDTO;
 
 public class BusResponseDto {
 
