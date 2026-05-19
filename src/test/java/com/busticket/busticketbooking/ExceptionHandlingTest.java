@@ -20,7 +20,7 @@ public class ExceptionHandlingTest {
 
     @Test
     public void shouldReturn404WhenPaymentNotFound() throws Exception {
-        mockMvc.perform(get("/payments/99999")
+        mockMvc.perform(get("/api/v1/payments/99999")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Payment with ID 99999 not found"))
