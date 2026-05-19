@@ -10,6 +10,9 @@ import com.busticket.busticketbooking.repo.BookingRepo;
 import com.busticket.busticketbooking.repo.PaymentRepo;
 import com.busticket.busticketbooking.repo.TripRepo;
 import com.busticket.busticketbooking.service.BookingService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import com.busticket.busticketbooking.exception.DuplicateResourceException;
+import com.busticket.busticketbooking.exception.InvalidOperationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,7 +51,15 @@ public class BookingServiceImpl implements BookingService {
         // Fetch trip by ID
         Trip trip = tripRepo.findById(tripId)
                 .orElseThrow(() ->
-                        new RuntimeException("Trip not found"));
+                        new ResourceNotFoundException("Trip with ID " + tripId + " not found"));
+
+        if (bookingRepo.existsByTripIdAndSeatNumber(tripId, bookingRequestDTO.getSeatNumber())) {
+            throw new DuplicateResourceException("Seat " + bookingRequestDTO.getSeatNumber() + " is already booked for Trip ID " + tripId);
+        }
+
+        if (trip.getAvailableSeats() != null && trip.getAvailableSeats() <= 0) {
+            throw new InvalidOperationException("No available seats left on Trip with ID " + tripId);
+        }
 
         // Convert DTO to Entity
         Booking booking = BookingMapper.mapToEntity(
@@ -90,7 +101,7 @@ public class BookingServiceImpl implements BookingService {
         // Fetch booking by ID
         Booking booking = bookingRepo.findById(bookingId)
                 .orElseThrow(() ->
-                        new RuntimeException("Booking not found"));
+                        new ResourceNotFoundException("Booking with ID " + bookingId + " not found"));
 
         // Convert Entity to Response DTO
         return BookingMapper.mapToResponseDTO(booking);
@@ -105,7 +116,7 @@ public class BookingServiceImpl implements BookingService {
         // Fetch booking by ID
         Booking booking = bookingRepo.findById(bookingId)
                 .orElseThrow(() ->
-                        new RuntimeException("Booking not found"));
+                        new ResourceNotFoundException("Booking with ID " + bookingId + " not found"));
 
         // Delete booking from database
         bookingRepo.delete(booking);

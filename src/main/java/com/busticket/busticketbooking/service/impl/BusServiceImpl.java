@@ -7,6 +7,8 @@ import com.busticket.busticketbooking.entity.Bus;
 import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
 import com.busticket.busticketbooking.repo.BusRepo;
 import com.busticket.busticketbooking.service.BusService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import com.busticket.busticketbooking.mapper.BusMapper;
 
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,7 @@ public class BusServiceImpl implements BusService {
 
         AgencyOffice office = officeRepo.findById(dto.getOfficeId())
                 .orElseThrow(() ->
-                        new RuntimeException("Office not found"));
+                        new ResourceNotFoundException("Office not found"));
 
         Bus bus = new Bus();
 
@@ -42,7 +44,7 @@ public class BusServiceImpl implements BusService {
 
         Bus savedBus = busRepo.save(bus);
 
-        return mapToResponseDto(savedBus);
+        return BusMapper.mapToResponseDto(savedBus);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class BusServiceImpl implements BusService {
 
         return busRepo.findAll()
                 .stream()
-                .map(this::mapToResponseDto)
+                .map(BusMapper::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -59,9 +61,9 @@ public class BusServiceImpl implements BusService {
 
         Bus bus = busRepo.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Bus not found"));
+                        new ResourceNotFoundException("Bus with ID " + id + " not found"));
 
-        return mapToResponseDto(bus);
+        return BusMapper.mapToResponseDto(bus);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class BusServiceImpl implements BusService {
                 .collect(Collectors.toList());
 
         return buses.stream()
-                .map(this::mapToResponseDto)
+                .map(BusMapper::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -85,11 +87,11 @@ public class BusServiceImpl implements BusService {
 
         Bus bus = busRepo.findById(busId)
                 .orElseThrow(() ->
-                        new RuntimeException("Bus not found"));
+                        new ResourceNotFoundException("Bus with ID " + busId + " not found"));
 
         AgencyOffice office = officeRepo.findById(dto.getOfficeId())
                 .orElseThrow(() ->
-                        new RuntimeException("Office not found"));
+                        new ResourceNotFoundException("Office not found"));
 
         bus.setOffice(office);
         bus.setRegistrationNumber(dto.getRegistrationNumber());
@@ -98,7 +100,7 @@ public class BusServiceImpl implements BusService {
 
         Bus updatedBus = busRepo.save(bus);
 
-        return mapToResponseDto(updatedBus);
+        return BusMapper.mapToResponseDto(updatedBus);
     }
 
     @Override
@@ -106,25 +108,8 @@ public class BusServiceImpl implements BusService {
 
         Bus bus = busRepo.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Bus not found"));
+                        new ResourceNotFoundException("Bus with ID " + id + " not found"));
 
         busRepo.delete(bus);
-    }
-
-    private BusResponseDto mapToResponseDto(Bus bus) {
-
-        BusResponseDto dto = new BusResponseDto();
-
-        dto.setId(bus.getId());
-
-        if (bus.getOffice() != null) {
-            dto.setOfficeId(bus.getOffice().getId());
-        }
-
-        dto.setRegistrationNumber(bus.getRegistrationNumber());
-        dto.setCapacity(bus.getCapacity());
-        dto.setType(bus.getType());
-
-        return dto;
     }
 }

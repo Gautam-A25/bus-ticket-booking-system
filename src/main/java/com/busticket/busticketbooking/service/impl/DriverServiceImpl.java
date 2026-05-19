@@ -9,6 +9,9 @@ import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
 import com.busticket.busticketbooking.repo.DriverRepo;
 import com.busticket.busticketbooking.service.DriverService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import com.busticket.busticketbooking.exception.DuplicateResourceException;
+import com.busticket.busticketbooking.mapper.DriverMapper;
 
 import org.springframework.stereotype.Service;
 
@@ -35,14 +38,18 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverResponseDto createDriver(DriverRequestDto dto) {
 
+        if (driverRepo.existsByLicenseNumber(dto.getLicenseNumber())) {
+            throw new DuplicateResourceException("Driver with license number " + dto.getLicenseNumber() + " already exists");
+        }
+
         AgencyOffice office = officeRepo.findById(dto.getOfficeId())
-                .orElseThrow(() -> new RuntimeException("Office not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Office not found"));
 
         Address address = null;
 
         if (dto.getAddressId() != null) {
             address = addressRepo.findById(dto.getAddressId())
-                    .orElseThrow(() -> new RuntimeException("Address not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
         }
 
         Driver driver = new Driver();
@@ -55,7 +62,7 @@ public class DriverServiceImpl implements DriverService {
 
         Driver savedDriver = driverRepo.save(driver);
 
-        return mapToResponseDto(savedDriver);
+        return DriverMapper.mapToResponseDto(savedDriver);
     }
 
     @Override
@@ -63,7 +70,7 @@ public class DriverServiceImpl implements DriverService {
 
         return driverRepo.findAll()
                 .stream()
-                .map(this::mapToResponseDto)
+                .map(DriverMapper::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -71,9 +78,9 @@ public class DriverServiceImpl implements DriverService {
     public DriverResponseDto getDriverById(Integer id) {
 
         Driver driver = driverRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Driver not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Driver with ID " + id + " not found"));
 
-        return mapToResponseDto(driver);
+        return DriverMapper.mapToResponseDto(driver);
     }
 
     @Override
@@ -88,7 +95,7 @@ public class DriverServiceImpl implements DriverService {
                 .collect(Collectors.toList());
 
         return drivers.stream()
-                .map(this::mapToResponseDto)
+                .map(DriverMapper::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
@@ -96,16 +103,16 @@ public class DriverServiceImpl implements DriverService {
     public DriverResponseDto updateDriver(Integer driverId, DriverRequestDto dto) {
 
         Driver driver = driverRepo.findById(driverId)
-                .orElseThrow(() -> new RuntimeException("Driver not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Driver with ID " + driverId + " not found"));
 
         AgencyOffice office = officeRepo.findById(dto.getOfficeId())
-                .orElseThrow(() -> new RuntimeException("Office not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Office not found"));
 
         Address address = null;
 
         if (dto.getAddressId() != null) {
             address = addressRepo.findById(dto.getAddressId())
-                    .orElseThrow(() -> new RuntimeException("Address not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
         }
 
         driver.setLicenseNumber(dto.getLicenseNumber());
@@ -116,36 +123,15 @@ public class DriverServiceImpl implements DriverService {
 
         Driver updatedDriver = driverRepo.save(driver);
 
-        return mapToResponseDto(updatedDriver);
+        return DriverMapper.mapToResponseDto(updatedDriver);
     }
 
     @Override
     public void deleteDriver(Integer id) {
 
         Driver driver = driverRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Driver not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Driver with ID " + id + " not found"));
 
         driverRepo.delete(driver);
-    }
-
-    private DriverResponseDto mapToResponseDto(Driver driver) {
-
-        DriverResponseDto dto = new DriverResponseDto();
-
-        dto.setId(driver.getId());
-
-        if (driver.getOffice() != null) {
-            dto.setOfficeId(driver.getOffice().getId());
-        }
-
-        if (driver.getAddress() != null) {
-            dto.setAddressId(driver.getAddress().getId());
-        }
-
-        dto.setLicenseNumber(driver.getLicenseNumber());
-        dto.setName(driver.getName());
-        dto.setPhone(driver.getPhone());
-
-        return dto;
     }
 }
