@@ -59,7 +59,8 @@ public class Trip {
 
     @NotNull(message = "Fare is required")
     @Positive(message = "Fare must be greater than 0")
-    @Digits(integer = 8, fraction = 2, message = "Fare must have up to 8 integer digits and 2 decimal places")
+    @Digits(integer = 8, fraction = 2,
+            message = "Fare must have up to 8 integer digits and 2 decimal places")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal fare;
 
@@ -70,9 +71,19 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(Integer id, Route route, Bus bus, Address boardingAddress, Address droppingAddress,
-                LocalDateTime departureTime, LocalDateTime arrivalTime, Driver driver1, Driver driver2,
-                Integer availableSeats, BigDecimal fare, LocalDateTime tripDate) {
+    public Trip(Integer id,
+                Route route,
+                Bus bus,
+                Address boardingAddress,
+                Address droppingAddress,
+                LocalDateTime departureTime,
+                LocalDateTime arrivalTime,
+                Driver driver1,
+                Driver driver2,
+                Integer availableSeats,
+                BigDecimal fare,
+                LocalDateTime tripDate) {
+
         this.id = id;
         this.route = route;
         this.bus = bus;
@@ -185,14 +196,23 @@ public class Trip {
 
     @AssertTrue(message = "Arrival time must be after departure time")
     public boolean isArrivalAfterDeparture() {
-        return departureTime == null || arrivalTime == null || arrivalTime.isAfter(departureTime);
+        return departureTime == null
+                || arrivalTime == null
+                || arrivalTime.isAfter(departureTime);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Trip)) {
+            return false;
+        }
+
         Trip trip = (Trip) o;
+
         return id != null && id.equals(trip.id);
     }
 
@@ -205,14 +225,14 @@ public class Trip {
     public String toString() {
         return "Trip{" +
                 "id=" + id +
-                ", routeId=" + (route != null ? route.getId() : null) +
-                ", busId=" + (bus != null ? bus.getId() : null) +
-                ", boardingAddressId=" + (boardingAddress != null ? boardingAddress.getId() : null) +
-                ", droppingAddressId=" + (droppingAddress != null ? droppingAddress.getId() : null) +
+                ", route=" + route +
+                ", bus=" + bus +
+                ", boardingAddress=" + boardingAddress +
+                ", droppingAddress=" + droppingAddress +
                 ", departureTime=" + departureTime +
                 ", arrivalTime=" + arrivalTime +
-                ", driver1Id=" + (driver1 != null ? driver1.getId() : null) +
-                ", driver2Id=" + (driver2 != null ? driver2.getId() : null) +
+                ", driver1=" + driver1 +
+                ", driver2=" + driver2 +
                 ", availableSeats=" + availableSeats +
                 ", fare=" + fare +
                 ", tripDate=" + tripDate +
