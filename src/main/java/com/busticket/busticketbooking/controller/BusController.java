@@ -44,7 +44,7 @@ public class BusController {
     public List<BusResponseDto> getBusesByOffice(
             @PathVariable Integer officeId) {
 
-        return ResponseEntity.ok(busService.getBusesByOffice(officeId));
+        return busService.getBusesByOffice(officeId);
     }
 
     @PutMapping("/{id}")

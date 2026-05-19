@@ -1,15 +1,17 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.PaymentRequestDTO;
-import com.busticket.busticketbooking.dto.PaymentResponseDTO;
+import com.busticket.busticketbooking.dto.PaymentDTO.PaymentRequestDTO;
+import com.busticket.busticketbooking.dto.PaymentDTO.PaymentResponseDTO;
 import com.busticket.busticketbooking.service.PaymentService;
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -19,7 +21,7 @@ public class PaymentController {
     }
 
     @PostMapping("/payments")
-    public ResponseEntity<PaymentResponseDTO> makePayment(@RequestBody PaymentRequestDTO requestDTO) {
+    public ResponseEntity<PaymentResponseDTO> makePayment(@Valid @RequestBody PaymentRequestDTO requestDTO) {
         return ResponseEntity.ok(paymentService.makePayment(requestDTO));
     }
 

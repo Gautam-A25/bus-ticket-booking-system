@@ -6,9 +6,8 @@ import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.mapper.AddressMapper;
 import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.service.AddressService;
-import org.springframework.http.HttpStatus;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressResponseDTO getAddressById(Integer id) {
         Address address = addressRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + id + " not found"));
         return AddressMapper.toResponseDTO(address);
     }
 
@@ -47,7 +46,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressResponseDTO updateAddress(Integer id, AddressRequestDTO addressRequestDTO) {
         Address existingAddress = addressRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + id + " not found"));
 
         existingAddress.setAddress(addressRequestDTO.getAddress());
         existingAddress.setCity(addressRequestDTO.getCity());
@@ -61,7 +60,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public String deleteAddress(Integer id) {
         if (!addressRepo.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found");
+            throw new ResourceNotFoundException("Address with ID " + id + " not found");
         }
         addressRepo.deleteById(id);
         return "Address deleted successfully";
