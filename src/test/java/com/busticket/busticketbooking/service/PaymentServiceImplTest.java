@@ -77,6 +77,9 @@ public class PaymentServiceImplTest {
         failedRequest = new PaymentRequestDTO(1, 2, new BigDecimal("650.00"), "FAILED");
     }
 
+    /**
+     * testMakePayment_Success_CaseInsensitive - Verify that a payment is made successfully and status string casing is handled robustly.
+     */
     @Test
     public void testMakePayment_Success_CaseInsensitive() {
         when(bookingRepo.findById(1)).thenReturn(Optional.of(booking));
@@ -91,6 +94,9 @@ public class PaymentServiceImplTest {
         verify(paymentRepo, times(1)).save(any(Payment.class));
     }
 
+    /**
+     * testMakePayment_FailedStatus_ThrowsPaymentFailedException - Verify that supplying FAILED status triggers PaymentFailedException (HTTP 402).
+     */
     @Test
     public void testMakePayment_FailedStatus_ThrowsPaymentFailedException() {
         when(bookingRepo.findById(1)).thenReturn(Optional.of(booking));
@@ -102,6 +108,9 @@ public class PaymentServiceImplTest {
         verify(paymentRepo, never()).save(any(Payment.class));
     }
 
+    /**
+     * testMakePayment_BookingNotFound_ThrowsResourceNotFoundException - Verify that payment attempts for non-existent bookings trigger ResourceNotFoundException.
+     */
     @Test
     public void testMakePayment_BookingNotFound_ThrowsResourceNotFoundException() {
         when(bookingRepo.findById(99)).thenReturn(Optional.empty());
@@ -114,6 +123,9 @@ public class PaymentServiceImplTest {
         verify(paymentRepo, never()).save(any(Payment.class));
     }
 
+    /**
+     * testGetPaymentDetails_Success - Verify that payment record details are retrieved successfully by ID.
+     */
     @Test
     public void testGetPaymentDetails_Success() {
         when(paymentRepo.findById(10)).thenReturn(Optional.of(payment));

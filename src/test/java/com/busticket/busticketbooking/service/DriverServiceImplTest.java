@@ -83,6 +83,9 @@ public class DriverServiceImplTest {
         driver.setAddress(address);
     }
 
+    /**
+     * testCreateDriver_Success - Verify that a driver is created successfully when valid details are supplied.
+     */
     @Test
     public void testCreateDriver_Success() {
         when(driverRepo.existsByLicenseNumber("DL-12345")).thenReturn(false);
@@ -99,6 +102,9 @@ public class DriverServiceImplTest {
         verify(driverRepo, times(1)).save(any(Driver.class));
     }
 
+    /**
+     * testCreateDriver_DuplicateLicense_ThrowsException - Verify that creating a driver with an existing license number throws DuplicateResourceException.
+     */
     @Test
     public void testCreateDriver_DuplicateLicense_ThrowsException() {
         when(driverRepo.existsByLicenseNumber("DL-12345")).thenReturn(true);
@@ -109,6 +115,9 @@ public class DriverServiceImplTest {
         verify(driverRepo, never()).save(any(Driver.class));
     }
 
+    /**
+     * testGetDriverById_Success - Verify that a driver is successfully retrieved by their unique ID.
+     */
     @Test
     public void testGetDriverById_Success() {
         when(driverRepo.findById(101)).thenReturn(Optional.of(driver));
@@ -120,6 +129,9 @@ public class DriverServiceImplTest {
         assertEquals("Harpreet Singh", response.getName());
     }
 
+    /**
+     * testGetDriverById_NotFound_ThrowsException - Verify that retrieving a non-existent driver ID throws ResourceNotFoundException.
+     */
     @Test
     public void testGetDriverById_NotFound_ThrowsException() {
         when(driverRepo.findById(999)).thenReturn(Optional.empty());
@@ -129,6 +141,9 @@ public class DriverServiceImplTest {
         });
     }
 
+    /**
+     * testGetAllDrivers - Verify that all driver records are retrieved successfully.
+     */
     @Test
     public void testGetAllDrivers() {
         when(driverRepo.findAll()).thenReturn(Arrays.asList(driver));
@@ -140,6 +155,9 @@ public class DriverServiceImplTest {
         assertEquals("Harpreet Singh", drivers.get(0).getName());
     }
 
+    /**
+     * testDeleteDriver_Success - Verify that a driver record is successfully deleted.
+     */
     @Test
     public void testDeleteDriver_Success() {
         when(driverRepo.findById(101)).thenReturn(Optional.of(driver));
