@@ -31,7 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ReviewServiceImplTest {
+public class ReviewServiceTest {
 
     @Mock
     private ReviewRepo reviewRepo;
@@ -74,7 +74,7 @@ public class ReviewServiceImplTest {
     }
 
     /**
-     * testSubmitReview_Success - Verify that a review is successfully submitted for a completed trip.
+     * 1. testSubmitReview_Success - Verify that a review is successfully submitted for a completed trip.
      */
     @Test
     public void testSubmitReview_Success() {
@@ -90,7 +90,7 @@ public class ReviewServiceImplTest {
     }
 
     /**
-     * testSubmitReview_TripNotFound_ThrowsException - Verify missing Trip ID throws ResourceNotFoundException.
+     * 2. testSubmitReview_TripNotFound_ThrowsException - Verify missing Trip ID throws ResourceNotFoundException.
      */
     @Test
     public void testSubmitReview_TripNotFound_ThrowsException() {
@@ -99,7 +99,7 @@ public class ReviewServiceImplTest {
     }
 
     /**
-     * testSubmitReview_CustomerNotFound_ThrowsException - Verify missing Customer ID throws ResourceNotFoundException.
+     * 3. testSubmitReview_CustomerNotFound_ThrowsException - Verify missing Customer ID throws ResourceNotFoundException.
      */
     @Test
     public void testSubmitReview_CustomerNotFound_ThrowsException() {
@@ -109,7 +109,7 @@ public class ReviewServiceImplTest {
     }
 
     /**
-     * testSubmitReview_InvalidRating_ThrowsException - Verify rating outside bounds (1-5) triggers InvalidOperationException.
+     * 4. testSubmitReview_InvalidRating_ThrowsException - Verify rating outside bounds (1-5) triggers InvalidOperationException.
      */
     @Test
     public void testSubmitReview_InvalidRating_ThrowsException() {
@@ -121,7 +121,7 @@ public class ReviewServiceImplTest {
     }
 
     /**
-     * testSubmitReview_TripNotDepartedYet_ThrowsException - Verify reviewing pre-departure trips triggers UnauthorizedActionException.
+     * 5. testSubmitReview_TripNotDepartedYet_ThrowsException - Verify reviewing pre-departure trips triggers UnauthorizedActionException.
      */
     @Test
     public void testSubmitReview_TripNotDepartedYet_ThrowsException() {
@@ -133,7 +133,7 @@ public class ReviewServiceImplTest {
     }
 
     /**
-     * testGetTripReviews_Success - Verify listing reviews by trip ID.
+     * 6. testGetTripReviews_Success - Verify listing reviews by trip ID.
      */
     @Test
     public void testGetTripReviews_Success() {
@@ -143,7 +143,7 @@ public class ReviewServiceImplTest {
     }
 
     /**
-     * testGetCustomerReviews_Success - Verify listing reviews by customer ID.
+     * 7. testGetCustomerReviews_Success - Verify listing reviews by customer ID.
      */
     @Test
     public void testGetCustomerReviews_Success() {
@@ -153,7 +153,7 @@ public class ReviewServiceImplTest {
     }
 
     /**
-     * testRemoveReview_Success - Verify that removing a review triggers correct deletion.
+     * 8. testRemoveReview_Success - Verify that removing a review triggers correct deletion.
      */
     @Test
     public void testRemoveReview_Success() {

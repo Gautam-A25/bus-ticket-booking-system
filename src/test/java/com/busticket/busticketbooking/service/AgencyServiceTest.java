@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AgencyServiceImplTest {
+public class AgencyServiceTest {
 
     @Mock
     private AgencyRepo agencyRepo;
@@ -52,7 +52,7 @@ public class AgencyServiceImplTest {
     }
 
     /**
-     * testAddAgency_Success - Verify that a new agency is successfully created.
+     * 1. testAddAgency_Success - Verify that a new agency is successfully created.
      */
     @Test
     public void testAddAgency_Success() {
@@ -64,7 +64,7 @@ public class AgencyServiceImplTest {
     }
 
     /**
-     * testGetAgencyById_Success - Verify that an agency is successfully retrieved by ID.
+     * 2. testGetAgencyById_Success - Verify that an agency is successfully retrieved by ID.
      */
     @Test
     public void testGetAgencyById_Success() {
@@ -75,7 +75,7 @@ public class AgencyServiceImplTest {
     }
 
     /**
-     * testGetAgencyById_NotFound_ThrowsException - Verify that requesting a missing ID throws ResourceNotFoundException.
+     * 3. testGetAgencyById_NotFound_ThrowsException - Verify that requesting a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testGetAgencyById_NotFound_ThrowsException() {
@@ -84,7 +84,7 @@ public class AgencyServiceImplTest {
     }
 
     /**
-     * testGetAllAgencies_NotEmpty - Verify that list of agencies is successfully retrieved.
+     * 4. testGetAllAgencies_NotEmpty - Verify that list of agencies is successfully retrieved.
      */
     @Test
     public void testGetAllAgencies_NotEmpty() {
@@ -94,7 +94,7 @@ public class AgencyServiceImplTest {
     }
 
     /**
-     * testGetAllAgencies_Empty - Verify that an empty list is handled properly.
+     * 5. testGetAllAgencies_Empty - Verify that an empty list is handled properly.
      */
     @Test
     public void testGetAllAgencies_Empty() {
@@ -104,7 +104,7 @@ public class AgencyServiceImplTest {
     }
 
     /**
-     * testUpdateAgency_Success - Verify that an agency is updated successfully.
+     * 6. testUpdateAgency_Success - Verify that an agency is updated successfully.
      */
     @Test
     public void testUpdateAgency_Success() {
@@ -116,7 +116,7 @@ public class AgencyServiceImplTest {
     }
 
     /**
-     * testUpdateAgency_NotFound_ThrowsException - Verify that updating a missing ID throws ResourceNotFoundException.
+     * 7. testUpdateAgency_NotFound_ThrowsException - Verify that updating a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testUpdateAgency_NotFound_ThrowsException() {
@@ -125,7 +125,7 @@ public class AgencyServiceImplTest {
     }
 
     /**
-     * testDeleteAgency_Success - Verify that deleting an existing ID returns success message.
+     * 8. testDeleteAgency_Success - Verify that deleting an existing ID returns success message.
      */
     @Test
     public void testDeleteAgency_Success() {
@@ -136,7 +136,7 @@ public class AgencyServiceImplTest {
     }
 
     /**
-     * testDeleteAgency_NotFound_ThrowsException - Verify that deleting a missing ID throws ResourceNotFoundException.
+     * 9. testDeleteAgency_NotFound_ThrowsException - Verify that deleting a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testDeleteAgency_NotFound_ThrowsException() {

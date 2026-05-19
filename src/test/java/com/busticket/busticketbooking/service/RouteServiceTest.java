@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class RouteServiceImplTest {
+public class RouteServiceTest {
 
     @Mock
     private RouteRepo routeRepo;
@@ -51,7 +51,7 @@ public class RouteServiceImplTest {
     }
 
     /**
-     * testAddRoute_Success - Verify that a route is created successfully when valid details are supplied.
+     * 1. testAddRoute_Success - Verify that a route is created successfully when valid details are supplied.
      */
     @Test
     public void testAddRoute_Success() {
@@ -65,7 +65,7 @@ public class RouteServiceImplTest {
     }
 
     /**
-     * testGetRouteById_Success - Verify that a route is successfully retrieved by ID.
+     * 2. testGetRouteById_Success - Verify that a route is successfully retrieved by ID.
      */
     @Test
     public void testGetRouteById_Success() {
@@ -76,7 +76,7 @@ public class RouteServiceImplTest {
     }
 
     /**
-     * testGetRouteById_NotFound_ThrowsException - Verify that requesting a missing ID throws RuntimeException.
+     * 3. testGetRouteById_NotFound_ThrowsException - Verify that requesting a missing ID throws RuntimeException.
      */
     @Test
     public void testGetRouteById_NotFound_ThrowsException() {
@@ -85,7 +85,7 @@ public class RouteServiceImplTest {
     }
 
     /**
-     * testGetAllRoutes_NotEmpty - Verify that list of routes is successfully retrieved.
+     * 4. testGetAllRoutes_NotEmpty - Verify that list of routes is successfully retrieved.
      */
     @Test
     public void testGetAllRoutes_NotEmpty() {
@@ -95,7 +95,7 @@ public class RouteServiceImplTest {
     }
 
     /**
-     * testGetAllRoutes_Empty - Verify that an empty list is handled properly.
+     * 5. testGetAllRoutes_Empty - Verify that an empty list is handled properly.
      */
     @Test
     public void testGetAllRoutes_Empty() {
@@ -105,7 +105,7 @@ public class RouteServiceImplTest {
     }
 
     /**
-     * testUpdateRoute_Success - Verify that a route is updated successfully.
+     * 6. testUpdateRoute_Success - Verify that a route is updated successfully.
      */
     @Test
     public void testUpdateRoute_Success() {
@@ -118,7 +118,7 @@ public class RouteServiceImplTest {
     }
 
     /**
-     * testUpdateRoute_NotFound_ThrowsException - Verify that updating a missing ID throws RuntimeException.
+     * 7. testUpdateRoute_NotFound_ThrowsException - Verify that updating a missing ID throws RuntimeException.
      */
     @Test
     public void testUpdateRoute_NotFound_ThrowsException() {
@@ -127,7 +127,7 @@ public class RouteServiceImplTest {
     }
 
     /**
-     * testDeleteRoute_Success - Verify that deleting an existing ID succeeds.
+     * 8. testDeleteRoute_Success - Verify that deleting an existing ID succeeds.
      */
     @Test
     public void testDeleteRoute_Success() {
@@ -137,7 +137,7 @@ public class RouteServiceImplTest {
     }
 
     /**
-     * testDeleteRoute_NotFound_ThrowsException - Verify that deleting a missing ID throws RuntimeException.
+     * 9. testDeleteRoute_NotFound_ThrowsException - Verify that deleting a missing ID throws RuntimeException.
      */
     @Test
     public void testDeleteRoute_NotFound_ThrowsException() {

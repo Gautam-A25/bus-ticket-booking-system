@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class BusServiceImplTest {
+public class BusServiceTest {
 
     @Mock
     private BusRepo busRepo;
@@ -61,7 +61,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testCreateBus_Success - Verify that a bus is created successfully when valid details are supplied.
+     * 1. testCreateBus_Success - Verify that a bus is created successfully when valid details are supplied.
      */
     @Test
     public void testCreateBus_Success() {
@@ -76,7 +76,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testCreateBus_OfficeNotFound_ThrowsException - Verify that creating a bus for a missing office throws ResourceNotFoundException.
+     * 2. testCreateBus_OfficeNotFound_ThrowsException - Verify that creating a bus for a missing office throws ResourceNotFoundException.
      */
     @Test
     public void testCreateBus_OfficeNotFound_ThrowsException() {
@@ -85,7 +85,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testGetBusById_Success - Verify that a bus is successfully retrieved by ID.
+     * 3. testGetBusById_Success - Verify that a bus is successfully retrieved by ID.
      */
     @Test
     public void testGetBusById_Success() {
@@ -96,7 +96,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testGetBusById_NotFound_ThrowsException - Verify that requesting a missing ID throws ResourceNotFoundException.
+     * 4. testGetBusById_NotFound_ThrowsException - Verify that requesting a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testGetBusById_NotFound_ThrowsException() {
@@ -105,7 +105,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testGetAllBuses_NotEmpty - Verify that list of buses is successfully retrieved.
+     * 5. testGetAllBuses_NotEmpty - Verify that list of buses is successfully retrieved.
      */
     @Test
     public void testGetAllBuses_NotEmpty() {
@@ -115,7 +115,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testGetAllBuses_Empty - Verify that an empty list is handled properly.
+     * 6. testGetAllBuses_Empty - Verify that an empty list is handled properly.
      */
     @Test
     public void testGetAllBuses_Empty() {
@@ -125,7 +125,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testGetBusesByOffice_Success - Verify that buses are retrieved correctly based on their office ID filter.
+     * 7. testGetBusesByOffice_Success - Verify that buses are retrieved correctly based on their office ID filter.
      */
     @Test
     public void testGetBusesByOffice_Success() {
@@ -135,7 +135,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testUpdateBus_Success - Verify that a bus is updated successfully.
+     * 8. testUpdateBus_Success - Verify that a bus is updated successfully.
      */
     @Test
     public void testUpdateBus_Success() {
@@ -149,7 +149,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testUpdateBus_NotFound_ThrowsException - Verify that updating a missing ID throws ResourceNotFoundException.
+     * 9. testUpdateBus_NotFound_ThrowsException - Verify that updating a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testUpdateBus_NotFound_ThrowsException() {
@@ -158,7 +158,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testDeleteBus_Success - Verify that deleting an existing ID succeeds.
+     * 10. testDeleteBus_Success - Verify that deleting an existing ID succeeds.
      */
     @Test
     public void testDeleteBus_Success() {
@@ -168,7 +168,7 @@ public class BusServiceImplTest {
     }
 
     /**
-     * testDeleteBus_NotFound_ThrowsException - Verify that deleting a missing ID throws ResourceNotFoundException.
+     * 11. testDeleteBus_NotFound_ThrowsException - Verify that deleting a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testDeleteBus_NotFound_ThrowsException() {

@@ -1,4 +1,4 @@
-// Total tests: 4
+// Total tests: 10
 package com.busticket.busticketbooking.service;
 
 import com.busticket.busticketbooking.dto.PaymentDTO.PaymentRequestDTO;
@@ -21,6 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PaymentServiceImplTest {
+public class PaymentServiceTest {
 
     @Mock
     private PaymentRepo paymentRepo;
@@ -47,6 +50,7 @@ public class PaymentServiceImplTest {
     private Payment payment;
     private PaymentRequestDTO successRequest;
     private PaymentRequestDTO failedRequest;
+    private PaymentRequestDTO declinedRequest;
 
     @BeforeEach
     public void setUp() {
@@ -69,10 +73,11 @@ public class PaymentServiceImplTest {
 
         successRequest = new PaymentRequestDTO(1, 2, new BigDecimal("650.00"), "SUCCESS");
         failedRequest = new PaymentRequestDTO(1, 2, new BigDecimal("650.00"), "FAILED");
+        declinedRequest = new PaymentRequestDTO(1, 2, new BigDecimal("650.00"), "DECLINED");
     }
 
     /**
-     * testMakePayment_Success_CaseInsensitive - Verify that a payment is made successfully and status string casing is handled robustly.
+     * 1. testMakePayment_Success_CaseInsensitive - Verify that a payment is made successfully and status string casing is handled robustly.
      */
     @Test
     public void testMakePayment_Success_CaseInsensitive() {
@@ -89,7 +94,7 @@ public class PaymentServiceImplTest {
     }
 
     /**
-     * testMakePayment_FailedStatus_ThrowsPaymentFailedException - Verify that supplying FAILED status triggers PaymentFailedException (HTTP 402).
+     * 2. testMakePayment_FailedStatus_ThrowsPaymentFailedException - Verify that supplying FAILED status triggers PaymentFailedException (HTTP 402).
      */
     @Test
     public void testMakePayment_FailedStatus_ThrowsPaymentFailedException() {
@@ -103,7 +108,21 @@ public class PaymentServiceImplTest {
     }
 
     /**
-     * testMakePayment_BookingNotFound_ThrowsResourceNotFoundException - Verify that payment attempts for non-existent bookings trigger ResourceNotFoundException.
+     * 3. testMakePayment_DeclinedStatus_ThrowsPaymentFailedException - Verify that supplying DECLINED status triggers PaymentFailedException.
+     */
+    @Test
+    public void testMakePayment_DeclinedStatus_ThrowsPaymentFailedException() {
+        when(bookingRepo.findById(1)).thenReturn(Optional.of(booking));
+        when(customerRepo.findById(2)).thenReturn(Optional.of(customer));
+
+        assertThrows(PaymentFailedException.class, () -> {
+            paymentService.makePayment(declinedRequest);
+        });
+        verify(paymentRepo, never()).save(any(Payment.class));
+    }
+
+    /**
+     * 4. testMakePayment_BookingNotFound_ThrowsResourceNotFoundException - Verify that payment attempts for non-existent bookings trigger ResourceNotFoundException.
      */
     @Test
     public void testMakePayment_BookingNotFound_ThrowsResourceNotFoundException() {
@@ -118,7 +137,23 @@ public class PaymentServiceImplTest {
     }
 
     /**
-     * testGetPaymentDetails_Success - Verify that payment record details are retrieved successfully by ID.
+     * 5. testMakePayment_CustomerNotFound_ThrowsResourceNotFoundException - Verify that payment attempts for non-existent customers trigger ResourceNotFoundException.
+     */
+    @Test
+    public void testMakePayment_CustomerNotFound_ThrowsResourceNotFoundException() {
+        when(bookingRepo.findById(1)).thenReturn(Optional.of(booking));
+        when(customerRepo.findById(99)).thenReturn(Optional.empty());
+
+        PaymentRequestDTO badRequest = new PaymentRequestDTO(1, 99, new BigDecimal("650.00"), "SUCCESS");
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            paymentService.makePayment(badRequest);
+        });
+        verify(paymentRepo, never()).save(any(Payment.class));
+    }
+
+    /**
+     * 6. testGetPaymentDetails_Success - Verify that payment record details are retrieved successfully by ID.
      */
     @Test
     public void testGetPaymentDetails_Success() {
@@ -129,5 +164,59 @@ public class PaymentServiceImplTest {
         assertTrue(responseOpt.isPresent());
         assertEquals(10, responseOpt.get().getPaymentId());
         assertEquals("Success", responseOpt.get().getPaymentStatus());
+    }
+
+    /**
+     * 7. testGetPaymentDetails_NotFound_ReturnsEmpty - Verify that retrieving details of a missing payment returns empty Optional.
+     */
+    @Test
+    public void testGetPaymentDetails_NotFound_ReturnsEmpty() {
+        when(paymentRepo.findById(999)).thenReturn(Optional.empty());
+
+        Optional<PaymentResponseDTO> responseOpt = paymentService.getPaymentDetails(999);
+
+        assertFalse(responseOpt.isPresent());
+    }
+
+    /**
+     * 8. testGetCustomerPaymentHistory_Success - Verify that payment history filtered by customer ID is returned successfully.
+     */
+    @Test
+    public void testGetCustomerPaymentHistory_Success() {
+        when(paymentRepo.findByCustomerId(2)).thenReturn(Arrays.asList(payment));
+
+        List<PaymentResponseDTO> history = paymentService.getCustomerPaymentHistory(2);
+
+        assertNotNull(history);
+        assertEquals(1, history.size());
+        assertEquals(10, history.get(0).getPaymentId());
+    }
+
+    /**
+     * 9. testGetBookingPaymentInfo_Success - Verify that payment info filtered by booking ID is returned successfully.
+     */
+    @Test
+    public void testGetBookingPaymentInfo_Success() {
+        when(paymentRepo.findByBookingId(1)).thenReturn(Optional.of(payment));
+
+        Optional<PaymentResponseDTO> responseOpt = paymentService.getBookingPaymentInfo(1);
+
+        assertTrue(responseOpt.isPresent());
+        assertEquals(10, responseOpt.get().getPaymentId());
+    }
+
+    /**
+     * 10. testUpdatePaymentStatus_Success - Verify that payment status can be successfully updated.
+     */
+    @Test
+    public void testUpdatePaymentStatus_Success() {
+        when(paymentRepo.findById(10)).thenReturn(Optional.of(payment));
+        when(paymentRepo.save(any(Payment.class))).thenReturn(payment);
+
+        PaymentResponseDTO response = paymentService.updatePaymentStatus(10, "SUCCESS");
+
+        assertNotNull(response);
+        assertEquals(10, response.getPaymentId());
+        verify(paymentRepo, times(1)).save(payment);
     }
 }

@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AgencyOfficeServiceImplTest {
+public class AgencyOfficeServiceTest {
 
     @Mock
     private AgencyOfficeRepo agencyOfficeRepo;
@@ -73,7 +73,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testAddAgencyOffice_Success - Verify that an agency office is added successfully under valid agency and address.
+     * 1. testAddAgencyOffice_Success - Verify that an agency office is added successfully under valid agency and address.
      */
     @Test
     public void testAddAgencyOffice_Success() {
@@ -89,7 +89,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testAddAgencyOffice_AgencyNotFound_ThrowsException - Verify missing Agency ID throws ResourceNotFoundException.
+     * 2. testAddAgencyOffice_AgencyNotFound_ThrowsException - Verify missing Agency ID throws ResourceNotFoundException.
      */
     @Test
     public void testAddAgencyOffice_AgencyNotFound_ThrowsException() {
@@ -98,7 +98,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testAddAgencyOffice_AddressNotFound_ThrowsException - Verify missing Address ID throws ResourceNotFoundException.
+     * 3. testAddAgencyOffice_AddressNotFound_ThrowsException - Verify missing Address ID throws ResourceNotFoundException.
      */
     @Test
     public void testAddAgencyOffice_AddressNotFound_ThrowsException() {
@@ -108,7 +108,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testGetAgencyOfficeById_Success - Verify that an office is successfully retrieved by ID.
+     * 4. testGetAgencyOfficeById_Success - Verify that an office is successfully retrieved by ID.
      */
     @Test
     public void testGetAgencyOfficeById_Success() {
@@ -119,7 +119,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testGetAgencyOfficeById_NotFound_ThrowsException - Verify that requesting a missing ID throws ResourceNotFoundException.
+     * 5. testGetAgencyOfficeById_NotFound_ThrowsException - Verify that requesting a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testGetAgencyOfficeById_NotFound_ThrowsException() {
@@ -128,7 +128,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testGetAgencyOfficesByAgencyId_Success - Verify that all offices belonging to an agency are retrieved.
+     * 6. testGetAgencyOfficesByAgencyId_Success - Verify that all offices belonging to an agency are retrieved.
      */
     @Test
     public void testGetAgencyOfficesByAgencyId_Success() {
@@ -140,7 +140,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testGetAgencyOfficesByAgencyId_AgencyNotFound_ThrowsException - Verify missing Agency ID throws ResourceNotFoundException.
+     * 7. testGetAgencyOfficesByAgencyId_AgencyNotFound_ThrowsException - Verify missing Agency ID throws ResourceNotFoundException.
      */
     @Test
     public void testGetAgencyOfficesByAgencyId_AgencyNotFound_ThrowsException() {
@@ -149,7 +149,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testUpdateAgencyOffice_Success - Verify that an office is updated successfully.
+     * 8. testUpdateAgencyOffice_Success - Verify that an office is updated successfully.
      */
     @Test
     public void testUpdateAgencyOffice_Success() {
@@ -164,7 +164,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testDeleteAgencyOffice_Success - Verify that deleting an existing office returns success message.
+     * 9. testDeleteAgencyOffice_Success - Verify that deleting an existing office returns success message.
      */
     @Test
     public void testDeleteAgencyOffice_Success() {
@@ -175,7 +175,7 @@ public class AgencyOfficeServiceImplTest {
     }
 
     /**
-     * testDeleteAgencyOffice_NotFound_ThrowsException - Verify that deleting a missing ID throws ResourceNotFoundException.
+     * 10. testDeleteAgencyOffice_NotFound_ThrowsException - Verify that deleting a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testDeleteAgencyOffice_NotFound_ThrowsException() {

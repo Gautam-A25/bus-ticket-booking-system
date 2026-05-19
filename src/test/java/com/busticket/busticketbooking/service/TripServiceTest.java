@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TripServiceImplTest {
+public class TripServiceTest {
 
     @Mock
     private TripRepo tripRepo;
@@ -95,7 +95,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testAddTrip_Success - Verify that a trip is created successfully when valid details are supplied.
+     * 1. testAddTrip_Success - Verify that a trip is created successfully when valid details are supplied.
      */
     @Test
     public void testAddTrip_Success() {
@@ -109,7 +109,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testGetTripById_Success - Verify that a trip is successfully retrieved by ID.
+     * 2. testGetTripById_Success - Verify that a trip is successfully retrieved by ID.
      */
     @Test
     public void testGetTripById_Success() {
@@ -120,7 +120,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testGetTripById_NotFound_ThrowsException - Verify that requesting a missing ID throws RuntimeException.
+     * 3. testGetTripById_NotFound_ThrowsException - Verify that requesting a missing ID throws RuntimeException.
      */
     @Test
     public void testGetTripById_NotFound_ThrowsException() {
@@ -129,7 +129,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testGetAllTrips_NotEmpty - Verify that list of trips is successfully retrieved.
+     * 4. testGetAllTrips_NotEmpty - Verify that list of trips is successfully retrieved.
      */
     @Test
     public void testGetAllTrips_NotEmpty() {
@@ -139,7 +139,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testGetAllTrips_Empty - Verify that an empty list is handled properly.
+     * 5. testGetAllTrips_Empty - Verify that an empty list is handled properly.
      */
     @Test
     public void testGetAllTrips_Empty() {
@@ -149,7 +149,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testSearchTrips_Success - Verify searching trips by from/to cities.
+     * 6. testSearchTrips_Success - Verify searching trips by from/to cities.
      */
     @Test
     public void testSearchTrips_Success() {
@@ -159,7 +159,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testGetAvailableSeats_Success - Verify getting available seats.
+     * 7. testGetAvailableSeats_Success - Verify getting available seats.
      */
     @Test
     public void testGetAvailableSeats_Success() {
@@ -169,7 +169,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testCloseTrip_Success - Verify closing trip seats to 0.
+     * 8. testCloseTrip_Success - Verify closing trip seats to 0.
      */
     @Test
     public void testCloseTrip_Success() {
@@ -181,7 +181,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testUpdateTrip_Success - Verify updating trip details successfully.
+     * 9. testUpdateTrip_Success - Verify updating trip details successfully.
      */
     @Test
     public void testUpdateTrip_Success() {
@@ -194,7 +194,7 @@ public class TripServiceImplTest {
     }
 
     /**
-     * testUpdateTrip_NotFound_ThrowsException - Verify updating a missing ID throws RuntimeException.
+     * 10. testUpdateTrip_NotFound_ThrowsException - Verify updating a missing ID throws RuntimeException.
      */
     @Test
     public void testUpdateTrip_NotFound_ThrowsException() {

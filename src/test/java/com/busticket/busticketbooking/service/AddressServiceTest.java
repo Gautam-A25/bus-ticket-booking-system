@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AddressServiceImplTest {
+public class AddressServiceTest {
 
     @Mock
     private AddressRepo addressRepo;
@@ -52,7 +52,7 @@ public class AddressServiceImplTest {
     }
 
     /**
-     * testAddAddress_Success - Verify that a new address is successfully created.
+     * 1. testAddAddress_Success - Verify that a new address is successfully created.
      */
     @Test
     public void testAddAddress_Success() {
@@ -64,7 +64,7 @@ public class AddressServiceImplTest {
     }
 
     /**
-     * testGetAddressById_Success - Verify that an address is successfully retrieved by ID.
+     * 2. testGetAddressById_Success - Verify that an address is successfully retrieved by ID.
      */
     @Test
     public void testGetAddressById_Success() {
@@ -75,7 +75,7 @@ public class AddressServiceImplTest {
     }
 
     /**
-     * testGetAddressById_NotFound_ThrowsException - Verify that requesting a missing ID throws ResourceNotFoundException.
+     * 3. testGetAddressById_NotFound_ThrowsException - Verify that requesting a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testGetAddressById_NotFound_ThrowsException() {
@@ -84,7 +84,7 @@ public class AddressServiceImplTest {
     }
 
     /**
-     * testGetAllAddresses_NotEmpty - Verify that list of addresses is successfully retrieved.
+     * 4. testGetAllAddresses_NotEmpty - Verify that list of addresses is successfully retrieved.
      */
     @Test
     public void testGetAllAddresses_NotEmpty() {
@@ -94,7 +94,7 @@ public class AddressServiceImplTest {
     }
 
     /**
-     * testGetAllAddresses_Empty - Verify that an empty list is handled properly.
+     * 5. testGetAllAddresses_Empty - Verify that an empty list is handled properly.
      */
     @Test
     public void testGetAllAddresses_Empty() {
@@ -104,7 +104,7 @@ public class AddressServiceImplTest {
     }
 
     /**
-     * testUpdateAddress_Success - Verify that an address is updated successfully.
+     * 6. testUpdateAddress_Success - Verify that an address is updated successfully.
      */
     @Test
     public void testUpdateAddress_Success() {
@@ -116,7 +116,7 @@ public class AddressServiceImplTest {
     }
 
     /**
-     * testUpdateAddress_NotFound_ThrowsException - Verify that updating a missing ID throws ResourceNotFoundException.
+     * 7. testUpdateAddress_NotFound_ThrowsException - Verify that updating a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testUpdateAddress_NotFound_ThrowsException() {
@@ -125,7 +125,7 @@ public class AddressServiceImplTest {
     }
 
     /**
-     * testDeleteAddress_Success - Verify that deleting an existing ID returns success message.
+     * 8. testDeleteAddress_Success - Verify that deleting an existing ID returns success message.
      */
     @Test
     public void testDeleteAddress_Success() {
@@ -136,7 +136,7 @@ public class AddressServiceImplTest {
     }
 
     /**
-     * testDeleteAddress_NotFound_ThrowsException - Verify that deleting a missing ID throws ResourceNotFoundException.
+     * 9. testDeleteAddress_NotFound_ThrowsException - Verify that deleting a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testDeleteAddress_NotFound_ThrowsException() {

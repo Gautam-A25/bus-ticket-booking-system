@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class BookingServiceImplTest {
+public class BookingServiceTest {
 
     @Mock
     private BookingRepo bookingRepo;
@@ -71,7 +71,7 @@ public class BookingServiceImplTest {
     }
 
     /**
-     * testCreateBooking_Success - Verify that a booking is created successfully when valid details are supplied.
+     * 1. testCreateBooking_Success - Verify that a booking is created successfully when valid details are supplied.
      */
     @Test
     public void testCreateBooking_Success() {
@@ -87,7 +87,7 @@ public class BookingServiceImplTest {
     }
 
     /**
-     * testCreateBooking_TripNotFound_ThrowsException - Verify missing Trip ID throws ResourceNotFoundException.
+     * 2. testCreateBooking_TripNotFound_ThrowsException - Verify missing Trip ID throws ResourceNotFoundException.
      */
     @Test
     public void testCreateBooking_TripNotFound_ThrowsException() {
@@ -96,7 +96,7 @@ public class BookingServiceImplTest {
     }
 
     /**
-     * testCreateBooking_DuplicateSeat_ThrowsException - Verify duplicate seat booking throws DuplicateResourceException.
+     * 3. testCreateBooking_DuplicateSeat_ThrowsException - Verify duplicate seat booking throws DuplicateResourceException.
      */
     @Test
     public void testCreateBooking_DuplicateSeat_ThrowsException() {
@@ -107,7 +107,7 @@ public class BookingServiceImplTest {
     }
 
     /**
-     * testCreateBooking_NoSeatsAvailable_ThrowsException - Verify booking fails when trip available seats <= 0.
+     * 4. testCreateBooking_NoSeatsAvailable_ThrowsException - Verify booking fails when trip available seats <= 0.
      */
     @Test
     public void testCreateBooking_NoSeatsAvailable_ThrowsException() {
@@ -118,7 +118,7 @@ public class BookingServiceImplTest {
     }
 
     /**
-     * testGetBookingById_Success - Verify booking retrieval by ID.
+     * 5. testGetBookingById_Success - Verify booking retrieval by ID.
      */
     @Test
     public void testGetBookingById_Success() {
@@ -129,7 +129,7 @@ public class BookingServiceImplTest {
     }
 
     /**
-     * testGetBookingById_NotFound_ThrowsException - Verify missing ID throws ResourceNotFoundException.
+     * 6. testGetBookingById_NotFound_ThrowsException - Verify missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testGetBookingById_NotFound_ThrowsException() {
@@ -138,7 +138,7 @@ public class BookingServiceImplTest {
     }
 
     /**
-     * testGetBookingsByCustomer_Success - Verify listing bookings by customer ID.
+     * 7. testGetBookingsByCustomer_Success - Verify listing bookings by customer ID.
      */
     @Test
     public void testGetBookingsByCustomer_Success() {
@@ -148,7 +148,7 @@ public class BookingServiceImplTest {
     }
 
     /**
-     * testCancelBooking_Success - Verify that deleting a booking returns success message.
+     * 8. testCancelBooking_Success - Verify that deleting a booking returns success message.
      */
     @Test
     public void testCancelBooking_Success() {
@@ -159,7 +159,7 @@ public class BookingServiceImplTest {
     }
 
     /**
-     * testCancelBooking_NotFound_ThrowsException - Verify cancelling missing ID throws ResourceNotFoundException.
+     * 9. testCancelBooking_NotFound_ThrowsException - Verify cancelling missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testCancelBooking_NotFound_ThrowsException() {

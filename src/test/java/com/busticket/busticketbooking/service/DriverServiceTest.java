@@ -1,4 +1,4 @@
-// Total tests: 6
+// Total tests: 10
 package com.busticket.busticketbooking.service;
 
 import com.busticket.busticketbooking.dto.DriverDto.DriverRequestDto;
@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DriverServiceImplTest {
+public class DriverServiceTest {
 
     @Mock
     private DriverRepo driverRepo;
@@ -76,7 +76,7 @@ public class DriverServiceImplTest {
     }
 
     /**
-     * testCreateDriver_Success - Verify that a driver is created successfully when valid details are supplied.
+     * 1. testCreateDriver_Success - Verify that a driver is created successfully when valid details are supplied.
      */
     @Test
     public void testCreateDriver_Success() {
@@ -95,7 +95,7 @@ public class DriverServiceImplTest {
     }
 
     /**
-     * testCreateDriver_DuplicateLicense_ThrowsException - Verify that creating a driver with an existing license number throws DuplicateResourceException.
+     * 2. testCreateDriver_DuplicateLicense_ThrowsException - Verify that creating a driver with an existing license number throws DuplicateResourceException.
      */
     @Test
     public void testCreateDriver_DuplicateLicense_ThrowsException() {
@@ -108,7 +108,34 @@ public class DriverServiceImplTest {
     }
 
     /**
-     * testGetDriverById_Success - Verify that a driver is successfully retrieved by their unique ID.
+     * 3. testCreateDriver_OfficeNotFound_ThrowsResourceNotFoundException - Verify that creating a driver with a non-existent office throws ResourceNotFoundException.
+     */
+    @Test
+    public void testCreateDriver_OfficeNotFound_ThrowsResourceNotFoundException() {
+        when(driverRepo.existsByLicenseNumber("DL-12345")).thenReturn(false);
+        when(officeRepo.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            driverService.createDriver(requestDto);
+        });
+    }
+
+    /**
+     * 4. testCreateDriver_AddressNotFound_ThrowsResourceNotFoundException - Verify that creating a driver with a non-existent address ID throws ResourceNotFoundException.
+     */
+    @Test
+    public void testCreateDriver_AddressNotFound_ThrowsResourceNotFoundException() {
+        when(driverRepo.existsByLicenseNumber("DL-12345")).thenReturn(false);
+        when(officeRepo.findById(1)).thenReturn(Optional.of(office));
+        when(addressRepo.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            driverService.createDriver(requestDto);
+        });
+    }
+
+    /**
+     * 5. testGetDriverById_Success - Verify that a driver is successfully retrieved by their unique ID.
      */
     @Test
     public void testGetDriverById_Success() {
@@ -122,7 +149,7 @@ public class DriverServiceImplTest {
     }
 
     /**
-     * testGetDriverById_NotFound_ThrowsException - Verify that retrieving a non-existent driver ID throws ResourceNotFoundException.
+     * 6. testGetDriverById_NotFound_ThrowsException - Verify that retrieving a non-existent driver ID throws ResourceNotFoundException.
      */
     @Test
     public void testGetDriverById_NotFound_ThrowsException() {
@@ -134,7 +161,7 @@ public class DriverServiceImplTest {
     }
 
     /**
-     * testGetAllDrivers - Verify that all driver records are retrieved successfully.
+     * 7. testGetAllDrivers - Verify that all driver records are retrieved successfully.
      */
     @Test
     public void testGetAllDrivers() {
@@ -148,7 +175,38 @@ public class DriverServiceImplTest {
     }
 
     /**
-     * testDeleteDriver_Success - Verify that a driver record is successfully deleted.
+     * 8. testGetDriversByOffice_Success - Verify that drivers belonging to a specific office are retrieved successfully.
+     */
+    @Test
+    public void testGetDriversByOffice_Success() {
+        when(driverRepo.findAll()).thenReturn(Arrays.asList(driver));
+
+        List<DriverResponseDto> drivers = driverService.getDriversByOffice(1);
+
+        assertNotNull(drivers);
+        assertEquals(1, drivers.size());
+        assertEquals("Harpreet Singh", drivers.get(0).getName());
+    }
+
+    /**
+     * 9. testUpdateDriver_Success - Verify that a driver's details are updated successfully.
+     */
+    @Test
+    public void testUpdateDriver_Success() {
+        when(driverRepo.findById(101)).thenReturn(Optional.of(driver));
+        when(officeRepo.findById(1)).thenReturn(Optional.of(office));
+        when(addressRepo.findById(1)).thenReturn(Optional.of(address));
+        when(driverRepo.save(any(Driver.class))).thenReturn(driver);
+
+        DriverResponseDto response = driverService.updateDriver(101, requestDto);
+
+        assertNotNull(response);
+        assertEquals(101, response.getId());
+        verify(driverRepo, times(1)).save(driver);
+    }
+
+    /**
+     * 10. testDeleteDriver_Success - Verify that a driver record is successfully deleted.
      */
     @Test
     public void testDeleteDriver_Success() {

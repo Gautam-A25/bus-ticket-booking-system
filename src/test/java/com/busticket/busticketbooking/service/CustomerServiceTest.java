@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CustomerServiceImplTest {
+public class CustomerServiceTest {
 
     @Mock
     private CustomerRepo customerRepo;
@@ -62,7 +62,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testCreateCustomer_Success - Verify that a customer is created successfully under a valid address.
+     * 1. testCreateCustomer_Success - Verify that a customer is created successfully under a valid address.
      */
     @Test
     public void testCreateCustomer_Success() {
@@ -78,7 +78,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testCreateCustomer_DuplicateEmail_ThrowsException - Verify duplicate emails throw DuplicateResourceException.
+     * 2. testCreateCustomer_DuplicateEmail_ThrowsException - Verify duplicate emails throw DuplicateResourceException.
      */
     @Test
     public void testCreateCustomer_DuplicateEmail_ThrowsException() {
@@ -87,7 +87,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testCreateCustomer_AddressNotFound_ThrowsException - Verify missing Address ID throws ResourceNotFoundException.
+     * 3. testCreateCustomer_AddressNotFound_ThrowsException - Verify missing Address ID throws ResourceNotFoundException.
      */
     @Test
     public void testCreateCustomer_AddressNotFound_ThrowsException() {
@@ -97,7 +97,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testGetCustomerById_Success - Verify customer is retrieved by ID.
+     * 4. testGetCustomerById_Success - Verify customer is retrieved by ID.
      */
     @Test
     public void testGetCustomerById_Success() {
@@ -108,7 +108,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testGetCustomerById_NotFound_ThrowsException - Verify missing ID throws ResourceNotFoundException.
+     * 5. testGetCustomerById_NotFound_ThrowsException - Verify missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testGetCustomerById_NotFound_ThrowsException() {
@@ -117,7 +117,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testGetAllCustomers_NotEmpty - Verify retrieving all registered customer records.
+     * 6. testGetAllCustomers_NotEmpty - Verify retrieving all registered customer records.
      */
     @Test
     public void testGetAllCustomers_NotEmpty() {
@@ -127,7 +127,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testGetAllCustomers_Empty - Verify that empty list behaves nicely.
+     * 7. testGetAllCustomers_Empty - Verify that empty list behaves nicely.
      */
     @Test
     public void testGetAllCustomers_Empty() {
@@ -137,7 +137,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testUpdateCustomer_Success - Verify updating name, email, and phone successfully.
+     * 8. testUpdateCustomer_Success - Verify updating name, email, and phone successfully.
      */
     @Test
     public void testUpdateCustomer_Success() {
@@ -151,7 +151,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testUpdateCustomer_NotFound_ThrowsException - Verify updating a missing ID throws ResourceNotFoundException.
+     * 9. testUpdateCustomer_NotFound_ThrowsException - Verify updating a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testUpdateCustomer_NotFound_ThrowsException() {
@@ -160,7 +160,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testDeleteCustomer_Success - Verify that deleting a customer completes successfully.
+     * 10. testDeleteCustomer_Success - Verify that deleting a customer completes successfully.
      */
     @Test
     public void testDeleteCustomer_Success() {
@@ -171,7 +171,7 @@ public class CustomerServiceImplTest {
     }
 
     /**
-     * testDeleteCustomer_NotFound_ThrowsException - Verify deleting a missing ID throws ResourceNotFoundException.
+     * 11. testDeleteCustomer_NotFound_ThrowsException - Verify deleting a missing ID throws ResourceNotFoundException.
      */
     @Test
     public void testDeleteCustomer_NotFound_ThrowsException() {
