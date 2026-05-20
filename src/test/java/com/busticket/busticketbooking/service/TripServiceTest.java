@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 
-public class TripServiceImplTest {
+public class TripServiceTest {
 
     @Mock
     private TripRepo tripRepo;
