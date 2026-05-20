@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.BusDto.BusRequestDto;
-import com.busticket.busticketbooking.dto.BusDto.BusResponseDto;
+import com.busticket.busticketbooking.dto.BusDTO.BusRequestDTO;
+import com.busticket.busticketbooking.dto.BusDTO.BusResponseDTO;
 import com.busticket.busticketbooking.service.BusService;
 
 import jakarta.validation.Valid;
@@ -21,36 +21,36 @@ public class BusController {
     }
 
     @PostMapping
-    public BusResponseDto createBus(
-            @Valid @RequestBody BusRequestDto dto) {
+    public BusResponseDTO createBus(
+            @Valid @RequestBody BusRequestDTO dto) {
 
         return busService.createBus(dto);
     }
 
     @GetMapping
-    public List<BusResponseDto> getAllBuses() {
+    public List<BusResponseDTO> getAllBuses() {
 
         return busService.getAllBuses();
     }
 
     @GetMapping("/{id}")
-    public BusResponseDto getBusById(
+    public BusResponseDTO getBusById(
             @PathVariable Integer id) {
 
         return busService.getBusById(id);
     }
 
     @GetMapping("/office/{officeId}")
-    public List<BusResponseDto> getBusesByOffice(
+    public List<BusResponseDTO> getBusesByOffice(
             @PathVariable Integer officeId) {
 
         return busService.getBusesByOffice(officeId);
     }
 
     @PutMapping("/{id}")
-    public BusResponseDto updateBus(
+    public BusResponseDTO updateBus(
             @PathVariable Integer id,
-            @Valid @RequestBody BusRequestDto dto) {
+            @Valid @RequestBody BusRequestDTO dto) {
 
         return busService.updateBus(id, dto);
     }

@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.RouteDto.RouteRequestDto;
-import com.busticket.busticketbooking.dto.RouteDto.RouteResponseDto;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteRequestDTO;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteResponseDTO;
 import com.busticket.busticketbooking.entity.Route;
 import com.busticket.busticketbooking.repo.RouteRepo;
 import com.busticket.busticketbooking.service.RouteService;
@@ -19,7 +19,7 @@ public class RouteServiceImpl implements RouteService {
     private RouteRepo routeRepo;
 
     @Override
-    public List<RouteResponseDto> getAllRoutes() {
+    public List<RouteResponseDTO> getAllRoutes() {
 
         List<Route> routes = routeRepo.findAll();
 
@@ -29,7 +29,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public RouteResponseDto getRouteById(Integer id) {
+    public RouteResponseDTO getRouteById(Integer id) {
 
         Route route = routeRepo.findById(id)
                 .orElseThrow(() ->
@@ -39,7 +39,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public RouteResponseDto addRoute(RouteRequestDto routeRequestDto) {
+    public RouteResponseDTO addRoute(RouteRequestDTO routeRequestDto) {
 
         Route route = new Route();
 
@@ -54,8 +54,8 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public RouteResponseDto updateRoute(Integer id,
-                                        RouteRequestDto routeRequestDto) {
+    public RouteResponseDTO updateRoute(Integer id,
+                                        RouteRequestDTO routeRequestDto) {
 
         Route route = routeRepo.findById(id)
                 .orElseThrow(() ->
@@ -81,9 +81,9 @@ public class RouteServiceImpl implements RouteService {
         routeRepo.delete(route);
     }
 
-    private RouteResponseDto mapToResponseDto(Route route) {
+    private RouteResponseDTO mapToResponseDto(Route route) {
 
-        RouteResponseDto dto = new RouteResponseDto();
+        RouteResponseDTO dto = new RouteResponseDTO();
 
         dto.setId(route.getId());
         dto.setFromCity(route.getFromCity());

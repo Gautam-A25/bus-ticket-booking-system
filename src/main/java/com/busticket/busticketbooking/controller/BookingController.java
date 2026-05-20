@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.bookingDTO.BookingRequestDTO;
-import com.busticket.busticketbooking.dto.bookingDTO.BookingResponseDTO;
+import com.busticket.busticketbooking.dto.BookingDTO.BookingRequestDTO;
+import com.busticket.busticketbooking.dto.BookingDTO.BookingResponseDTO;
 import com.busticket.busticketbooking.service.BookingService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

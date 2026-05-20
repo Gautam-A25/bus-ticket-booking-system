@@ -1,20 +1,20 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.dto.RouteDto.RouteRequestDto;
-import com.busticket.busticketbooking.dto.RouteDto.RouteResponseDto;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteRequestDTO;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteResponseDTO;
 
 import java.util.List;
 
 public interface RouteService {
 
-    List<RouteResponseDto> getAllRoutes();
+    List<RouteResponseDTO> getAllRoutes();
 
-    RouteResponseDto getRouteById(Integer id);
+    RouteResponseDTO getRouteById(Integer id);
 
-    RouteResponseDto addRoute(RouteRequestDto routeRequestDto);
+    RouteResponseDTO addRoute(RouteRequestDTO routeRequestDto);
 
-    RouteResponseDto updateRoute(Integer id,
-                                 RouteRequestDto routeRequestDto);
+    RouteResponseDTO updateRoute(Integer id,
+                                 RouteRequestDTO routeRequestDto);
 
     void deleteRoute(Integer id);
 }

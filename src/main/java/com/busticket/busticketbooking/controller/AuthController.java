@@ -1,8 +1,8 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.authDTO.AuthResponseDTO;
-import com.busticket.busticketbooking.dto.authDTO.LoginRequestDTO;
-import com.busticket.busticketbooking.dto.authDTO.RegisterRequestDTO;
+import com.busticket.busticketbooking.dto.AuthDTO.AuthResponseDTO;
+import com.busticket.busticketbooking.dto.AuthDTO.LoginRequestDTO;
+import com.busticket.busticketbooking.dto.AuthDTO.RegisterRequestDTO;
 import com.busticket.busticketbooking.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
