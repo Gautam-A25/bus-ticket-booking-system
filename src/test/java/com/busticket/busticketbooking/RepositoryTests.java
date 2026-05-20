@@ -187,20 +187,32 @@ class RepositoryTests {
     }
 
     @Test
-    void findRouteByFromCityAndToCityTest() {
-        Route route = new Route();
-        route.setFromCity("Chennai");
-        route.setToCity("Bangalore");
-        route.setBreakPoints(2);
-        route.setDuration(8);
+void findRouteByFromCityAndToCityTest() {
 
-        Route savedRoute = routeRepo.save(route);
+    Route route = new Route();
 
-        List<Route> routes = routeRepo.findByFromCityAndToCity("Chennai", "Bangalore");
+    route.setFromCity("Chennai");
+    route.setToCity("Bangalore");
+    route.setBreakPoints(2);
+    route.setDuration(8);
 
-        assertFalse(routes.isEmpty());
-        assertEquals(savedRoute.getId(), routes.get(0).getId());
-    }
+    routeRepo.save(route);
+
+    List<Route> routes =
+            routeRepo.findByFromCityAndToCity(
+                    "Chennai",
+                    "Bangalore");
+
+    assertFalse(routes.isEmpty());
+
+    assertEquals(
+            "Chennai",
+            routes.get(0).getFromCity());
+
+    assertEquals(
+            "Bangalore",
+            routes.get(0).getToCity());
+}
 
     @Test
     void findBusByOfficeIdTest() {

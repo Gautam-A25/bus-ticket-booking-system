@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.dto.RouteDto.RouteRequestDto;
-import com.busticket.busticketbooking.dto.RouteDto.RouteResponseDto;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteRequestDTO;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteResponseDTO;
 
 import com.busticket.busticketbooking.entity.Route;
 
@@ -52,7 +52,7 @@ public class RouteServiceImplTest {
         when(routeRepo.findAll())
                 .thenReturn(List.of(route));
 
-        List<RouteResponseDto> routes =
+        List<RouteResponseDTO> routes =
                 routeService.getAllRoutes();
 
         assertNotNull(routes);
@@ -75,7 +75,7 @@ public class RouteServiceImplTest {
         when(routeRepo.findById(1))
                 .thenReturn(Optional.of(route));
 
-        RouteResponseDto dto =
+        RouteResponseDTO dto =
                 routeService.getRouteById(1);
 
         assertNotNull(dto);
@@ -87,8 +87,8 @@ public class RouteServiceImplTest {
     @Test
     void addRouteTest() {
 
-        RouteRequestDto requestDto =
-                new RouteRequestDto();
+        RouteRequestDTO requestDto =
+                new RouteRequestDTO();
 
         requestDto.setFromCity("Hyderabad");
         requestDto.setToCity("Pune");
@@ -106,7 +106,7 @@ public class RouteServiceImplTest {
         when(routeRepo.save(any(Route.class)))
                 .thenReturn(route);
 
-        RouteResponseDto dto =
+        RouteResponseDTO dto =
                 routeService.addRoute(requestDto);
 
         assertNotNull(dto);

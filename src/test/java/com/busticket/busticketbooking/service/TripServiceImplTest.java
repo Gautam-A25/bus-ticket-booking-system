@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.dto.TripDto.TripRequestDto;
-import com.busticket.busticketbooking.dto.TripDto.TripResponseDto;
+import com.busticket.busticketbooking.dto.TripDTO.TripRequestDTO;
+import com.busticket.busticketbooking.dto.TripDTO.TripResponseDTO;
 
 import com.busticket.busticketbooking.entity.*;
 
@@ -80,7 +80,7 @@ public class TripServiceImplTest {
         when(tripRepo.findAll())
                 .thenReturn(List.of(trip));
 
-        List<TripResponseDto> trips =
+        List<TripResponseDTO> trips =
                 tripService.getAllTrips();
 
         assertNotNull(trips);
@@ -124,7 +124,7 @@ public class TripServiceImplTest {
         when(tripRepo.findById(1))
                 .thenReturn(Optional.of(trip));
 
-        TripResponseDto dto =
+        TripResponseDTO dto =
                 tripService.getTripById(1);
 
         assertNotNull(dto);
