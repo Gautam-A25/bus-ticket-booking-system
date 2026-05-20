@@ -33,6 +33,9 @@ public class ExceptionHandlingTest {
     private PaymentService paymentService;
 
     @Test
+    public void shouldReturn404WhenPaymentNotFound() throws Exception {
+        mockMvc.perform(get("/api/v1/payments/99999")
+                .contentType(MediaType.APPLICATION_JSON))
     void shouldReturn404WhenBusNotFound() throws Exception {
         when(busService.getBusById(999))
                 .thenThrow(new ResourceNotFoundException("Bus not found"));
