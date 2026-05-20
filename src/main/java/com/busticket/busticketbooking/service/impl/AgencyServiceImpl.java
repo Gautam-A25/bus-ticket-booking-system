@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.agencyDTO.AgencyRequestDTO;
-import com.busticket.busticketbooking.dto.agencyDTO.AgencyResponseDTO;
+import com.busticket.busticketbooking.dto.AgencyDTO.AgencyRequestDTO;
+import com.busticket.busticketbooking.dto.AgencyDTO.AgencyResponseDTO;
 import com.busticket.busticketbooking.entity.Agency;
 import com.busticket.busticketbooking.mapper.AgencyMapper;
 import com.busticket.busticketbooking.repo.AgencyRepo;

@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.mapper;
 
-import com.busticket.busticketbooking.dto.DriverDto.DriverRequestDto;
-import com.busticket.busticketbooking.dto.DriverDto.DriverResponseDto;
+import com.busticket.busticketbooking.dto.DriverDTO.DriverRequestDTO;
+import com.busticket.busticketbooking.dto.DriverDTO.DriverResponseDTO;
 import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.AgencyOffice;
 import com.busticket.busticketbooking.entity.Driver;
@@ -12,7 +12,7 @@ public class DriverMapper {
     }
 
     public static Driver mapToEntity(
-            DriverRequestDto dto,
+            DriverRequestDTO dto,
             AgencyOffice office,
             Address address
     ) {
@@ -29,12 +29,12 @@ public class DriverMapper {
         return driver;
     }
 
-    public static DriverResponseDto mapToResponseDto(Driver driver) {
+    public static DriverResponseDTO mapToResponseDto(Driver driver) {
         if (driver == null) {
             return null;
         }
 
-        DriverResponseDto responseDto = new DriverResponseDto();
+        DriverResponseDTO responseDto = new DriverResponseDTO();
         responseDto.setId(driver.getId());
         responseDto.setOfficeId(driver.getOffice() != null ? driver.getOffice().getId() : null);
         responseDto.setAddressId(driver.getAddress() != null ? driver.getAddress().getId() : null);

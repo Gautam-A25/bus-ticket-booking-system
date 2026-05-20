@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.mapper;
 
-import com.busticket.busticketbooking.dto.addressDTO.AddressRequestDTO;
-import com.busticket.busticketbooking.dto.addressDTO.AddressResponseDTO;
+import com.busticket.busticketbooking.dto.AddressDTO.AddressRequestDTO;
+import com.busticket.busticketbooking.dto.AddressDTO.AddressResponseDTO;
 import com.busticket.busticketbooking.entity.Address;
 
 public class AddressMapper {

@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.TripDto.TripRequestDto;
-import com.busticket.busticketbooking.dto.TripDto.TripResponseDto;
+import com.busticket.busticketbooking.dto.TripDTO.TripRequestDTO;
+import com.busticket.busticketbooking.dto.TripDTO.TripResponseDTO;
 import com.busticket.busticketbooking.service.TripService;
 
 import jakarta.validation.Valid;
@@ -19,28 +19,28 @@ public class TripController {
     private TripService tripService;
 
     @GetMapping
-    public List<TripResponseDto> getAllTrips() {
+    public List<TripResponseDTO> getAllTrips() {
 
         return tripService.getAllTrips();
     }
 
     @GetMapping("/{id}")
-    public TripResponseDto getTripById(@PathVariable Integer id) {
+    public TripResponseDTO getTripById(@PathVariable Integer id) {
 
         return tripService.getTripById(id);
     }
 
     @PostMapping
-    public TripResponseDto addTrip(
-            @Valid @RequestBody TripRequestDto tripRequestDto) {
+    public TripResponseDTO addTrip(
+            @Valid @RequestBody TripRequestDTO tripRequestDto) {
 
         return tripService.addTrip(tripRequestDto);
     }
 
     @PutMapping("/{id}")
-    public TripResponseDto updateTrip(
+    public TripResponseDTO updateTrip(
             @PathVariable Integer id,
-            @Valid @RequestBody TripRequestDto tripRequestDto) {
+            @Valid @RequestBody TripRequestDTO tripRequestDto) {
 
         return tripService.updateTrip(id, tripRequestDto);
     }
@@ -54,7 +54,7 @@ public class TripController {
     }
 
     @GetMapping("/search")
-    public List<TripResponseDto> searchTrips(
+    public List<TripResponseDTO> searchTrips(
             @RequestParam String fromCity,
             @RequestParam String toCity) {
 

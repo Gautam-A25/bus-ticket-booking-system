@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.TripDto.TripRequestDto;
-import com.busticket.busticketbooking.dto.TripDto.TripResponseDto;
+import com.busticket.busticketbooking.dto.TripDTO.TripRequestDTO;
+import com.busticket.busticketbooking.dto.TripDTO.TripResponseDTO;
 import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.Bus;
 import com.busticket.busticketbooking.entity.Driver;
@@ -23,7 +23,7 @@ public class TripServiceImpl implements TripService {
     private TripRepo tripRepo;
 
     @Override
-    public List<TripResponseDto> getAllTrips() {
+    public List<TripResponseDTO> getAllTrips() {
 
         List<Trip> trips = tripRepo.findAll();
 
@@ -33,7 +33,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public TripResponseDto getTripById(Integer id) {
+    public TripResponseDTO getTripById(Integer id) {
 
         Trip trip = tripRepo.findById(id)
                 .orElseThrow(() ->
@@ -43,7 +43,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public TripResponseDto addTrip(TripRequestDto tripRequestDto) {
+    public TripResponseDTO addTrip(TripRequestDTO tripRequestDto) {
 
         Trip trip = mapToEntity(tripRequestDto);
 
@@ -53,8 +53,8 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public TripResponseDto updateTrip(Integer id,
-                                      TripRequestDto tripRequestDto) {
+    public TripResponseDTO updateTrip(Integer id,
+                                      TripRequestDTO tripRequestDto) {
 
         Trip existingTrip = tripRepo.findById(id)
                 .orElseThrow(() ->
@@ -107,7 +107,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<TripResponseDto> searchTrips(String fromCity,
+    public List<TripResponseDTO> searchTrips(String fromCity,
                                              String toCity) {
 
         List<Trip> trips =
@@ -130,9 +130,9 @@ public class TripServiceImpl implements TripService {
         return trip.getAvailableSeats();
     }
 
-    private TripResponseDto mapToResponseDto(Trip trip) {
+    private TripResponseDTO mapToResponseDto(Trip trip) {
 
-        TripResponseDto dto = new TripResponseDto();
+        TripResponseDTO dto = new TripResponseDTO();
 
         dto.setId(trip.getId());
 
@@ -170,7 +170,7 @@ public class TripServiceImpl implements TripService {
         return dto;
     }
 
-    private Trip mapToEntity(TripRequestDto dto) {
+    private Trip mapToEntity(TripRequestDTO dto) {
 
         Trip trip = new Trip();
 

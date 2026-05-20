@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.mapper;
 
-import com.busticket.busticketbooking.dto.agencyDTO.AgencyRequestDTO;
-import com.busticket.busticketbooking.dto.agencyDTO.AgencyResponseDTO;
+import com.busticket.busticketbooking.dto.AgencyDTO.AgencyRequestDTO;
+import com.busticket.busticketbooking.dto.AgencyDTO.AgencyResponseDTO;
 import com.busticket.busticketbooking.entity.Agency;
 
 public class AgencyMapper {

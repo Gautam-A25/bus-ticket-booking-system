@@ -1,24 +1,24 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.dto.TripDto.TripRequestDto;
-import com.busticket.busticketbooking.dto.TripDto.TripResponseDto;
+import com.busticket.busticketbooking.dto.TripDTO.TripRequestDTO;
+import com.busticket.busticketbooking.dto.TripDTO.TripResponseDTO;
 
 import java.util.List;
 
 public interface TripService {
 
-    List<TripResponseDto> getAllTrips();
+    List<TripResponseDTO> getAllTrips();
 
-    TripResponseDto getTripById(Integer id);
+    TripResponseDTO getTripById(Integer id);
 
-    TripResponseDto addTrip(TripRequestDto tripRequestDto);
+    TripResponseDTO addTrip(TripRequestDTO tripRequestDto);
 
-    TripResponseDto updateTrip(Integer id,
-                               TripRequestDto tripRequestDto);
+    TripResponseDTO updateTrip(Integer id,
+                               TripRequestDTO tripRequestDto);
 
     void closeTrip(Integer id);
 
-    List<TripResponseDto> searchTrips(String fromCity,
+    List<TripResponseDTO> searchTrips(String fromCity,
                                       String toCity);
 
     Integer getAvailableSeats(Integer id);

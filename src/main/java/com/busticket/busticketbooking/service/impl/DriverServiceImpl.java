@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.DriverDto.DriverRequestDto;
-import com.busticket.busticketbooking.dto.DriverDto.DriverResponseDto;
+import com.busticket.busticketbooking.dto.DriverDTO.DriverRequestDTO;
+import com.busticket.busticketbooking.dto.DriverDTO.DriverResponseDTO;
 import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.AgencyOffice;
 import com.busticket.busticketbooking.entity.Driver;
@@ -36,7 +36,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponseDto createDriver(DriverRequestDto dto) {
+    public DriverResponseDTO createDriver(DriverRequestDTO dto) {
 
         if (driverRepo.existsByLicenseNumber(dto.getLicenseNumber())) {
             throw new DuplicateResourceException("Driver with license number " + dto.getLicenseNumber() + " already exists");
@@ -66,7 +66,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<DriverResponseDto> getAllDrivers() {
+    public List<DriverResponseDTO> getAllDrivers() {
 
         return driverRepo.findAll()
                 .stream()
@@ -75,7 +75,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponseDto getDriverById(Integer id) {
+    public DriverResponseDTO getDriverById(Integer id) {
 
         Driver driver = driverRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver with ID " + id + " not found"));
@@ -84,7 +84,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<DriverResponseDto> getDriversByOffice(Integer officeId) {
+    public List<DriverResponseDTO> getDriversByOffice(Integer officeId) {
 
         List<Driver> drivers = driverRepo.findAll()
                 .stream()
@@ -100,7 +100,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponseDto updateDriver(Integer driverId, DriverRequestDto dto) {
+    public DriverResponseDTO updateDriver(Integer driverId, DriverRequestDTO dto) {
 
         Driver driver = driverRepo.findById(driverId)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver with ID " + driverId + " not found"));
