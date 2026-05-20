@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.RouteDto.RouteRequestDto;
-import com.busticket.busticketbooking.dto.RouteDto.RouteResponseDto;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteRequestDTO;
+import com.busticket.busticketbooking.dto.RouteDTO.RouteResponseDTO;
 import com.busticket.busticketbooking.service.RouteService;
 
 import jakarta.validation.Valid;
@@ -19,26 +19,26 @@ public class RouteController {
     private RouteService routeService;
 
     @GetMapping
-    public List<RouteResponseDto> getAllRoutes() {
+    public List<RouteResponseDTO> getAllRoutes() {
         return routeService.getAllRoutes();
     }
 
     @GetMapping("/{id}")
-    public RouteResponseDto getRouteById(@PathVariable Integer id) {
+    public RouteResponseDTO getRouteById(@PathVariable Integer id) {
         return routeService.getRouteById(id);
     }
 
     @PostMapping
-    public RouteResponseDto addRoute(
-            @Valid @RequestBody RouteRequestDto routeRequestDto) {
+    public RouteResponseDTO addRoute(
+            @Valid @RequestBody RouteRequestDTO routeRequestDto) {
 
         return routeService.addRoute(routeRequestDto);
     }
 
     @PutMapping("/{id}")
-    public RouteResponseDto updateRoute(
+    public RouteResponseDTO updateRoute(
             @PathVariable Integer id,
-            @Valid @RequestBody RouteRequestDto routeRequestDto) {
+            @Valid @RequestBody RouteRequestDTO routeRequestDto) {
 
         return routeService.updateRoute(id, routeRequestDto);
     }

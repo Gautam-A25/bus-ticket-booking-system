@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.service.impl;
 
-import com.busticket.busticketbooking.dto.BusDto.BusRequestDto;
-import com.busticket.busticketbooking.dto.BusDto.BusResponseDto;
+import com.busticket.busticketbooking.dto.BusDTO.BusRequestDTO;
+import com.busticket.busticketbooking.dto.BusDTO.BusResponseDTO;
 import com.busticket.busticketbooking.entity.AgencyOffice;
 import com.busticket.busticketbooking.entity.Bus;
 import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
@@ -29,7 +29,7 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public BusResponseDto createBus(BusRequestDto dto) {
+    public BusResponseDTO createBus(BusRequestDTO dto) {
 
         AgencyOffice office = officeRepo.findById(dto.getOfficeId())
                 .orElseThrow(() ->
@@ -48,7 +48,7 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public List<BusResponseDto> getAllBuses() {
+    public List<BusResponseDTO> getAllBuses() {
 
         return busRepo.findAll()
                 .stream()
@@ -57,7 +57,7 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public BusResponseDto getBusById(Integer id) {
+    public BusResponseDTO getBusById(Integer id) {
 
         Bus bus = busRepo.findById(id)
                 .orElseThrow(() ->
@@ -67,7 +67,7 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public List<BusResponseDto> getBusesByOffice(Integer officeId) {
+    public List<BusResponseDTO> getBusesByOffice(Integer officeId) {
 
         List<Bus> buses = busRepo.findAll()
                 .stream()
@@ -82,8 +82,8 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public BusResponseDto updateBus(Integer busId,
-                                    BusRequestDto dto) {
+    public BusResponseDTO updateBus(Integer busId,
+                                    BusRequestDTO dto) {
 
         Bus bus = busRepo.findById(busId)
                 .orElseThrow(() ->

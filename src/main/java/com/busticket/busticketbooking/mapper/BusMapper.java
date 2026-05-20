@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.mapper;
 
-import com.busticket.busticketbooking.dto.BusDto.BusRequestDto;
-import com.busticket.busticketbooking.dto.BusDto.BusResponseDto;
+import com.busticket.busticketbooking.dto.BusDTO.BusRequestDTO;
+import com.busticket.busticketbooking.dto.BusDTO.BusResponseDTO;
 import com.busticket.busticketbooking.entity.AgencyOffice;
 import com.busticket.busticketbooking.entity.Bus;
 
@@ -11,7 +11,7 @@ public class BusMapper {
     }
 
     public static Bus mapToEntity(
-            BusRequestDto dto,
+            BusRequestDTO dto,
             AgencyOffice office
     ) {
         if (dto == null) {
@@ -26,12 +26,12 @@ public class BusMapper {
         return bus;
     }
 
-    public static BusResponseDto mapToResponseDto(Bus bus) {
+    public static BusResponseDTO mapToResponseDto(Bus bus) {
         if (bus == null) {
             return null;
         }
 
-        BusResponseDto responseDto = new BusResponseDto();
+        BusResponseDTO responseDto = new BusResponseDTO();
         responseDto.setId(bus.getId());
         responseDto.setOfficeId(bus.getOffice() != null ? bus.getOffice().getId() : null);
         responseDto.setRegistrationNumber(bus.getRegistrationNumber());

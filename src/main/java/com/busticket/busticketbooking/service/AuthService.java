@@ -1,8 +1,8 @@
 package com.busticket.busticketbooking.service;
 
-import com.busticket.busticketbooking.dto.authDTO.LoginRequestDTO;
-import com.busticket.busticketbooking.dto.authDTO.RegisterRequestDTO;
-import com.busticket.busticketbooking.dto.authDTO.AuthResponseDTO;
+import com.busticket.busticketbooking.dto.AuthDTO.LoginRequestDTO;
+import com.busticket.busticketbooking.dto.AuthDTO.RegisterRequestDTO;
+import com.busticket.busticketbooking.dto.AuthDTO.AuthResponseDTO;
 
 public interface AuthService {
     AuthResponseDTO register(RegisterRequestDTO request);

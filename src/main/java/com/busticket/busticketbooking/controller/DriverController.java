@@ -1,7 +1,7 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.DriverDto.DriverRequestDto;
-import com.busticket.busticketbooking.dto.DriverDto.DriverResponseDto;
+import com.busticket.busticketbooking.dto.DriverDTO.DriverRequestDTO;
+import com.busticket.busticketbooking.dto.DriverDTO.DriverResponseDTO;
 import com.busticket.busticketbooking.service.DriverService;
 
 import jakarta.validation.Valid;
@@ -21,20 +21,20 @@ public class DriverController {
     }
 
     @PostMapping
-    public DriverResponseDto createDriver(
-            @Valid @RequestBody DriverRequestDto dto) {
+    public DriverResponseDTO createDriver(
+            @Valid @RequestBody DriverRequestDTO dto) {
 
         return driverService.createDriver(dto);
     }
 
     @GetMapping
-    public List<DriverResponseDto> getAllDrivers() {
+    public List<DriverResponseDTO> getAllDrivers() {
 
         return driverService.getAllDrivers();
     }
 
     @GetMapping("/{id}")
-    public DriverResponseDto getDriverById(@PathVariable Integer id) {
+    public DriverResponseDTO getDriverById(@PathVariable Integer id) {
 
         return driverService.getDriverById(id);
     }
