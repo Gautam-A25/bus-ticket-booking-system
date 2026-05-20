@@ -1,4 +1,4 @@
-package com.busticket.busticketbooking;
+ package com.busticket.busticketbooking;
 
 import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.Agency;
@@ -185,6 +185,34 @@ class RepositoryTests {
         assertNotNull(saved.getId());
         assertEquals("Driver One", saved.getName());
     }
+
+    @Test
+void findRouteByFromCityAndToCityTest() {
+
+    Route route = new Route();
+
+    route.setFromCity("Chennai");
+    route.setToCity("Bangalore");
+    route.setBreakPoints(2);
+    route.setDuration(8);
+
+    routeRepo.save(route);
+
+    List<Route> routes =
+            routeRepo.findByFromCityAndToCity(
+                    "Chennai",
+                    "Bangalore");
+
+    assertFalse(routes.isEmpty());
+
+    assertEquals(
+            "Chennai",
+            routes.get(0).getFromCity());
+
+    assertEquals(
+            "Bangalore",
+            routes.get(0).getToCity());
+}
 
     @Test
     void findBusByOfficeIdTest() {
