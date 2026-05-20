@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bus Ticket Booking System — Module Endpoint Spec Sheet">
+    <title th:text="${module.name} + ' — Endpoint Spec'">Module Spec</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+    <!-- Animated background layers -->
+    <div class="bg-mesh"></div>
+    <div class="bg-grid"></div>
+
+    <div class="container">
+
+        <!-- ── HEADER ── -->
+        <header id="main-header">
+            <div class="logo-section">
+                <div class="logo-icon-wrap">🚌</div>
+                <div>
+                    <div class="logo-text">BusTicket System</div>
+                    <div class="logo-sub">Enterprise API Platform</div>
+                </div>
+            </div>
+
+            <a th:href="@{/}" class="back-btn" id="back-to-dashboard-btn">
+                ← Dashboard
+            </a>
+        </header>
+
+        <!-- ── DETAIL LAYOUT ── -->
+        <div class="detail-layout">
+
+            <!-- Module Hero Block -->
+            <div class="detail-hero" id="module-detail-header">
+                <div class="detail-icon-box">
+                    <span th:text="${module.icon}">📦</span>
+                </div>
+                <div class="detail-title-block">
+                    <div class="detail-eyebrow">Module Specification</div>
+                    <h1 class="detail-title" th:text="${module.name}">Module Name</h1>
+                    <p class="detail-desc" th:text="${module.description}">Description…</p>
+                </div>
+            </div>
+
+            <!-- Endpoints Section -->
+            <section id="endpoints-section">
+                <div class="section-header">
+                    <h2 class="section-title"
+                        th:text="'API Endpoints (' + ${module.endpointCount} + ')'">
+                        API Endpoints
+                    </h2>
+                    <div class="section-line"></div>
+                    <div class="section-count" th:text="${module.endpointCount} + ' routes'">— routes</div>
+                </div>
+
+                <div class="endpoints-list" id="endpoints-list">
+
+                    <div th:each="ep : ${module.endpoints}"
+                         class="endpoint-item"
+                         th:classappend="'method-' + ${#strings.toLowerCase(ep.method)} + '-item'">
+
+                        <span th:text="${ep.method}"
+                              class="badge"
+                              th:classappend="'method-' + ${#strings.toLowerCase(ep.method)}">GET</span>
+
+                        <span class="endpoint-path" th:text="${ep.path}">/api/v1/resource</span>
+                        <p class="endpoint-desc" th:text="${ep.description}">Description…</p>
+
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ── FOOTER ── -->
+        <footer class="page-footer">
+            <span>Bus Ticket Booking System</span>
+            <span class="footer-dot"></span>
+            <span>Spring Boot + Thymeleaf</span>
+            <span class="footer-dot"></span>
+            <span th:text="${module.name}">—</span>
+        </footer>
+
+    </div>
+</body>
+</html>
