@@ -120,11 +120,15 @@ public class BookingServiceImpl implements BookingService {
 
         // Booking cancel message
         String bookingDetails =
-                "Booking Cancelled Successfully : " +
-                        "ID = " + booking.getId() +
-                        ", Trip ID = " + booking.getTrip().getId() +
-                        ", Seat Number = " + booking.getSeatNumber() +
-                        ", Status = " + booking.getStatus();
+                "Booking Cancelled Successfully : \n" +
+                        "ID = " + booking.getId() + "\n" +
+                        "Trip ID = " +
+                        (booking.getTrip() != null
+                                ? booking.getTrip().getId()
+                                : null) + "\n" +
+                        "Seat Number = " + booking.getSeatNumber() + "\n" +
+                        "Status = " + booking.getStatus();
+
 
         // Delete booking from database
         bookingRepo.delete(booking);

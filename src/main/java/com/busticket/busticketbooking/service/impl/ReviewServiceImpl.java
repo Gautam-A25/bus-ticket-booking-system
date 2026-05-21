@@ -73,7 +73,31 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void removeReview(Integer reviewId) {
-        reviewRepo.deleteById(reviewId);
+    public String removeReview(Integer reviewId) {
+
+        Review review = reviewRepo.findById(reviewId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Review with ID " + reviewId + " not found"
+                        ));
+
+        String reviewDetails =
+                "Review Deleted Successfully : \n" +
+                        "ID = " + review.getId() + "\n" +
+                        "Customer ID = " +
+                        (review.getCustomer() != null
+                                ? review.getCustomer().getId()
+                                : null) + "\n" +
+                        "Trip ID = " +
+                        (review.getTrip() != null
+                                ? review.getTrip().getId()
+                                : null) + "\n" +
+                        "Rating = " + review.getRating() + "\n" +
+                        "Comment = " + review.getComment() + "\n" +
+                        "Review Date = " + review.getReviewDate();
+
+        reviewRepo.delete(review);
+
+        return reviewDetails;
     }
 }

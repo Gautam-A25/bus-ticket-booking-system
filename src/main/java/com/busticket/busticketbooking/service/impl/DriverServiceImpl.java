@@ -127,11 +127,31 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void deleteDriver(Integer id) {
+    public String deleteDriver(Integer id) {
 
         Driver driver = driverRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Driver with ID " + id + " not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Driver with ID " + id + " not found"
+                        ));
+
+        String driverDetails =
+                "Driver Deleted Successfully : \n" +
+                        "ID = " + driver.getId() + "\n" +
+                        "License Number = " + driver.getLicenseNumber() + "\n" +
+                        "Name = " + driver.getName() + "\n" +
+                        "Phone = " + driver.getPhone() + "\n" +
+                        "Office ID = " +
+                        (driver.getOffice() != null
+                                ? driver.getOffice().getId()
+                                : null) + "\n" +
+                        "Address ID = " +
+                        (driver.getAddress() != null
+                                ? driver.getAddress().getId()
+                                : null);
 
         driverRepo.delete(driver);
+
+        return driverDetails;
     }
 }

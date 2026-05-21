@@ -131,11 +131,16 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Customer delete message
         String customerDetails =
-                "Customer Deleted Successfully : " +
-                        "ID = " + customer.getId() +
-                        ", Name = " + customer.getName() +
-                        ", Email = " + customer.getEmail() +
-                        ", Phone = " + customer.getPhone();
+                "Customer Deleted Successfully : \n" +
+                        "ID = " + customer.getId() + "\n" +
+                        "Name = " + customer.getName() + "\n" +
+                        "Email = " + customer.getEmail() + "\n" +
+                        "Phone = " + customer.getPhone() + "\n" +
+                        "Address ID = " +
+                        (customer.getAddress() != null
+                                ? customer.getAddress().getId()
+                                : null);
+
 
         // Delete customer from database
         customerRepo.delete(customer);

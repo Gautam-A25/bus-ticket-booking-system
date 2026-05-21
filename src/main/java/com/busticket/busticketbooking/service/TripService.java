@@ -16,7 +16,7 @@ public interface TripService {
     TripResponseDTO updateTrip(Integer id,
                                TripRequestDTO tripRequestDto);
 
-    void closeTrip(Integer id);
+    String closeTrip(Integer id);
 
     List<TripResponseDTO> searchTrips(String fromCity,
                                       String toCity);

@@ -46,8 +46,6 @@ public class RouteController {
     @DeleteMapping("/{id}")
     public String deleteRoute(@PathVariable Integer id) {
 
-        routeService.deleteRoute(id);
-
-        return "Route deleted successfully";
+        return routeService.deleteRoute(id);
     }
 }

@@ -16,5 +16,5 @@ public interface RouteService {
     RouteResponseDTO updateRoute(Integer id,
                                  RouteRequestDTO routeRequestDto);
 
-    void deleteRoute(Integer id);
+    String deleteRoute(Integer id);
 }

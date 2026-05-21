@@ -8,5 +8,5 @@ public interface ReviewService {
     ReviewResponseDTO submitReview(Integer tripId, ReviewRequestDTO requestDTO);
     List<ReviewResponseDTO> getTripReviews(Integer tripId);
     List<ReviewResponseDTO> getCustomerReviews(Integer customerId);
-    void removeReview(Integer reviewId);
+    String removeReview(Integer reviewId);
 }
