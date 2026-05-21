@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Edit Agency' : 'Create Agency'">Agency Form</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">🏢</div>
+            <div>
+                <div class="logo-text">Bus Ticket Booking</div>
+                <div class="logo-sub">Agency CRUD</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/ui/agencies}">← Back to List</a>
+        </div>
+    </header>
+
+    <section class="detail-hero">
+        <div class="detail-icon-box">🏢</div>
+
+        <div class="detail-title-block">
+            <div class="detail-eyebrow" th:text="${isEdit} ? 'Update Agency' : 'New Agency'">
+                New Agency
+            </div>
+            <h1 class="detail-title" th:text="${isEdit} ? 'Edit Agency' : 'Create Agency'">
+                Agency Form
+            </h1>
+            <p class="detail-desc">
+                Fill in the agency details below. Validation messages will appear next to each field.
+            </p>
+        </div>
+    </section>
+
+    <section class="crud-panel">
+        <form th:action="${isEdit} ? @{/ui/agencies/{id}(id=${agencyId})} : @{/ui/agencies}"
+              th:object="${agency}"
+              method="post"
+              class="crud-form">
+
+            <input type="hidden" th:if="${isEdit}" name="_method" value="PUT">
+
+            <div class="field-grid">
+                <label for="name">Agency Name</label>
+                <input id="name"
+                       type="text"
+                       th:field="*{name}"
+                       placeholder="Enter agency name">
+                <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="contactPersonName">Contact Person Name</label>
+                <input id="contactPersonName"
+                       type="text"
+                       th:field="*{contactPersonName}"
+                       placeholder="Enter contact person name">
+                <p class="field-error" th:if="${#fields.hasErrors('contactPersonName')}" th:errors="*{contactPersonName}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="email">Email</label>
+                <input id="email"
+                       type="email"
+                       th:field="*{email}"
+                       placeholder="Enter email">
+                <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="phone">Phone</label>
+                <input id="phone"
+                       type="text"
+                       th:field="*{phone}"
+                       placeholder="Enter phone number">
+                <p class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="card-cta crud-submit">
+                    <span th:text="${isEdit} ? 'Update Agency' : 'Create Agency'">Submit</span>
+                    <span class="card-cta-arrow">→</span>
+                </button>
+
+                <a th:href="@{/ui/agencies}" class="secondary-button">Cancel</a>
+            </div>
+        </form>
+    </section>
+
+</div>
+
+</body>
+</html>

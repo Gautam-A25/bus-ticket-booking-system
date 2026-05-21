@@ -1240,3 +1240,19 @@ body::before {
         font-size: 0.82rem;
     }
 }
+.field-grid select {
+    width: 100%;
+    background: rgba(15, 12, 9, 0.85);
+    border: 1px solid rgba(249, 115, 22, 0.12);
+    color: var(--text-main);
+    padding: 0.95rem 1rem;
+    border-radius: 14px;
+    outline: none;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.field-grid select:focus {
+    border-color: rgba(249, 115, 22, 0.42);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08);
+}
