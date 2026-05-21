@@ -38,10 +38,8 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-
         provider.setUserDetailsService(customUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
-
         return provider;
     }
 
@@ -65,6 +63,7 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/",
                         "/modules/**",
+                        "/ui/**",
                         "/css/**",
                         "/js/**",
                         "/images/**",
