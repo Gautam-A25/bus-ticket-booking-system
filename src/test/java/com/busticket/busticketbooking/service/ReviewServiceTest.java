@@ -30,9 +30,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+// Unit tests for ReviewServiceImpl using Mockito (no real database or Spring context)
 @ExtendWith(MockitoExtension.class)
 public class ReviewServiceTest {
 
+    // Mock repositories — these simulate DB behaviour without hitting a real database
     @Mock
     private ReviewRepo reviewRepo;
 
@@ -42,6 +44,7 @@ public class ReviewServiceTest {
     @Mock
     private CustomerRepo customerRepo;
 
+    // Inject the mocks into the actual service implementation being tested
     @InjectMocks
     private ReviewServiceImpl reviewService;
 
@@ -50,13 +53,16 @@ public class ReviewServiceTest {
     private Customer customer;
     private Review review;
 
+    // Set up reusable test data before each test runs
     @BeforeEach
     public void setUp() {
+        // A sample review request: customer 2, rating 5, with a comment
         requestDTO = new ReviewRequestDTO();
         requestDTO.setCustomerId(2);
         requestDTO.setRating(5);
         requestDTO.setComment("Amazing journey!");
 
+        // A trip that departed 1 day ago (so reviews can be submitted)
         trip = new Trip();
         trip.setId(11);
         trip.setDepartureTime(LocalDateTime.now().minusDays(1)); // Departed in the past
@@ -64,6 +70,7 @@ public class ReviewServiceTest {
         customer = new Customer();
         customer.setId(2);
 
+        // A fully populated review entity that represents the saved result
         review = new Review();
         review.setId(50);
         review.setTrip(trip);

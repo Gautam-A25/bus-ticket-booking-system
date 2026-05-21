@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+// Concrete implementation of PaymentService; handles all payment business logic
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
@@ -34,6 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final CustomerRepo customerRepo;
 
+    // Constructor injection — Spring injects all three repositories automatically
     public PaymentServiceImpl(PaymentRepo paymentRepo,
                               BookingRepo bookingRepo,
                               CustomerRepo customerRepo) {
@@ -47,6 +49,7 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentResponseDTO makePayment(
             PaymentRequestDTO requestDTO) {
 
+        // Verify the booking exists; throw 404 if not found
         Booking booking = bookingRepo.findById(
                         requestDTO.getBookingId())
                 .orElseThrow(() ->
@@ -55,6 +58,7 @@ public class PaymentServiceImpl implements PaymentService {
                                         + requestDTO.getBookingId()
                                         + " not found"));
 
+        // Verify the customer exists; throw 404 if not found
         Customer customer = customerRepo.findById(
                         requestDTO.getCustomerId())
                 .orElseThrow(() ->
@@ -63,6 +67,7 @@ public class PaymentServiceImpl implements PaymentService {
                                         + requestDTO.getCustomerId()
                                         + " not found"));
 
+        // Reject payment early if the status is already FAILED or DECLINED
         if ("FAILED".equalsIgnoreCase(
                 requestDTO.getPaymentStatus())
                 ||
@@ -74,6 +79,7 @@ public class PaymentServiceImpl implements PaymentService {
                             + requestDTO.getPaymentStatus());
         }
 
+        // Build a new Payment entity and populate its fields
         Payment payment = new Payment();
 
         payment.setBooking(booking);
@@ -82,12 +88,13 @@ public class PaymentServiceImpl implements PaymentService {
 
         payment.setAmount(requestDTO.getAmount());
 
-        payment.setPaymentDate(LocalDateTime.now());
+        payment.setPaymentDate(LocalDateTime.now());  // Record the current timestamp
 
         payment.setPaymentStatus(
                 parsePaymentStatus(
                         requestDTO.getPaymentStatus()));
 
+        // Save to database and return as a response DTO
         Payment savedPayment =
                 paymentRepo.save(payment);
 
@@ -99,6 +106,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Optional<PaymentResponseDTO> getPaymentDetails(
             Integer paymentId) {
 
+        // Look up payment by ID and map to response DTO if found
         return paymentRepo.findById(paymentId)
                 .map(PaymentMapper::mapToResponseDTO);
     }
@@ -107,6 +115,7 @@ public class PaymentServiceImpl implements PaymentService {
     public List<PaymentResponseDTO>
     getCustomerPaymentHistory(Integer customerId) {
 
+        // Fetch all payments by customer ID and convert each to a response DTO
         return paymentRepo.findByCustomerId(customerId)
                 .stream()
                 .map(PaymentMapper::mapToResponseDTO)
@@ -117,6 +126,7 @@ public class PaymentServiceImpl implements PaymentService {
     public Optional<PaymentResponseDTO>
     getBookingPaymentInfo(Integer bookingId) {
 
+        // Fetch the payment linked to this booking and map it if present
         return paymentRepo.findByBookingId(bookingId)
                 .map(PaymentMapper::mapToResponseDTO);
     }
@@ -126,6 +136,7 @@ public class PaymentServiceImpl implements PaymentService {
             Integer paymentId,
             String status) {
 
+        // Fetch existing payment; throw 404 if not found
         Payment payment = paymentRepo.findById(paymentId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
@@ -133,9 +144,11 @@ public class PaymentServiceImpl implements PaymentService {
                                         + paymentId
                                         + " not found"));
 
+        // Update the status field using the helper method
         payment.setPaymentStatus(
                 parsePaymentStatus(status));
 
+        // Save the updated payment and return the response DTO
         Payment updatedPayment =
                 paymentRepo.save(payment);
 
@@ -143,11 +156,13 @@ public class PaymentServiceImpl implements PaymentService {
                 updatedPayment);
     }
 
+    // Helper method: converts a status string into the PaymentStatus enum
+    // Defaults to Failed if the string is null or unrecognized
     private Payment.PaymentStatus parsePaymentStatus(
             String status) {
 
         if (status == null) {
-
+            // Null status defaults to Failed
             return Payment.PaymentStatus.Failed;
         }
 
@@ -163,6 +178,7 @@ public class PaymentServiceImpl implements PaymentService {
             return Payment.PaymentStatus.Failed;
         }
 
+        // Any other unrecognized value is treated as Failed
         return Payment.PaymentStatus.Failed;
     }
 }
