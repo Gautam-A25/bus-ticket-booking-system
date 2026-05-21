@@ -2,10 +2,15 @@ spring:
   application:
     name: BusTicketBooking
 
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
   datasource:
     url: jdbc:mysql://localhost:3306/busticketbooking
     username: root
-    password: password
+    password: AayushCode@5252
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

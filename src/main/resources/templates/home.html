@@ -1,156 +1,130 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Bus Ticket Booking System — Enterprise API Developer Dashboard">
-    <title>Bus Ticket Booking — Developer Dashboard</title>
+    <title>Bus Ticket Booking</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
 <body>
 
-    <!-- Animated background layers -->
-    <div class="bg-mesh"></div>
-    <div class="bg-grid"></div>
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
 
-    <div class="container">
+<div class="container">
 
-        <!-- ── HEADER ── -->
-        <header id="main-header">
-            <div class="logo-section">
-                <div class="logo-icon-wrap">🚌</div>
-                <div>
-                    <div class="logo-text">BusTicket System</div>
-                    <div class="logo-sub">Enterprise API Platform</div>
-                </div>
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">🚌</div>
+            <div>
+                <div class="logo-text">Bus Ticket Booking</div>
+                <div class="logo-sub">Thymeleaf Dashboard</div>
             </div>
+        </div>
 
-            <div class="header-right">
-                <div class="status-pill" id="system-status-badge">
-                    <span class="status-dot"></span>
-                    Systems Operational
-                </div>
-                <div class="team-chips" id="participant-card">
-                    <span class="team-label">Team</span>
-                    <span th:each="member : ${teamMembers}" class="team-chip" th:text="${member}">—</span>
-                </div>
+        <div class="header-right">
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                UI Ready
             </div>
-        </header>
+        </div>
+    </header>
 
-        <!-- ── HERO ── -->
-        <section class="hero" id="dashboard-hero">
+    <section class="hero">
+        <div class="hero-sparks">
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+        </div>
 
-            <!-- Floating sparkle particles -->
-            <div class="hero-sparks">
-                <div class="spark"></div>
-                <div class="spark"></div>
-                <div class="spark"></div>
-                <div class="spark"></div>
-                <div class="spark"></div>
-                <div class="spark"></div>
+        <div class="hero-eyebrow">
+            <span class="hero-eyebrow-dot"></span>
+            Project Overview
+        </div>
+
+        <h1 class="hero-title">Bus Ticket Booking System</h1>
+
+        <p class="hero-desc" th:text="${projectDescription}">
+            A robust, transactional enterprise backend API ecosystem for state-wide passenger transport and scheduling systems.
+        </p>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-val" th:text="${#lists.size(modules)}">12</span>
+                <span class="stat-label">Modules</span>
             </div>
-
-            <div class="hero-eyebrow">
-                <span class="hero-eyebrow-dot"></span>
-                Enterprise Backend Dashboard
+            <div class="stat-item">
+                <span class="stat-val" th:text="${#lists.size(teamMembers)}">5</span>
+                <span class="stat-label">Team Members</span>
             </div>
+        </div>
+    </section>
 
-            <h1 class="hero-title">API Services<br>Command Center</h1>
+    <section>
+        <div class="section-header">
+            <h2 class="section-title">Team Members</h2>
+            <div class="section-line"></div>
+        </div>
 
-            <p class="hero-desc" th:text="${projectDescription}">
-                Loading project description…
-            </p>
+        <div class="team-chips">
+            <span class="team-label">Members</span>
+            <span class="team-chip" th:each="member : ${teamMembers}" th:text="${member}">Member</span>
+        </div>
+    </section>
 
-            <!-- Tech keyword chips -->
-            <div class="hero-tags">
-                <span class="hero-tag">🔒 JWT Security</span>
-                <span class="hero-tag">⚡ Live Concurrency</span>
-                <span class="hero-tag">🗄️ JPA + MySQL</span>
-                <span class="hero-tag">✅ 64 Tests Passing</span>
-                <span class="hero-tag">🚌 12 Modules</span>
-                <span class="hero-tag">🔥 Spring Boot 3</span>
-            </div>
+    <section style="margin-top: 3rem;">
+        <div class="section-header">
+            <h2 class="section-title">Modules</h2>
+            <div class="section-line"></div>
+            <span class="section-count" th:text="${#lists.size(modules)} + ' TOTAL'">12 TOTAL</span>
+        </div>
 
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-val" th:text="${modules.size()}">12</span>
-                    <span class="stat-label">Active Modules</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-val">64</span>
-                    <span class="stat-label">Unit Tests</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-val">100%</span>
-                    <span class="stat-label">Build Success</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-val">REST</span>
-                    <span class="stat-label">Architecture</span>
-                </div>
-            </div>
-        </section>
+        <div class="grid">
+            <a class="card"
+               th:each="module, stat : ${modules}"
+               th:href="@{/modules/{id}(id=${module.id})}"
+               th:style="'--i:' + ${stat.index}">
 
-        <!-- ── MODULES GRID ── -->
-        <section id="modules-section">
-            <div class="section-header">
-                <h2 class="section-title">Completed Backend Modules</h2>
-                <div class="section-line"></div>
-                <div class="section-count" th:text="${modules.size()} + ' Modules'">12 Modules</div>
-            </div>
-
-            <div class="grid" id="modules-grid">
-                <a th:each="m, iter : ${modules}"
-                   th:href="@{/modules/{id}(id=${m.id})}"
-                   class="card"
-                   th:id="'module-card-' + ${m.id}"
-                   th:style="'--i:' + ${iter.index}">
-
-                    <div class="card-top">
-                        <div class="card-icon-wrap">
-                            <span th:text="${m.icon}">📦</span>
-                        </div>
-                        <div class="card-meta">
-                            <span class="card-badge" th:text="${m.endpointCount} + ' APIs'">— APIs</span>
-                        </div>
+                <div class="card-top">
+                    <div class="card-icon-wrap" th:text="${module.icon}">📍</div>
+                    <div class="card-meta">
+                        <span class="card-badge" th:text="${module.getEndpointCount()} + ' ENDPOINTS'">5 ENDPOINTS</span>
                     </div>
+                </div>
 
-                    <h3 class="card-title" th:text="${m.name}">Module Name</h3>
-                    <p class="card-desc" th:text="${m.description}">Description…</p>
+                <h3 class="card-title" th:text="${module.name}">Module Name</h3>
+                <p class="card-desc" th:text="${module.description}">Module description</p>
 
-                    <div class="card-progress-wrap">
-                        <div class="card-progress-label">
-                            <span>Coverage</span>
-                            <span th:text="${m.endpointCount} + ' endpoints'">— endpoints</span>
-                        </div>
-                        <div class="card-progress-bar">
-                            <div class="card-progress-fill"
-                                 th:style="'width:' + ${m.endpointCount * 14} + '%'"></div>
-                        </div>
+                <div class="card-progress-wrap">
+                    <div class="card-progress-label">
+                        <span>Coverage</span>
+                        <span>Ready</span>
                     </div>
-
-                    <div class="card-footer">
-                        <span class="card-cta">
-                            Explore Endpoints
-                            <span class="card-cta-arrow">→</span>
-                        </span>
+                    <div class="card-progress-bar">
+                        <div class="card-progress-fill" th:style="'width: 100%'"></div>
                     </div>
+                </div>
 
-                </a>
-            </div>
-        </section>
+                <div class="card-footer">
+                    <span class="card-cta">
+                        Open Module
+                        <span class="card-cta-arrow">→</span>
+                    </span>
+                </div>
+            </a>
+        </div>
+    </section>
 
-        <!-- ── FOOTER ── -->
-        <footer class="page-footer">
-            <span>Bus Ticket Booking System</span>
-            <span class="footer-dot"></span>
-            <span>Spring Boot + Thymeleaf</span>
-            <span class="footer-dot"></span>
-            <span th:each="member, iter : ${teamMembers}">
-                <span th:text="${member}">—</span><span th:if="!${iter.last}"> · </span>
-            </span>
-        </footer>
+    <footer class="page-footer">
+        <span class="footer-dot"></span>
+        <span>Spring Boot • Thymeleaf • Secure REST APIs</span>
+        <span class="footer-dot"></span>
+    </footer>
 
-    </div>
+</div>
+
 </body>
 </html>

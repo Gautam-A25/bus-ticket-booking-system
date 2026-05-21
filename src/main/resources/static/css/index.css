@@ -409,7 +409,6 @@ body::before {
     max-width: 680px;
     margin-bottom: 2rem;
     position: relative;
-    /* Animated shimmer gradient across text */
     background: linear-gradient(
         90deg,
         #d4a96a 0%,
@@ -498,7 +497,6 @@ body::before {
     box-shadow: 0 6px 20px rgba(249,115,22,0.2);
 }
 
-/* Pulsing animation on individual tags */
 .hero-tag:nth-child(1) { animation: tag-enter 0.5s ease 0.05s both, tag-pulse-1 3s ease-in-out 1s infinite; }
 .hero-tag:nth-child(4) { animation: tag-enter 0.5s ease 0.2s both,  tag-pulse-2 4s ease-in-out 2s infinite; }
 
@@ -510,7 +508,6 @@ body::before {
     0%, 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
     50%       { box-shadow: 0 0 12px 2px rgba(52,211,153,0.25); }
 }
-
 
 .hero-stats {
     display: flex;
@@ -601,7 +598,6 @@ body::before {
     gap: 1.25rem;
 }
 
-/* Staggered entrance animation */
 .card { --i: 0; animation: card-enter 0.55s cubic-bezier(0.2, 0, 0, 1) calc(var(--i) * 60ms) both; }
 @keyframes card-enter {
     from { opacity: 0; transform: translateY(24px); }
@@ -624,7 +620,6 @@ body::before {
     cursor: pointer;
 }
 
-/* Card shimmer on hover */
 .card::before {
     content: '';
     position: absolute;
@@ -636,7 +631,6 @@ body::before {
     pointer-events: none;
 }
 
-/* Card inner glow on hover */
 .card::after {
     content: '';
     position: absolute;
@@ -725,7 +719,6 @@ body::before {
     margin-bottom: 1.5rem;
 }
 
-/* Endpoint count bar */
 .card-progress-wrap {
     margin-bottom: 1.25rem;
 }
@@ -894,7 +887,6 @@ body::before {
     to   { opacity: 1; transform: translateX(0); }
 }
 
-/* Left accent bar colored by method */
 .endpoint-item::before {
     content: '';
     position: absolute;
@@ -916,7 +908,6 @@ body::before {
     transform: translateX(4px);
 }
 
-/* Badge */
 .badge {
     width: 80px;
     padding: 0.38rem 0;
@@ -983,10 +974,245 @@ body::before {
 }
 
 /* ============================================================
-   RESPONSIVE
+   CRUD UI ADDITIONS
    ============================================================ */
+.crud-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+}
+
+.crud-toolbar-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.crud-note {
+    margin-top: 0.45rem;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+.crud-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 26px;
+    padding: 1.25rem;
+    backdrop-filter: var(--glass-blur);
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.crud-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.crud-table thead {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.crud-table th,
+.crud-table td {
+    padding: 1rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(249, 115, 22, 0.08);
+    vertical-align: top;
+}
+
+.crud-table th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+.crud-table tbody tr:hover {
+    background: rgba(249, 115, 22, 0.04);
+}
+
+.empty-state {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 2rem 1rem !important;
+}
+
+.crud-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55rem 0.9rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.edit-action {
+    background: rgba(56, 189, 248, 0.08);
+    border-color: rgba(56, 189, 248, 0.22);
+    color: #7dd3fc;
+}
+
+.edit-action:hover {
+    background: rgba(56, 189, 248, 0.14);
+    border-color: rgba(56, 189, 248, 0.34);
+}
+
+.delete-action {
+    background: rgba(244, 63, 94, 0.08);
+    border-color: rgba(244, 63, 94, 0.22);
+    color: #fda4af;
+}
+
+.delete-action:hover {
+    background: rgba(244, 63, 94, 0.14);
+    border-color: rgba(244, 63, 94, 0.34);
+}
+
+.field-grid {
+    display: grid;
+    gap: 0.55rem;
+}
+
+.field-grid label {
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--text-sub);
+}
+
+.field-grid input {
+    width: 100%;
+    background: rgba(15, 12, 9, 0.85);
+    border: 1px solid rgba(249, 115, 22, 0.12);
+    color: var(--text-main);
+    padding: 0.95rem 1rem;
+    border-radius: 14px;
+    outline: none;
+    transition: var(--transition);
+}
+
+.field-grid input:focus {
+    border-color: rgba(249, 115, 22, 0.42);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08);
+}
+
+.field-error {
+    color: #fca5a5;
+    font-size: 0.82rem;
+    margin-top: -0.1rem;
+}
+
+.crud-form {
+    display: grid;
+    gap: 1.15rem;
+}
+
+.crud-submit {
+    border: none;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+}
+
+.crud-submit:hover {
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+.pagination-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-top: 1.4rem;
+    padding-top: 1rem;
+}
+
+.pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+}
+
+.page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 0.95rem;
+    border-radius: 12px;
+    background: rgba(20, 14, 8, 0.82);
+    border: 1px solid rgba(249, 115, 22, 0.14);
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    backdrop-filter: var(--glass-blur);
+}
+
+.page-link:hover {
+    border-color: rgba(249, 115, 22, 0.34);
+    background: rgba(249, 115, 22, 0.08);
+    transform: translateY(-1px);
+}
+
+.page-link.active {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(249, 115, 22, 0.18);
+}
+
+.page-link.disabled {
+    pointer-events: none;
+    opacity: 0.38;
+}
+
+.nav-link {
+    min-width: auto;
+    padding: 0 1rem;
+}
+
 @media (max-width: 768px) {
-    #main-header { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+    .crud-toolbar {
+        align-items: flex-start;
+    }
+
+    .crud-panel {
+        padding: 1rem;
+    }
+
+    .crud-table th,
+    .crud-table td {
+        padding: 0.85rem 0.8rem;
+    }
+
+    #main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.25rem;
+    }
 
     .hero { padding: 2rem 1.5rem; }
     .hero-title { font-size: 1.8rem; }
@@ -1002,4 +1228,15 @@ body::before {
 
     .endpoint-item { grid-template-columns: 72px 1fr; padding: 1rem 1rem 1rem 1.25rem; }
     .endpoint-path { font-size: 0.82rem; }
+
+    .pagination-wrap {
+        gap: 0.5rem;
+    }
+
+    .page-link {
+        height: 38px;
+        min-width: 38px;
+        padding: 0 0.75rem;
+        font-size: 0.82rem;
+    }
 }
