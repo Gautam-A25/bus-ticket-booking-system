@@ -3,10 +3,13 @@ package com.busticket.busticketbooking.service.impl;
 import com.busticket.busticketbooking.dto.AddressDTO.AddressRequestDTO;
 import com.busticket.busticketbooking.dto.AddressDTO.AddressResponseDTO;
 import com.busticket.busticketbooking.entity.Address;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.mapper.AddressMapper;
 import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.service.AddressService;
-import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,6 +44,14 @@ public class AddressServiceImpl implements AddressService {
                 .stream()
                 .map(AddressMapper::toResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<AddressResponseDTO> getAddressPage(int page, int size) {
+        return addressRepo.findAll(
+                        PageRequest.of(page, size, Sort.by("id").ascending())
+                )
+                .map(AddressMapper::toResponseDTO);
     }
 
     @Override
