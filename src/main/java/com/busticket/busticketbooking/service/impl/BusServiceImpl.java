@@ -15,12 +15,34 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/*
+ * @Service tells Spring Boot that this class
+ * contains business logic.
+ *
+ * Spring automatically creates Bean object
+ * for this service class.
+ */
 @Service
 public class BusServiceImpl implements BusService {
 
+    /*
+     * Repository object used to perform
+     * database operations on Bus table.
+     */
     private final BusRepo busRepo;
+
+    /*
+     * Repository object used to access
+     * AgencyOffice table.
+     */
     private final AgencyOfficeRepo officeRepo;
 
+    /*
+     * Constructor Injection.
+     *
+     * Spring automatically injects required
+     * repository dependencies here.
+     */
     public BusServiceImpl(BusRepo busRepo,
                           AgencyOfficeRepo officeRepo) {
 
@@ -28,88 +50,199 @@ public class BusServiceImpl implements BusService {
         this.officeRepo = officeRepo;
     }
 
+    /*
+     * Creates and saves new Bus data.
+     */
     @Override
     public BusResponseDTO createBus(BusRequestDTO dto) {
 
+        /*
+         * Fetch office from database using office ID.
+         *
+         * If office not found,
+         * throw custom exception.
+         */
         AgencyOffice office = officeRepo.findById(dto.getOfficeId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Office not found"));
 
+        /*
+         * Creating new Bus entity object.
+         */
         Bus bus = new Bus();
 
+        /*
+         * Setting office relationship.
+         */
         bus.setOffice(office);
+
+        /*
+         * Setting registration number.
+         */
         bus.setRegistrationNumber(dto.getRegistrationNumber());
+
+        /*
+         * Setting seating capacity.
+         */
         bus.setCapacity(dto.getCapacity());
+
+        /*
+         * Setting bus type.
+         */
         bus.setType(dto.getType());
 
+        /*
+         * Saving bus object into database.
+         */
         Bus savedBus = busRepo.save(bus);
 
+        /*
+         * Convert Entity -> Response DTO
+         * and return response.
+         */
         return BusMapper.mapToResponseDto(savedBus);
     }
 
+    /*
+     * Fetches all buses from database.
+     */
     @Override
     public List<BusResponseDTO> getAllBuses() {
 
+        /*
+         * findAll() fetches all bus records.
+         *
+         * stream() processes list data.
+         *
+         * map() converts each Bus entity
+         * into BusResponseDTO.
+         *
+         * collect() converts stream back to list.
+         */
         return busRepo.findAll()
                 .stream()
                 .map(BusMapper::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
+    /*
+     * Fetches single bus using ID.
+     */
     @Override
     public BusResponseDTO getBusById(Integer id) {
 
+        /*
+         * Find bus using ID.
+         *
+         * If bus not found,
+         * throw ResourceNotFoundException.
+         */
         Bus bus = busRepo.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Bus with ID " + id + " not found"));
+                        new ResourceNotFoundException(
+                                "Bus with ID " + id + " not found"
+                        ));
 
+        /*
+         * Convert entity into response DTO.
+         */
         return BusMapper.mapToResponseDto(bus);
     }
 
+    /*
+     * Fetches all buses belonging to specific office.
+     */
     @Override
     public List<BusResponseDTO> getBusesByOffice(Integer officeId) {
 
+        /*
+         * Fetch all buses.
+         *
+         * Filter buses based on office ID.
+         */
         List<Bus> buses = busRepo.findAll()
                 .stream()
+
+                /*
+                 * Keep only buses whose office ID matches.
+                 */
                 .filter(bus ->
                         bus.getOffice() != null &&
                         bus.getOffice().getId().equals(officeId))
+
+                /*
+                 * Convert filtered stream back into list.
+                 */
                 .collect(Collectors.toList());
 
+        /*
+         * Convert Bus entities into DTOs.
+         */
         return buses.stream()
                 .map(BusMapper::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
+    /*
+     * Updates existing bus details.
+     */
     @Override
     public BusResponseDTO updateBus(Integer busId,
                                     BusRequestDTO dto) {
 
+        /*
+         * Find existing bus from database.
+         */
         Bus bus = busRepo.findById(busId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Bus with ID " + busId + " not found"));
+                        new ResourceNotFoundException(
+                                "Bus with ID " + busId + " not found"
+                        ));
 
+        /*
+         * Fetch office using office ID.
+         */
         AgencyOffice office = officeRepo.findById(dto.getOfficeId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Office not found"));
 
+        /*
+         * Updating bus details.
+         */
         bus.setOffice(office);
         bus.setRegistrationNumber(dto.getRegistrationNumber());
         bus.setCapacity(dto.getCapacity());
         bus.setType(dto.getType());
 
+        /*
+         * Save updated data into database.
+         */
         Bus updatedBus = busRepo.save(bus);
 
+        /*
+         * Convert updated entity into DTO.
+         */
         return BusMapper.mapToResponseDto(updatedBus);
     }
 
+    /*
+     * Deletes bus using ID.
+     */
     @Override
     public void deleteBus(Integer id) {
 
+        /*
+         * Find bus from database.
+         */
         Bus bus = busRepo.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Bus with ID " + id + " not found"));
+                        new ResourceNotFoundException(
+                                "Bus with ID " + id + " not found"
+                        ));
 
+        /*
+         * Delete bus from database.
+         */
         busRepo.delete(bus);
     }
 }
