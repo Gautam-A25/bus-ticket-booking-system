@@ -2,13 +2,16 @@ package com.busticket.busticketbooking.controller;
 
 import com.busticket.busticketbooking.dto.TripDTO.TripRequestDTO;
 import com.busticket.busticketbooking.dto.TripDTO.TripResponseDTO;
+import com.busticket.busticketbooking.dto.TripDTO.SeatAvailabilityDTO;
 import com.busticket.busticketbooking.service.TripService;
 
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -56,14 +59,31 @@ public class TripController {
     @GetMapping("/search")
     public List<TripResponseDTO> searchTrips(
             @RequestParam String fromCity,
-            @RequestParam String toCity) {
+            @RequestParam String toCity,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
+        if (date != null) {
+            return tripService.searchTrips(fromCity, toCity, date);
+        }
         return tripService.searchTrips(fromCity, toCity);
     }
 
     @GetMapping("/{id}/seats")
-    public Integer getAvailableSeats(@PathVariable Integer id) {
+    public List<SeatAvailabilityDTO> getSeatAvailability(@PathVariable Integer id) {
 
-        return tripService.getAvailableSeats(id);
+        return tripService.getSeatAvailability(id);
+    }
+
+    @GetMapping("/{id}/seats/booked")
+    public List<Integer> getBookedSeats(@PathVariable Integer id) {
+
+        return tripService.getBookedSeats(id);
+    }
+
+    @GetMapping("/{id}/seats/available")
+    public List<Integer> getAvailableSeatList(@PathVariable Integer id) {
+
+        return tripService.getAvailableSeatList(id);
     }
 }

@@ -2,16 +2,23 @@ package com.busticket.busticketbooking.service.impl;
 
 import com.busticket.busticketbooking.dto.TripDTO.TripRequestDTO;
 import com.busticket.busticketbooking.dto.TripDTO.TripResponseDTO;
+import com.busticket.busticketbooking.dto.TripDTO.SeatAvailabilityDTO;
 import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.Bus;
 import com.busticket.busticketbooking.entity.Driver;
 import com.busticket.busticketbooking.entity.Route;
 import com.busticket.busticketbooking.entity.Trip;
+import com.busticket.busticketbooking.entity.Booking;
 import com.busticket.busticketbooking.repo.TripRepo;
+import com.busticket.busticketbooking.repo.BookingRepo;
 import com.busticket.busticketbooking.service.TripService;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +28,9 @@ public class TripServiceImpl implements TripService {
 
     @Autowired
     private TripRepo tripRepo;
+
+    @Autowired
+    private BookingRepo bookingRepo;
 
     @Override
     public List<TripResponseDTO> getAllTrips() {
@@ -121,13 +131,74 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public Integer getAvailableSeats(Integer id) {
+    public List<TripResponseDTO> searchTrips(String fromCity,
+                                             String toCity,
+                                             LocalDate date) {
 
-        Trip trip = tripRepo.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Trip not found with id: " + id));
+        List<Trip> trips =
+                tripRepo.findByRoute_FromCityAndRoute_ToCityAndTripDate(
+                        fromCity,
+                        toCity,
+                        date);
 
-        return trip.getAvailableSeats();
+        return trips.stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SeatAvailabilityDTO> getSeatAvailability(Integer tripId) {
+        Trip trip = tripRepo.findById(tripId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id: " + tripId));
+        
+        Integer capacity = trip.getBus().getCapacity();
+        List<Booking> bookings = bookingRepo.findByTripId(tripId);
+        
+        List<Integer> bookedSeats = bookings.stream()
+                .filter(b -> b.getStatus() == Booking.BookingStatus.Booked)
+                .map(Booking::getSeatNumber)
+                .toList();
+
+        List<SeatAvailabilityDTO> availability = new ArrayList<>();
+        for (int i = 1; i <= capacity; i++) {
+            String status = bookedSeats.contains(i) ? "Booked" : "Available";
+            availability.add(new SeatAvailabilityDTO(i, status));
+        }
+        return availability;
+    }
+
+    @Override
+    public List<Integer> getBookedSeats(Integer tripId) {
+        Trip trip = tripRepo.findById(tripId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id: " + tripId));
+        
+        List<Booking> bookings = bookingRepo.findByTripId(tripId);
+        return bookings.stream()
+                .filter(b -> b.getStatus() == Booking.BookingStatus.Booked)
+                .map(Booking::getSeatNumber)
+                .sorted()
+                .toList();
+    }
+
+    @Override
+    public List<Integer> getAvailableSeatList(Integer tripId) {
+        Trip trip = tripRepo.findById(tripId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id: " + tripId));
+        
+        Integer capacity = trip.getBus().getCapacity();
+        List<Booking> bookings = bookingRepo.findByTripId(tripId);
+        List<Integer> bookedSeats = bookings.stream()
+                .filter(b -> b.getStatus() == Booking.BookingStatus.Booked)
+                .map(Booking::getSeatNumber)
+                .toList();
+
+        List<Integer> availableSeats = new ArrayList<>();
+        for (int i = 1; i <= capacity; i++) {
+            if (!bookedSeats.contains(i)) {
+                availableSeats.add(i);
+            }
+        }
+        return availableSeats;
     }
 
     private TripResponseDTO mapToResponseDto(Trip trip) {
