@@ -13,6 +13,9 @@ import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.exception.InvalidOperationException;
 import com.busticket.busticketbooking.exception.UnauthorizedActionException;
 import com.busticket.busticketbooking.mapper.ReviewMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -86,5 +89,12 @@ public class ReviewServiceImpl implements ReviewService {
     public void removeReview(Integer reviewId) {
         // Delete the review by its ID from the database
         reviewRepo.deleteById(reviewId);
+    }
+
+    @Override
+    public Page<ReviewResponseDTO> getReviewPage(int page, int size) {
+        return reviewRepo.findAll(
+                PageRequest.of(page, size, Sort.by("id").descending())
+        ).map(ReviewMapper::mapToResponseDTO);
     }
 }

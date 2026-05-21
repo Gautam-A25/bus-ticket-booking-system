@@ -18,6 +18,9 @@ import com.busticket.busticketbooking.repo.PaymentRepo;
 
 import com.busticket.busticketbooking.service.PaymentService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -180,5 +183,12 @@ public class PaymentServiceImpl implements PaymentService {
 
         // Any other unrecognized value is treated as Failed
         return Payment.PaymentStatus.Failed;
+    }
+
+    @Override
+    public Page<PaymentResponseDTO> getPaymentPage(int page, int size) {
+        return paymentRepo.findAll(
+                PageRequest.of(page, size, Sort.by("id").descending())
+        ).map(PaymentMapper::mapToResponseDTO);
     }
 }

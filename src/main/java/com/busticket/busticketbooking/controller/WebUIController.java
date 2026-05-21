@@ -200,8 +200,6 @@ public class WebUIController {
         endpoints.add(new EndpointInfo("PUT", "/api/v1/offices/{id}",
                 "Update office profiles, phone numbers, or email fields."));
         endpoints.add(new EndpointInfo("DELETE", "/api/v1/offices/{id}", "Deactivate an agency office branch."));
-        endpoints.add(new EndpointInfo("GET", "/api/v1/offices/{officeId}/buses",
-                "Retrieve all buses assigned to a specific agency office branch."));
         return endpoints;
     }
 
@@ -213,6 +211,8 @@ public class WebUIController {
                 new EndpointInfo("GET", "/api/v1/buses", "Retrieve all registered buses in the global asset system."));
         endpoints.add(new EndpointInfo("GET", "/api/v1/buses/{id}",
                 "View full metadata, seating capacity, and status of a bus."));
+        endpoints.add(new EndpointInfo("GET", "/api/v1/offices/{officeId}/buses",
+                "Retrieve all buses assigned to a specific agency office branch."));
         endpoints.add(new EndpointInfo("PUT", "/api/v1/buses/{id}",
                 "Update vehicle details, registration numbers, or bus status."));
         endpoints.add(
