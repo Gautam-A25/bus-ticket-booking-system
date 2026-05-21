@@ -4,36 +4,55 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+/*
+ * Entity class representing Trip table.
+ * Stores trip-related information in database.
+ */
 @Entity
+/*
+ * Maps this entity to "trips" table.
+ */
 @Table(name = "trips")
 public class Trip {
-
+     /*
+     * Primary key for trip table.
+     * Auto-generated using IDENTITY strategy.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "trip_id")
     private Integer id;
-
+     /*
+     * Route associated with the trip.
+     */
     @NotNull(message = "Route is required")
     @ManyToOne
     @JoinColumn(name = "route_id", nullable = false)
     private Route route;
-
+     /*
+     * Bus assigned to the trip.
+     */
     @NotNull(message = "Bus is required")
     @ManyToOne
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
-
+     /*
+     * Boarding location for passengers.
+     */
     @NotNull(message = "Boarding address is required")
     @ManyToOne
     @JoinColumn(name = "boarding_address_id", nullable = false)
     private Address boardingAddress;
-
+    /*
+     * Dropping location for passengers.
+     */
     @NotNull(message = "Dropping address is required")
     @ManyToOne
     @JoinColumn(name = "dropping_address_id", nullable = false)
     private Address droppingAddress;
-
+     /*
+     * Trip departure date and time.
+     */
     @NotNull(message = "Departure time is required")
     @Column(name = "departure_time", nullable = false)
     private LocalDateTime departureTime;
@@ -41,12 +60,16 @@ public class Trip {
     @NotNull(message = "Arrival time is required")
     @Column(name = "arrival_time", nullable = false)
     private LocalDateTime arrivalTime;
-
+     /*
+     * Primary driver assigned to trip.
+     */
     @NotNull(message = "Driver 1 is required")
     @ManyToOne
     @JoinColumn(name = "driver1_driver_id", nullable = false)
     private Driver driver1;
-
+     /*
+     * Secondary driver assigned to trip.
+     */
     @NotNull(message = "Driver 2 is required")
     @ManyToOne
     @JoinColumn(name = "driver2_driver_id", nullable = false)

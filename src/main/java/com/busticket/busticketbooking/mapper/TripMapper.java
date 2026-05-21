@@ -8,12 +8,21 @@ import com.busticket.busticketbooking.entity.Bus;
 import com.busticket.busticketbooking.entity.Driver;
 import com.busticket.busticketbooking.entity.Route;
 import com.busticket.busticketbooking.entity.Trip;
-
+/*
+ * Mapper class used for converting
+ * Trip Entity ↔ Trip DTO.
+ */
 public class TripMapper {
-
+        /*
+     * Private constructor to prevent
+     * object creation.
+     */
     private TripMapper() {
     }
-
+     /*
+     * Converts TripRequestDTO
+     * into Trip Entity.
+     */
     public static Trip mapToEntity(
             TripRequestDTO dto) {
 
