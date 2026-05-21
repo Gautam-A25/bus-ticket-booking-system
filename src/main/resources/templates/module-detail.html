@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${module.name}">Module Detail</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">🚌</div>
+            <div>
+                <div class="logo-text">Bus Ticket Booking</div>
+                <div class="logo-sub">Module View</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/}">← Back to Home</a>
+        </div>
+    </header>
+
+    <div class="detail-layout">
+
+        <section class="detail-hero">
+            <div class="detail-icon-box" th:text="${module.icon}">📍</div>
+
+            <div class="detail-title-block">
+                <div class="detail-eyebrow">Module Overview</div>
+                <h1 class="detail-title" th:text="${module.name}">Module Name</h1>
+                <p class="detail-desc" th:text="${module.description}">
+                    Module description
+                </p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start;">
+                <a class="back-btn" th:href="${module.uiPath}">Open CRUD UI</a>
+                <span class="section-count" th:text="${module.getEndpointCount()} + ' ENDPOINTS'">5 ENDPOINTS</span>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">Endpoints</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="endpoints-list">
+                <div class="endpoint-item"
+                     th:each="endpoint : ${module.endpoints}"
+                     th:classappend="' method-' + ${#strings.toLowerCase(endpoint.method)} + '-item'">
+
+                    <span class="badge"
+                          th:classappend="' method-' + ${#strings.toLowerCase(endpoint.method)}"
+                          th:text="${endpoint.method}">
+                        GET
+                    </span>
+
+                    <div class="endpoint-path" th:text="${endpoint.path}">
+                        /api/v1/example
+                    </div>
+
+                    <div class="endpoint-desc" th:text="${endpoint.description}">
+                        Endpoint description
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="page-footer">
+        <span class="footer-dot"></span>
+        <span th:text="${module.name}">Module</span>
+        <span class="footer-dot"></span>
+    </footer>
+
+</div>
+
+</body>
+</html>
