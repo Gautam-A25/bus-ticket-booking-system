@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface RouteRepo extends JpaRepository<Route, Integer> {
-
+     // Finds routes based on source and destination cities
     List<Route> findByFromCityAndToCity(String fromCity, String toCity);
 }
