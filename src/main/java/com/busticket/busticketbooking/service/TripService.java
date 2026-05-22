@@ -32,4 +32,5 @@ public interface TripService {
     List<Integer> getBookedSeats(Integer tripId);
 
     List<Integer> getAvailableSeatList(Integer tripId);
+    void deleteTrip(Integer id);
 }

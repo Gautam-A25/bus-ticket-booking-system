@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/ui/trips")
@@ -68,6 +71,29 @@ public class TripUIController {
         return "trips/list";
     }
 
+   /*
+ * Search trips
+ */
+@GetMapping("/search")
+public String searchTrips(
+
+        @RequestParam String fromCity,
+
+        @RequestParam String toCity,
+
+        Model model) {
+
+    List<Trip> trips =
+            tripRepo.findByRoute_FromCityAndRoute_ToCity(
+                    fromCity,
+                    toCity);
+
+    model.addAttribute(
+            "tripList",
+            trips);
+
+    return "trips/search-results";
+}
     /*
      * Show create form
      */
@@ -281,9 +307,6 @@ public class TripUIController {
                     iso = DateTimeFormat.ISO.DATE_TIME)
             LocalDateTime departureTime) {
 
-        /*
-         * Fetch existing trip
-         */
         Trip trip =
                 tripRepo.findById(id)
                         .orElseThrow(() ->

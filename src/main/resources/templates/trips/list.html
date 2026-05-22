@@ -75,7 +75,78 @@
         </div>
 
     </section>
+        <!-- Search Form -->
 
+<section class="crud-panel">
+
+    <form th:action="@{/ui/trips/search}"
+
+          method="get"
+
+          class="crud-form">
+
+        <div class="field-grid">
+
+            <label>
+                From City
+            </label>
+
+            <input type="text"
+
+                   name="fromCity"
+
+                   placeholder="Enter source city"
+
+                   required>
+
+        </div>
+
+        <div class="field-grid">
+
+            <label>
+                To City
+            </label>
+
+            <input type="text"
+
+                   name="toCity"
+
+                   placeholder="Enter destination city"
+
+                   required>
+
+        </div>
+
+        <div class="field-grid">
+
+            <label>
+                Date
+            </label>
+
+            <input type="date"
+
+                   name="date">
+
+        </div>
+
+        <div class="form-actions">
+
+            <button type="submit"
+                    class="card-cta crud-submit">
+
+                Search Trips
+
+                <span class="card-cta-arrow">
+                    →
+                </span>
+
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
     <section class="crud-panel">
 
         <div class="table-wrapper">
