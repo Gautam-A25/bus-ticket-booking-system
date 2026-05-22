@@ -13,6 +13,9 @@ import com.busticket.busticketbooking.service.BookingService;
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.exception.DuplicateResourceException;
 import com.busticket.busticketbooking.exception.InvalidOperationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,14 +54,49 @@ public class BookingServiceImpl implements BookingService {
         // Fetch trip by ID
         Trip trip = tripRepo.findById(tripId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Trip with ID " + tripId + " not found"));
+                        new ResourceNotFoundException(
+                                "Trip with ID " + tripId + " not found"
+                        ) );
 
-        if (bookingRepo.existsByTripIdAndSeatNumber(tripId, bookingRequestDTO.getSeatNumber())) {
-            throw new DuplicateResourceException("Seat " + bookingRequestDTO.getSeatNumber() + " is already booked for Trip ID " + tripId);
+// Validate seat number against bus capacity
+        if (
+                trip.getBus() != null &&
+                        trip.getBus().getCapacity() != null &&
+                        bookingRequestDTO.getSeatNumber() >
+                                trip.getBus().getCapacity()
+        ) {
+            throw new InvalidOperationException(
+                    "Seat number cannot exceed bus capacity of "
+                            + trip.getBus().getCapacity()
+            );
         }
 
-        if (trip.getAvailableSeats() != null && trip.getAvailableSeats() <= 0) {
-            throw new InvalidOperationException("No available seats left on Trip with ID " + tripId);
+// Check duplicate seat
+        if (
+                bookingRepo.existsByTripIdAndSeatNumber(
+                        tripId,
+                        bookingRequestDTO.getSeatNumber()
+                )
+        ) {
+
+            throw new DuplicateResourceException(
+                    "Seat " +
+                            bookingRequestDTO.getSeatNumber() +
+                            " is already booked for Trip ID " +
+                            tripId
+            );
+        }
+
+// Check available seats
+        if (
+                trip.getAvailableSeats() != null &&
+                        trip.getAvailableSeats() <= 0
+        ) {
+
+            throw new InvalidOperationException(
+                    "No available seats left on Trip with ID " +
+                            tripId
+            );
         }
 
         // Convert DTO to Entity
@@ -72,6 +110,16 @@ public class BookingServiceImpl implements BookingService {
 
         // Convert Entity to Response DTO
         return BookingMapper.mapToResponseDTO(savedBooking);
+    }
+
+    @Override
+    public Page<BookingResponseDTO> getBookingPage(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return bookingRepo
+                .findAll(pageable)
+                .map(BookingMapper::mapToResponseDTO);
     }
 
     // Method to get all bookings of a customer
