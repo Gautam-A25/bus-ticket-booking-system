@@ -30,9 +30,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+// Unit tests for PaymentServiceImpl using Mockito (no real database or Spring context)
 @ExtendWith(MockitoExtension.class)
 public class PaymentServiceTest {
 
+    // Mock repositories — these are fake objects that simulate DB behaviour
     @Mock
     private PaymentRepo paymentRepo;
 
@@ -42,6 +44,7 @@ public class PaymentServiceTest {
     @Mock
     private CustomerRepo customerRepo;
 
+    // Inject the mocks into the actual service implementation being tested
     @InjectMocks
     private PaymentServiceImpl paymentService;
 
@@ -52,17 +55,21 @@ public class PaymentServiceTest {
     private PaymentRequestDTO failedRequest;
     private PaymentRequestDTO declinedRequest;
 
+    // Set up reusable test data before each test runs
     @BeforeEach
     public void setUp() {
+        // A sample booking with seat number 12
         booking = new Booking();
         booking.setId(1);
         booking.setSeatNumber(12);
 
+        // A sample customer
         customer = new Customer();
         customer.setId(2);
         customer.setName("Rohan Malhotra");
         customer.setEmail("rohan@gmail.com");
 
+        // A sample payment entity with SUCCESS status
         payment = new Payment();
         payment.setId(10);
         payment.setBooking(booking);
@@ -71,6 +78,7 @@ public class PaymentServiceTest {
         payment.setPaymentDate(LocalDateTime.now());
         payment.setPaymentStatus(Payment.PaymentStatus.Success);
 
+        // Three request DTOs: one success, one failed, one declined
         successRequest = new PaymentRequestDTO(1, 2, new BigDecimal("650.00"), "SUCCESS");
         failedRequest = new PaymentRequestDTO(1, 2, new BigDecimal("650.00"), "FAILED");
         declinedRequest = new PaymentRequestDTO(1, 2, new BigDecimal("650.00"), "DECLINED");

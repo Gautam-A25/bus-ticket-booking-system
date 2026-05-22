@@ -109,35 +109,6 @@ public class BusController {
         return busService.getBusById(id);
     }
 
-    /*
-     * Fetches all buses belonging to specific office.
-     *
-     * Example:
-     * GET /api/v1/buses/office/2
-     */
-    @GetMapping("/office/{officeId}")
-    public List<BusResponseDTO> getBusesByOffice(
-
-            /*
-             * Extract officeId from URL.
-             */
-            @PathVariable Integer officeId) {
-
-        /*
-         * Calls service layer method
-         * to fetch buses by office ID.
-         */
-        return busService.getBusesByOffice(officeId);
-    }
-
-    /*
-     * @PutMapping handles HTTP PUT requests.
-     *
-     * Used to update existing bus details.
-     *
-     * Example:
-     * PUT /api/v1/buses/1
-     */
     @PutMapping("/{id}")
     public BusResponseDTO updateBus(
 

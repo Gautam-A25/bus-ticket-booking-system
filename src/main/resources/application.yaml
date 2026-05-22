@@ -2,6 +2,11 @@ spring:
   application:
     name: BusTicketBooking
 
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
   datasource:
     url: jdbc:mysql://localhost:3306/busticketbooking
     username: root

@@ -109,14 +109,20 @@ public class DriverController {
         return driverService.getDriverById(id);
     }
 
-    /*
-     * @DeleteMapping handles HTTP DELETE requests.
-     *
-     * Used to delete driver using ID.
-     *
-     * Example:
-     * DELETE /api/v1/drivers/1
-     */
+    @GetMapping("/office/{officeId}")
+    public List<DriverResponseDTO> getDriversByOffice(@PathVariable Integer officeId) {
+
+        return driverService.getDriversByOffice(officeId);
+    }
+
+    @PutMapping("/{id}")
+    public DriverResponseDTO updateDriver(
+            @PathVariable Integer id,
+            @Valid @RequestBody DriverRequestDTO dto) {
+
+        return driverService.updateDriver(id, dto);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteDriver(
 
