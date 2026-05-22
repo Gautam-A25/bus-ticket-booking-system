@@ -8,31 +8,38 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
+// JPA entity representing the 'reviews' table in the database
 @Entity
 @Table(name = "reviews")
 public class Review {
 
+    // Primary key — manually assigned (no auto-generation for reviews)
     @Id
     @Column(name = "review_id")
     private Integer id;
 
+    // Many reviews can be linked to one customer
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
+    // Many reviews can be linked to one trip
     @ManyToOne
     @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
+    // Star rating from 1 to 5; validated at both DTO and entity level
     @Min(value = 1, message = "Rating must be at least 1")
     @Max(value = 5, message = "Rating must not be greater than 5")
     @Column(nullable = false)
     private Integer rating;
 
+    // Optional text comment; stored as TEXT in DB to support long reviews
     @Size(max = 5000, message = "Comment must not exceed 5000 characters")
     @Column(columnDefinition = "TEXT")
     private String comment;
 
+    // Date and time when the review was submitted; cannot be a future date
     @PastOrPresent(message = "Review date cannot be in the future")
     @Column(name = "review_date")
     private LocalDateTime reviewDate;
@@ -97,6 +104,7 @@ public class Review {
         this.reviewDate = reviewDate;
     }
 
+    // Equality based on review ID only
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

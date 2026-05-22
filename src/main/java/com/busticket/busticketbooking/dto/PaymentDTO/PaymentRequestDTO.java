@@ -6,17 +6,22 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+// DTO used to receive payment data from the client in a POST request
 public class PaymentRequestDTO {
+    // ID of the booking this payment is for
     @NotNull(message = "Booking ID is required")
     private Integer bookingId;
 
+    // ID of the customer making the payment
     @NotNull(message = "Customer ID is required")
     private Integer customerId;
 
+    // Amount to be charged; must be a positive number
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")
     private BigDecimal amount;
 
+    // Payment result status, e.g. "SUCCESS", "FAILED", "DECLINED"
     @NotBlank(message = "Payment status is required")
     @Size(max = 20, message = "Payment status must not exceed 20 characters")
     private String paymentStatus;

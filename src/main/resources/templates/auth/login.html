@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Bus Ticket Booking</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="auth-shell">
+    <div class="auth-card">
+        <div class="auth-brand">
+            <div class="auth-logo">🚌</div>
+            <div>
+                <div class="auth-title">Bus Ticket Booking</div>
+                <div class="auth-subtitle">Sign in to continue</div>
+            </div>
+        </div>
+
+        <h1 class="auth-heading">Welcome back</h1>
+        <p class="auth-text">Use your account to access the protected pages.</p>
+
+        <div class="auth-alert" th:if="${param.error}">
+            Invalid username or password.
+        </div>
+
+        <div class="auth-alert" th:if="${param.logout}">
+            You have been logged out successfully.
+        </div>
+
+        <div class="auth-alert" th:if="${param.registered}">
+            Account created successfully. Please sign in.
+        </div>
+
+        <form class="auth-form" th:action="@{/login}" method="post">
+            <label class="auth-field">
+                <span>Username</span>
+                <input type="text" name="username" placeholder="Enter your username" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Password</span>
+                <input type="password" name="password" placeholder="Enter your password" required>
+            </label>
+
+            <button class="auth-button" type="submit">Sign In</button>
+        </form>
+
+        <p class="auth-footer">
+            New here?
+            <a th:href="@{/register}">Create an account</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

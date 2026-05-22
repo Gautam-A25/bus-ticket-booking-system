@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Management</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">💳</div>
+            <div>
+                <div class="logo-text">Bus Ticket Booking</div>
+                <div class="logo-sub">Payment CRUD</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/}">← Dashboard</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-sparks">
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+        </div>
+
+        <div class="hero-eyebrow">
+            <span class="hero-eyebrow-dot"></span>
+            Payment Module Manager
+        </div>
+
+        <h1 class="hero-title">Payment Records</h1>
+
+        <p class="hero-desc">
+            Process new payments, view transaction history, and update payment statuses.
+        </p>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-val" th:text="${paymentPage.totalElements}">0</span>
+                <span class="stat-label">Total Payments</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val" th:text="${paymentPage.totalPages}">0</span>
+                <span class="stat-label">Pages</span>
+            </div>
+        </div>
+    </section>
+
+    <div th:if="${successMessage}" class="alert success-alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert error-alert" th:text="${errorMessage}"></div>
+
+    <section class="crud-toolbar">
+        <div>
+            <h2 class="section-title">Payment History</h2>
+            <p class="crud-note">All financial transactions are listed below with live status rendering.</p>
+        </div>
+
+        <div class="crud-toolbar-actions">
+            <a class="back-btn" th:href="@{/modules/payment}">View Module Endpoints</a>
+            <a class="card-cta" th:href="@{/ui/payments/new}">
+                New Payment
+                <span class="card-cta-arrow">→</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="crud-panel">
+        <div class="table-wrapper">
+            <table class="crud-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Booking ID</th>
+                    <th>Amount (₹)</th>
+                    <th>Date &amp; Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:if="${paymentPage.totalElements == 0}">
+                    <td colspan="6" class="empty-state">No payment records found.</td>
+                </tr>
+
+                <tr th:each="payment : ${paymentPage.content}">
+                    <td th:text="${payment.paymentId}">1</td>
+                    <td th:text="${payment.bookingId}">101</td>
+                    <td th:text="${'₹ ' + payment.amount}">₹ 500.00</td>
+                    <td th:text="${#temporals.format(payment.paymentDate, 'dd MMM yyyy, HH:mm')}">01 Jan 2025, 10:00</td>
+                    <td>
+                        <span class="crud-action"
+                              th:classappend="${payment.paymentStatus == 'Success'} ? 'edit-action' : 'delete-action'"
+                              th:text="${payment.paymentStatus}">
+                            Success
+                        </span>
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <a class="crud-action edit-action"
+                               th:href="@{/ui/payments/{id}/edit(id=${payment.paymentId})}">
+                                Update Status
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="pagination-wrap" th:if="${paymentPage.totalPages > 1}">
+        <a class="page-link nav-link"
+           th:href="@{/ui/payments(page=${currentPage - 1}, size=${pageSize})}"
+           th:classappend="${paymentPage.first} ? ' disabled' : ''">
+            ‹ Previous
+        </a>
+
+        <div class="pagination-pages">
+            <a class="page-link"
+               th:each="pageNum : ${#numbers.sequence(1, paymentPage.totalPages)}"
+               th:href="@{/ui/payments(page=${pageNum}, size=${pageSize})}"
+               th:text="${pageNum}"
+               th:classappend="${pageNum == currentPage} ? ' active' : ''">
+                1
+            </a>
+        </div>
+
+        <a class="page-link nav-link"
+           th:href="@{/ui/payments(page=${currentPage + 1}, size=${pageSize})}"
+           th:classappend="${paymentPage.last} ? ' disabled' : ''">
+            Next ›
+        </a>
+    </section>
+
+</div>
+
+</body>
+</html>
