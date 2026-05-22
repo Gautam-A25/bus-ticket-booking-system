@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Update Payment Status' : 'New Payment'">Payment Form</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">💳</div>
+            <div>
+                <div class="logo-text">Bus Ticket Booking</div>
+                <div class="logo-sub">Payment CRUD</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/ui/payments}">← Back to List</a>
+        </div>
+    </header>
+
+    <section class="detail-hero">
+        <div class="detail-icon-box">💳</div>
+
+        <div class="detail-title-block">
+            <div class="detail-eyebrow" th:text="${isEdit} ? 'Update Payment' : 'New Payment'">
+                New Payment
+            </div>
+            <h1 class="detail-title" th:text="${isEdit} ? 'Update Payment Status' : 'Process Payment'">
+                Payment Form
+            </h1>
+            <p class="detail-desc" th:text="${isEdit}
+                ? 'Update the status of this payment transaction. Only Success or Failed are accepted.'
+                : 'Fill in the payment details below. Booking ID, Customer ID, Amount and Status are required.'">
+            </p>
+        </div>
+    </section>
+
+    <section class="crud-panel">
+
+        <!-- CREATE FORM: POST /api/v1/payments -->
+        <form th:if="${!isEdit}"
+              th:action="@{/ui/payments}"
+              th:object="${payment}"
+              method="post"
+              class="crud-form">
+
+            <div class="field-grid">
+                <label for="bookingId">Booking ID</label>
+                <input id="bookingId"
+                       type="number"
+                       th:field="*{bookingId}"
+                       placeholder="Enter booking ID">
+                <p class="field-error" th:if="${#fields.hasErrors('bookingId')}" th:errors="*{bookingId}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="customerId">Customer ID</label>
+                <input id="customerId"
+                       type="number"
+                       th:field="*{customerId}"
+                       placeholder="Enter customer ID">
+                <p class="field-error" th:if="${#fields.hasErrors('customerId')}" th:errors="*{customerId}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="amount">Amount (₹)</label>
+                <input id="amount"
+                       type="number"
+                       step="0.01"
+                       th:field="*{amount}"
+                       placeholder="e.g. 499.00">
+                <p class="field-error" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="paymentStatus">Payment Status</label>
+                <select id="paymentStatus" th:field="*{paymentStatus}">
+                    <option value="">-- Select Status --</option>
+                    <option value="Success">Success</option>
+                    <option value="Failed">Failed</option>
+                </select>
+                <p class="field-error" th:if="${#fields.hasErrors('paymentStatus')}" th:errors="*{paymentStatus}"></p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="card-cta crud-submit">
+                    <span>Process Payment</span>
+                    <span class="card-cta-arrow">→</span>
+                </button>
+                <a th:href="@{/ui/payments}" class="secondary-button">Cancel</a>
+            </div>
+        </form>
+
+        <!-- UPDATE STATUS FORM: PATCH /api/v1/payments/{id}/status -->
+        <form th:if="${isEdit}"
+              th:action="@{/ui/payments/{id}(id=${paymentId})}"
+              th:object="${payment}"
+              method="post"
+              class="crud-form">
+
+            <input type="hidden" name="_method" value="PATCH">
+
+            <!-- Read-only info -->
+            <div class="field-grid">
+                <label>Booking ID</label>
+                <input type="text" th:value="${payment.bookingId}" disabled>
+            </div>
+
+            <div class="field-grid">
+                <label>Amount (₹)</label>
+                <input type="text" th:value="${'₹ ' + payment.amount}" disabled>
+            </div>
+
+            <div class="field-grid">
+                <label for="paymentStatusEdit">Payment Status</label>
+                <select id="paymentStatusEdit" th:field="*{paymentStatus}">
+                    <option value="Success" th:selected="${payment.paymentStatus == 'Success'}">Success</option>
+                    <option value="Failed" th:selected="${payment.paymentStatus == 'Failed'}">Failed</option>
+                </select>
+                <p class="field-error" th:if="${#fields.hasErrors('paymentStatus')}" th:errors="*{paymentStatus}"></p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="card-cta crud-submit">
+                    <span>Update Status</span>
+                    <span class="card-cta-arrow">→</span>
+                </button>
+                <a th:href="@{/ui/payments}" class="secondary-button">Cancel</a>
+            </div>
+        </form>
+
+    </section>
+
+</div>
+
+</body>
+</html>

@@ -3,10 +3,13 @@ package com.busticket.busticketbooking.service.impl;
 import com.busticket.busticketbooking.dto.AgencyDTO.AgencyRequestDTO;
 import com.busticket.busticketbooking.dto.AgencyDTO.AgencyResponseDTO;
 import com.busticket.busticketbooking.entity.Agency;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.mapper.AgencyMapper;
 import com.busticket.busticketbooking.repo.AgencyRepo;
 import com.busticket.busticketbooking.service.AgencyService;
-import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,6 +44,14 @@ public class AgencyServiceImpl implements AgencyService {
                 .stream()
                 .map(AgencyMapper::toResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<AgencyResponseDTO> getAgencyPage(int page, int size) {
+        return agencyRepo.findAll(
+                        PageRequest.of(page, size, Sort.by("id").ascending())
+                )
+                .map(AgencyMapper::toResponseDTO);
     }
 
     @Override

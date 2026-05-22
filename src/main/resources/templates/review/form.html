@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Review</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">⭐</div>
+            <div>
+                <div class="logo-text">Bus Ticket Booking</div>
+                <div class="logo-sub">Review CRUD</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/ui/reviews}">← Back to List</a>
+        </div>
+    </header>
+
+    <section class="detail-hero">
+        <div class="detail-icon-box">⭐</div>
+
+        <div class="detail-title-block">
+            <div class="detail-eyebrow">New Review</div>
+            <h1 class="detail-title">Submit a Trip Review</h1>
+            <p class="detail-desc">
+                Enter the Trip ID, your Customer ID, a star rating (1–5), and an optional comment.
+                Reviews can only be submitted for trips that have already departed.
+            </p>
+        </div>
+    </section>
+
+    <section class="crud-panel">
+
+        <!--
+            POST /api/v1/trips/{tripId}/reviews
+            tripId comes as a separate form field (not part of th:object)
+            because it is a path variable in the REST API, not a DTO field.
+        -->
+        <form th:action="@{/ui/reviews}"
+              th:object="${review}"
+              method="post"
+              class="crud-form">
+
+            <!-- Trip ID — submitted as @RequestParam, not bound to th:object -->
+            <div class="field-grid">
+                <label for="tripId">Trip ID</label>
+                <input id="tripId"
+                       type="number"
+                       name="tripId"
+                       th:value="${tripId}"
+                       placeholder="Enter trip ID">
+                <p class="field-error" th:if="${tripIdError}" th:text="${tripIdError}"></p>
+            </div>
+
+            <!-- Customer ID — part of ReviewRequestDTO -->
+            <div class="field-grid">
+                <label for="customerId">Customer ID</label>
+                <input id="customerId"
+                       type="number"
+                       th:field="*{customerId}"
+                       placeholder="Enter customer ID">
+                <p class="field-error" th:if="${#fields.hasErrors('customerId')}" th:errors="*{customerId}"></p>
+            </div>
+
+            <!-- Rating — 1 to 5 -->
+            <div class="field-grid">
+                <label for="rating">Rating (1–5 stars)</label>
+                <select id="rating" th:field="*{rating}">
+                    <option value="">-- Select Rating --</option>
+                    <option value="5">★★★★★ — Excellent (5)</option>
+                    <option value="4">★★★★☆ — Good (4)</option>
+                    <option value="3">★★★☆☆ — Average (3)</option>
+                    <option value="2">★★☆☆☆ — Poor (2)</option>
+                    <option value="1">★☆☆☆☆ — Terrible (1)</option>
+                </select>
+                <p class="field-error" th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}"></p>
+            </div>
+
+            <!-- Comment — optional, max 500 chars -->
+            <div class="field-grid">
+                <label for="comment">Comment <span style="opacity:0.5;">(optional, max 500 chars)</span></label>
+                <textarea id="comment"
+                          th:field="*{comment}"
+                          placeholder="Share your experience..."
+                          rows="4"
+                          maxlength="500"></textarea>
+                <p class="field-error" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="card-cta crud-submit">
+                    <span>Submit Review</span>
+                    <span class="card-cta-arrow">→</span>
+                </button>
+                <a th:href="@{/ui/reviews}" class="secondary-button">Cancel</a>
+            </div>
+        </form>
+
+    </section>
+
+</div>
+
+</body>
+</html>

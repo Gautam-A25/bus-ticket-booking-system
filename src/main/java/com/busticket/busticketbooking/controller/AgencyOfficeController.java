@@ -2,7 +2,9 @@ package com.busticket.busticketbooking.controller;
 
 import com.busticket.busticketbooking.dto.AgencyOfficeDTO.AgencyOfficeRequestDTO;
 import com.busticket.busticketbooking.dto.AgencyOfficeDTO.AgencyOfficeResponseDTO;
+import com.busticket.busticketbooking.dto.BusDTO.BusResponseDTO;
 import com.busticket.busticketbooking.service.AgencyOfficeService;
+import com.busticket.busticketbooking.service.BusService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,14 +15,17 @@ import java.util.List;
 public class AgencyOfficeController {
 
     private final AgencyOfficeService agencyOfficeService;
+    private final BusService busService;
 
-    public AgencyOfficeController(AgencyOfficeService agencyOfficeService) {
+    public AgencyOfficeController(AgencyOfficeService agencyOfficeService, BusService busService) {
         this.agencyOfficeService = agencyOfficeService;
+        this.busService = busService;
     }
 
     @PostMapping("/agencies/{agencyId}/offices")
     public AgencyOfficeResponseDTO addAgencyOffice(@PathVariable Integer agencyId,
                                                    @Valid @RequestBody AgencyOfficeRequestDTO agencyOfficeRequestDTO) {
+        agencyOfficeRequestDTO.setAgencyId(agencyId);
         return agencyOfficeService.addAgencyOffice(agencyId, agencyOfficeRequestDTO);
     }
 
@@ -43,5 +48,10 @@ public class AgencyOfficeController {
     @DeleteMapping("/offices/{officeId}")
     public String deleteAgencyOffice(@PathVariable Integer officeId) {
         return agencyOfficeService.deleteAgencyOffice(officeId);
+    }
+
+    @GetMapping("/offices/{officeId}/buses")
+    public List<BusResponseDTO> getBusesByOffice(@PathVariable Integer officeId) {
+        return busService.getBusesByOffice(officeId);
     }
 }

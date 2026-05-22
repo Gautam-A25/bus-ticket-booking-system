@@ -39,6 +39,20 @@ public class DriverController {
         return driverService.getDriverById(id);
     }
 
+    @GetMapping("/office/{officeId}")
+    public List<DriverResponseDTO> getDriversByOffice(@PathVariable Integer officeId) {
+
+        return driverService.getDriversByOffice(officeId);
+    }
+
+    @PutMapping("/{id}")
+    public DriverResponseDTO updateDriver(
+            @PathVariable Integer id,
+            @Valid @RequestBody DriverRequestDTO dto) {
+
+        return driverService.updateDriver(id, dto);
+    }
+
     @DeleteMapping("/{id}")
     public String deleteDriver(@PathVariable Integer id) {
 

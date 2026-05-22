@@ -3,11 +3,17 @@ package com.busticket.busticketbooking.dto.PaymentDTO;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+// DTO used to send payment details back to the client in an API response
 public class PaymentResponseDTO {
+    // Unique ID of the payment record
     private Integer paymentId;
+    // ID of the booking this payment is linked to
     private Integer bookingId;
+    // Amount charged
     private BigDecimal amount;
+    // Timestamp when the payment was made
     private LocalDateTime paymentDate;
+    // Final status: "Success" or "Failed"
     private String paymentStatus;
 
     public PaymentResponseDTO() {

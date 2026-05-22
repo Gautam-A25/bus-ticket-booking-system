@@ -40,13 +40,6 @@ public class BusController {
         return busService.getBusById(id);
     }
 
-    @GetMapping("/office/{officeId}")
-    public List<BusResponseDTO> getBusesByOffice(
-            @PathVariable Integer officeId) {
-
-        return busService.getBusesByOffice(officeId);
-    }
-
     @PutMapping("/{id}")
     public BusResponseDTO updateBus(
             @PathVariable Integer id,
