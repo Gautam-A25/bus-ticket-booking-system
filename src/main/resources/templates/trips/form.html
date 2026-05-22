@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Trip Form</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
+</head>
+
+<body>
+
+<div class="bg-mesh"></div>
+
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <!-- Header -->
+
+    <header id="main-header">
+
+        <div class="logo-section">
+
+            <div class="logo-icon-wrap">
+                🚌
+            </div>
+
+            <div>
+
+                <div class="logo-text">
+                    Bus Ticket Booking
+                </div>
+
+                <div class="logo-sub">
+                    Trip CRUD
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <a class="back-btn"
+               th:href="@{/ui/trips}">
+
+                ← Back to List
+
+            </a>
+
+        </div>
+
+    </header>
+
+    <!-- Hero Section -->
+
+    <section class="detail-hero">
+
+        <div class="detail-icon-box">
+            🚌
+        </div>
+
+        <div class="detail-title-block">
+
+            <div class="detail-eyebrow">
+
+                <span th:if="${isEdit}">
+                    Update Trip
+                </span>
+
+                <span th:unless="${isEdit}">
+                    New Trip
+                </span>
+
+            </div>
+
+            <h1 class="detail-title">
+
+                <span th:if="${isEdit}">
+                    Edit Trip
+                </span>
+
+                <span th:unless="${isEdit}">
+                    Create Trip
+                </span>
+
+            </h1>
+
+            <p class="detail-desc">
+
+                Fill in the trip details below.
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Form Section -->
+
+    <section class="crud-panel">
+
+        <form th:action="${isEdit}
+                         ? @{/ui/trips/{id}(id=${tripId})}
+                         : @{/ui/trips}"
+
+              method="post"
+
+              class="crud-form">
+
+            <!-- Route -->
+
+            <div class="field-grid">
+
+                <label>
+                    Route ID
+                </label>
+
+                <input type="number"
+
+                       name="routeId"
+
+                       th:value="${trip.route != null ? trip.route.id : ''}"
+
+                       placeholder="Enter route ID"
+
+                       required>
+
+            </div>
+
+            <!-- Bus -->
+
+            <div class="field-grid">
+
+                <label>
+                    Bus ID
+                </label>
+
+                <input type="number"
+
+                       name="busId"
+
+                       th:value="${trip.bus != null ? trip.bus.id : ''}"
+
+                       placeholder="Enter bus ID"
+
+                       required>
+
+            </div>
+
+            <!-- Driver 1 -->
+
+            <div class="field-grid">
+
+                <label>
+                    Driver 1 ID
+                </label>
+
+                <input type="number"
+
+                       name="driver1Id"
+
+                       th:value="${trip.driver1 != null ? trip.driver1.id : ''}"
+
+                       placeholder="Enter driver1 ID"
+
+                       required>
+
+            </div>
+
+            <!-- Driver 2 -->
+
+            <div class="field-grid">
+
+                <label>
+                    Driver 2 ID
+                </label>
+
+                <input type="number"
+
+                       name="driver2Id"
+
+                       th:value="${trip.driver2 != null ? trip.driver2.id : ''}"
+
+                       placeholder="Enter driver2 ID"
+
+                       required>
+
+            </div>
+
+            <!-- Boarding Address -->
+
+            <div class="field-grid">
+
+                <label>
+                    Boarding Address ID
+                </label>
+
+                <input type="number"
+
+                       name="boardingAddressId"
+
+                       th:value="${trip.boardingAddress != null ? trip.boardingAddress.id : ''}"
+
+                       placeholder="Enter boarding address ID"
+
+                       required>
+
+            </div>
+
+            <!-- Dropping Address -->
+
+            <div class="field-grid">
+
+                <label>
+                    Dropping Address ID
+                </label>
+
+                <input type="number"
+
+                       name="droppingAddressId"
+
+                       th:value="${trip.droppingAddress != null ? trip.droppingAddress.id : ''}"
+
+                       placeholder="Enter dropping address ID"
+
+                       required>
+
+            </div>
+
+            <!-- Seats -->
+
+            <div class="field-grid">
+
+                <label>
+                    Available Seats
+                </label>
+
+                <input type="number"
+
+                       name="availableSeats"
+
+                       th:value="${trip.availableSeats}"
+
+                       placeholder="Enter seats"
+
+                       required>
+
+            </div>
+
+            <!-- Fare -->
+
+            <div class="field-grid">
+
+                <label>
+                    Fare
+                </label>
+
+                <input type="number"
+
+                       step="0.01"
+
+                       name="fare"
+
+                       th:value="${trip.fare}"
+
+                       placeholder="Enter fare"
+
+                       required>
+
+            </div>
+
+            <!-- Trip Date -->
+
+            <div class="field-grid">
+
+                <label>
+                    Trip Date
+                </label>
+
+                <input type="datetime-local"
+
+                       name="tripDate"
+
+                       th:value="${trip.tripDate != null ?
+                       #temporals.format(trip.tripDate, 'yyyy-MM-dd''T''HH:mm') : ''}"
+
+                       required>
+
+            </div>
+
+            <!-- Arrival Time -->
+
+            <div class="field-grid">
+
+                <label>
+                    Arrival Time
+                </label>
+
+                <input type="datetime-local"
+
+                       name="arrivalTime"
+
+                       th:value="${trip.arrivalTime != null ?
+                       #temporals.format(trip.arrivalTime, 'yyyy-MM-dd''T''HH:mm') : ''}"
+
+                       required>
+
+            </div>
+
+            <!-- Departure Time -->
+
+            <div class="field-grid">
+
+                <label>
+                    Departure Time
+                </label>
+
+                <input type="datetime-local"
+
+                       name="departureTime"
+
+                       th:value="${trip.departureTime != null ?
+                       #temporals.format(trip.departureTime, 'yyyy-MM-dd''T''HH:mm') : ''}"
+
+                       required>
+
+            </div>
+
+            <!-- Buttons -->
+
+            <div class="form-actions">
+
+                <button type="submit"
+                        class="card-cta crud-submit">
+
+                    <span th:if="${isEdit}">
+                        Update Trip
+                    </span>
+
+                    <span th:unless="${isEdit}">
+                        Create Trip
+                    </span>
+
+                    <span class="card-cta-arrow">
+                        →
+                    </span>
+
+                </button>
+
+                <a th:href="@{/ui/trips}"
+                   class="secondary-button">
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+</body>
+</html>

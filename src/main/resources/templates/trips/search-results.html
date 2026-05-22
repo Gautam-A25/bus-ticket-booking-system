@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Trip Search Results
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
+</head>
+
+<body>
+
+<div class="bg-mesh"></div>
+
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <!-- Header -->
+
+    <header id="main-header">
+
+        <div class="logo-section">
+
+            <div class="logo-icon-wrap">
+                🔍
+            </div>
+
+            <div>
+
+                <div class="logo-text">
+                    Bus Ticket Booking
+                </div>
+
+                <div class="logo-sub">
+                    Search Trips
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <a class="back-btn"
+               th:href="@{/ui/trips}">
+
+                ← Back to Trips
+
+            </a>
+
+        </div>
+
+    </header>
+
+    <!-- Hero Section -->
+
+    <section class="detail-hero">
+
+        <div class="detail-icon-box">
+            🚌
+        </div>
+
+        <div class="detail-title-block">
+
+            <div class="detail-eyebrow">
+                Search Results
+            </div>
+
+            <h1 class="detail-title">
+                Available Trips
+            </h1>
+
+            <p class="detail-desc">
+
+                Matching trips based on
+                selected cities.
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Table Section -->
+
+    <section class="crud-panel">
+
+        <div class="table-wrap">
+
+            <table class="crud-table">
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>FROM</th>
+
+                    <th>TO</th>
+
+                    <th>BUS ID</th>
+
+                    <th>FARE</th>
+
+                    <th>SEATS</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <!-- No Results -->
+
+                <tr th:if="${#lists.isEmpty(tripList)}">
+
+                    <td colspan="6"
+                        class="empty-cell">
+
+                        No trips found
+
+                    </td>
+
+                </tr>
+
+                <!-- Results -->
+
+                <tr th:each="trip : ${tripList}">
+
+                    <td th:text="${trip.id}"></td>
+
+                    <td th:text="${trip.route.fromCity}"></td>
+
+                    <td th:text="${trip.route.toCity}"></td>
+
+                    <td th:text="${trip.bus.id}"></td>
+
+                    <td>
+
+                        ₹<span th:text="${trip.fare}"></span>
+
+                    </td>
+
+                    <td th:text="${trip.availableSeats}"></td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+
+</html>

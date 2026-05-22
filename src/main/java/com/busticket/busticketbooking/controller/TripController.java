@@ -145,7 +145,17 @@ public class TripController {
 
         return tripService.getBookedSeats(id);
     }
+    /*
+ * DELETE API to remove trip
+ */
+@DeleteMapping("/{id}")
+public String deleteTrip(
+        @PathVariable Integer id) {
 
+    tripService.deleteTrip(id);
+
+    return "Trip deleted successfully";
+}
     @GetMapping("/{id}/seats/available")
     public List<Integer> getAvailableSeatList(@PathVariable Integer id) {
 
