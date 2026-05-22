@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequent Customers Report</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">👑</div>
+            <div>
+                <div class="logo-text">Enterprise Reports</div>
+                <div class="logo-sub">Frequent Customers</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/ui/reports}">← All Reports</a>
+        </div>
+    </header>
+
+    <section class="crud-toolbar">
+        <div>
+            <h2 class="section-title">Frequent Customers Report</h2>
+            <p class="crud-note">Identifies high-value customers based on their booking history and spending.</p>
+        </div>
+
+        <div class="crud-toolbar-actions">
+            <!-- Filter Form -->
+            <form th:action="@{/ui/reports/customers/frequent}" method="get" class="inline-form" style="display: flex; gap: 10px; align-items: center;">
+                <label for="limit" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Top N:</label>
+                <input type="number" id="limit" name="limit" th:value="${limit}" min="1" max="100" style="padding: 6px 12px; border-radius: 6px; background: rgba(0,0,0,0.2); color: white; border: 1px solid rgba(255,255,255,0.2); width: 80px;">
+                <button type="submit" class="card-cta" style="padding: 6px 16px;">Filter</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="crud-panel">
+        <div class="table-wrapper">
+            <table class="crud-table">
+                <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Total Bookings</th>
+                    <th>Total Spent (₹)</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:if="${#lists.isEmpty(reportData)}">
+                    <td colspan="4" class="empty-state">No customer data found.</td>
+                </tr>
+
+                <tr th:each="data : ${reportData}">
+                    <td th:text="${data.customerId}">101</td>
+                    <td th:text="${data.customerName}">Aarav Sharma</td>
+                    <td th:text="${data.totalBookings}">15</td>
+                    <td th:text="${'₹ ' + data.totalSpent}">₹ 7500</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+</body>
+</html>
