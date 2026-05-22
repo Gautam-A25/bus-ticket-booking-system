@@ -12,8 +12,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+// Repository layer handles custom report queries
 public interface ReportRepo extends JpaRepository<Booking, Integer> {
 
+    // Generates occupancy report for trips on a specific date
     @Query("""
             SELECT new com.busticket.busticketbooking.dto.ReportDTO.TripOccupancyReportResponseDTO(
                 t.id,
@@ -31,11 +33,14 @@ public interface ReportRepo extends JpaRepository<Booking, Integer> {
             GROUP BY t.id, r.fromCity, r.toCity, bus.capacity
             """)
     List<TripOccupancyReportResponseDTO> getTripOccupancyReport(
+
+            // Accepts trip date parameter for filtering
             @Param("tripDate") LocalDate tripDate
     );
 
 
 
+    // Generates agency-wise revenue report within given date range
     @Query("""
             SELECT new com.busticket.busticketbooking.dto.ReportDTO.RevenueByAgencyResponseDTO(
                 a.id,
@@ -54,12 +59,17 @@ public interface ReportRepo extends JpaRepository<Booking, Integer> {
             ORDER BY SUM(p.amount) DESC
             """)
     List<RevenueByAgencyResponseDTO> getRevenueByAgency(
+
+            // Start date and time for revenue filtering
             @Param("fromDate") LocalDateTime fromDate,
+
+            // End date and time for revenue filtering
             @Param("toDate") LocalDateTime toDate
     );
 
 
 
+    // Fetches customers with highest booking count
     @Query("""
             SELECT new com.busticket.busticketbooking.dto.ReportDTO.FrequentCustomerResponseDTO(
                 c.id,

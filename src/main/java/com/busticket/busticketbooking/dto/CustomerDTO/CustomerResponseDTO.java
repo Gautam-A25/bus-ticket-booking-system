@@ -1,28 +1,28 @@
 package com.busticket.busticketbooking.dto.CustomerDTO;
 
-// DTO used for customer response data
+// DTO used to send customer details as response
 public class CustomerResponseDTO {
 
-    // Customer ID
+    // Stores unique customer ID
     private Integer id;
 
-    // Customer name
+    // Stores customer name
     private String name;
 
-    // Customer email
+    // Stores customer email address
     private String email;
 
-    // Customer phone number
+    // Stores customer phone number
     private String phone;
 
-    // Address ID associated with customer
+    // Stores address ID linked to customer
     private Integer addressId;
 
     // Default constructor
     public CustomerResponseDTO() {
     }
 
-    // Parameterized constructor
+    // Parameterized constructor for object initialization
     public CustomerResponseDTO(
             Integer id,
             String name,
@@ -38,52 +38,52 @@ public class CustomerResponseDTO {
         this.addressId = addressId;
     }
 
-    // Getter for customer ID
+    // Returns customer ID
     public Integer getId() {
         return id;
     }
 
-    // Setter for customer ID
+    // Sets customer ID
     public void setId(Integer id) {
         this.id = id;
     }
 
-    // Getter for customer name
+    // Returns customer name
     public String getName() {
         return name;
     }
 
-    // Setter for customer name
+    // Sets customer name
     public void setName(String name) {
         this.name = name;
     }
 
-    // Getter for customer email
+    // Returns customer email
     public String getEmail() {
         return email;
     }
 
-    // Setter for customer email
+    // Sets customer email
     public void setEmail(String email) {
         this.email = email;
     }
 
-    // Getter for customer phone number
+    // Returns customer phone number
     public String getPhone() {
         return phone;
     }
 
-    // Setter for customer phone number
+    // Sets customer phone number
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    // Getter for address ID
+    // Returns address ID
     public Integer getAddressId() {
         return addressId;
     }
 
-    // Setter for address ID
+    // Sets address ID
     public void setAddressId(Integer addressId) {
         this.addressId = addressId;
     }
