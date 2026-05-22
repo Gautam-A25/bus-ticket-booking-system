@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -130,7 +131,7 @@ public class WebUIController {
     }
 
     @GetMapping("/")
-    public String home(Model model) {
+    public String home(Model model, Principal principal) {
         model.addAttribute(
                 "projectDescription",
                 "A robust, transactional enterprise backend API ecosystem for state-wide passenger transport and scheduling systems, featuring relational validation, live concurrency checks, and secure high-impact financial reporting.");
@@ -141,6 +142,7 @@ public class WebUIController {
                 "Archit Singh",
                 "Deeksha S M"));
         model.addAttribute("modules", modules);
+        model.addAttribute("loggedInUser", principal != null ? principal.getName() : "Guest");
         return "home";
     }
 

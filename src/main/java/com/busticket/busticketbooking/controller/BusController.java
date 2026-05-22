@@ -138,17 +138,9 @@ public class BusController {
      * DELETE /api/v1/buses/1
      */
     @DeleteMapping("/{id}")
-    public void deleteBus(
-
-            /*
-             * Extract bus ID from URL.
-             */
+    public String deleteBus(
             @PathVariable Integer id) {
 
-        /*
-         * Calls service layer method
-         * to delete bus.
-         */
-        busService.deleteBus(id);
+        return busService.deleteBus(id);
     }
 }

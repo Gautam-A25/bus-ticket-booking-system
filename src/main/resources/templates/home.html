@@ -25,8 +25,12 @@
         <div class="header-right">
             <div class="status-pill">
                 <span class="status-dot"></span>
-                UI Ready
+                <span th:text="'Logged in as ' + ${loggedInUser}">Logged in as User</span>
             </div>
+
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
         </div>
     </header>
 

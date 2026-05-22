@@ -229,7 +229,7 @@ public class BusServiceImpl implements BusService {
      * Deletes bus using ID.
      */
     @Override
-    public void deleteBus(Integer id) {
+    public String deleteBus(Integer id) {
 
         /*
          * Find bus from database.
@@ -240,9 +240,22 @@ public class BusServiceImpl implements BusService {
                                 "Bus with ID " + id + " not found"
                         ));
 
+        String busDetails =
+                "Bus Deleted Successfully : \n" +
+                        "ID = " + bus.getId() + "\n" +
+                        "Office ID = " +
+                        (bus.getOffice() != null
+                                ? bus.getOffice().getId()
+                                : null) + "\n" +
+                        "Registration Number = " + bus.getRegistrationNumber() + "\n" +
+                        "Capacity = " + bus.getCapacity() + "\n" +
+                        "Type = " + bus.getType();
+
         /*
          * Delete bus from database.
          */
         busRepo.delete(bus);
+
+        return busDetails;
     }
 }

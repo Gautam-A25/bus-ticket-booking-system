@@ -97,9 +97,7 @@ public class TripController {
     @PatchMapping("/{id}/close")
     public String closeTrip(@PathVariable Integer id) {
 
-        tripService.closeTrip(id);
-
-        return "Trip closed successfully";
+        return tripService.closeTrip(id);
     }
      /*
      * GET API to search trips between cities.
@@ -147,7 +145,17 @@ public class TripController {
 
         return tripService.getBookedSeats(id);
     }
+    /*
+ * DELETE API to remove trip
+ */
+@DeleteMapping("/{id}")
+public String deleteTrip(
+        @PathVariable Integer id) {
 
+    tripService.deleteTrip(id);
+
+    return "Trip deleted successfully";
+}
     @GetMapping("/{id}/seats/available")
     public List<Integer> getAvailableSeatList(@PathVariable Integer id) {
 

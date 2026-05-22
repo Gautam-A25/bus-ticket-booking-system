@@ -72,11 +72,5 @@ public interface BusService {
             BusRequestDTO dto
     );
 
-    /*
-     * Deletes bus from database using ID.
-     *
-     * Parameter:
-     * id -> Bus ID
-     */
-    void deleteBus(Integer id);
+    String deleteBus(Integer id);
 }

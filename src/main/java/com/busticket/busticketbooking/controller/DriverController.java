@@ -124,17 +124,8 @@ public class DriverController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteDriver(
+    public String deleteDriver(@PathVariable Integer id) {
 
-            /*
-             * Extract driver ID from URL.
-             */
-            @PathVariable Integer id) {
-
-        /*
-         * Calls service layer method
-         * to delete driver.
-         */
-        driverService.deleteDriver(id);
+        return driverService.deleteDriver(id);
     }
 }

@@ -5,12 +5,15 @@ import com.busticket.busticketbooking.dto.AgencyOfficeDTO.AgencyOfficeResponseDT
 import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.Agency;
 import com.busticket.busticketbooking.entity.AgencyOffice;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.mapper.AgencyOfficeMapper;
 import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
 import com.busticket.busticketbooking.repo.AgencyRepo;
 import com.busticket.busticketbooking.service.AgencyOfficeService;
-import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +26,6 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     private final AgencyRepo agencyRepo;
     private final AddressRepo addressRepo;
 
-    
     public AgencyOfficeServiceImpl(AgencyOfficeRepo agencyOfficeRepo,
                                    AgencyRepo agencyRepo,
                                    AddressRepo addressRepo) {
@@ -34,8 +36,13 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
 
     @Override
     public AgencyOfficeResponseDTO addAgencyOffice(Integer agencyId, AgencyOfficeRequestDTO agencyOfficeRequestDTO) {
-        Agency agency = agencyRepo.findById(agencyId)
-                .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + agencyId + " not found"));
+        Integer agencyIdToUse = agencyId != null ? agencyId : agencyOfficeRequestDTO.getAgencyId();
+        if (agencyIdToUse == null) {
+            throw new ResourceNotFoundException("Agency ID is required");
+        }
+
+        Agency agency = agencyRepo.findById(agencyIdToUse)
+                .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + agencyIdToUse + " not found"));
 
         Address address = addressRepo.findById(agencyOfficeRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
@@ -66,12 +73,24 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     }
 
     @Override
+    public Page<AgencyOfficeResponseDTO> getAgencyOfficePage(int page, int size) {
+        return agencyOfficeRepo.findAll(
+                        PageRequest.of(page, size, Sort.by("id").ascending())
+                )
+                .map(AgencyOfficeMapper::toResponseDTO);
+    }
+
+    @Override
     public AgencyOfficeResponseDTO updateAgencyOffice(Integer id, AgencyOfficeRequestDTO agencyOfficeRequestDTO) {
         AgencyOffice existingAgencyOffice = agencyOfficeRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Agency Office with ID " + id + " not found"));
 
-        Agency agency = agencyRepo.findById(existingAgencyOffice.getAgency().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + existingAgencyOffice.getAgency().getId() + " not found"));
+        Integer agencyIdToUse = agencyOfficeRequestDTO.getAgencyId() != null
+                ? agencyOfficeRequestDTO.getAgencyId()
+                : existingAgencyOffice.getAgency().getId();
+
+        Agency agency = agencyRepo.findById(agencyIdToUse)
+                .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + agencyIdToUse + " not found"));
 
         Address address = addressRepo.findById(agencyOfficeRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
@@ -88,10 +107,29 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
 
     @Override
     public String deleteAgencyOffice(Integer id) {
-        if (!agencyOfficeRepo.existsById(id)) {
-            throw new ResourceNotFoundException("Agency Office with ID " + id + " not found");
-        }
-        agencyOfficeRepo.deleteById(id);
-        return "Agency office deleted successfully";
+        AgencyOffice office = agencyOfficeRepo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Office with ID " + id + " not found"
+                        ));
+
+        String officeDetails =
+                "Agency Office Deleted Successfully : \n" +
+                        "ID = " + office.getId() + "\n" +
+                        "Agency ID = " +
+                        (office.getAgency() != null
+                                ? office.getAgency().getId()
+                                : null) + "\n" +
+                        "Office Mail = " + office.getOfficeMail() + "\n" +
+                        "Office Contact Person Name = " + office.getOfficeContactPersonName() + "\n" +
+                        "Office Contact Number = " + office.getOfficeContactNumber() + "\n" +
+                        "Address ID = " +
+                        (office.getAddress() != null
+                                ? office.getAddress().getId()
+                                : null);
+
+        agencyOfficeRepo.delete(office);
+
+        return officeDetails;
     }
 }

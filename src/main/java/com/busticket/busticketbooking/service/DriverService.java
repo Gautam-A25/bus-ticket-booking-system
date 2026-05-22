@@ -20,5 +20,5 @@ public interface DriverService {
 
     DriverResponseDTO updateDriver(Integer driverId, DriverRequestDTO dto);
 
-    void deleteDriver(Integer id);
+    String deleteDriver(Integer id);
 }
