@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-Impact Reports</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <style>
+        .report-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .report-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .report-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        .report-icon {
+            font-size: 2rem;
+        }
+        .report-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .report-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        .report-action {
+            color: #64b5f6;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">📈</div>
+            <div>
+                <div class="logo-text">Bus Ticket Booking</div>
+                <div class="logo-sub">Enterprise Reports</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/}">← Dashboard</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-sparks">
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+        </div>
+
+        <div class="hero-eyebrow">
+            <span class="hero-eyebrow-dot"></span>
+            Data Analytics
+        </div>
+
+        <h1 class="hero-title">High-Impact Reports</h1>
+
+        <p class="hero-desc">
+            View advanced analytical metrics, occupancy tracking, revenue generation, and customer loyalty reports.
+        </p>
+
+        <div class="report-cards">
+            <a th:href="@{/ui/reports/trips/occupancy}" class="report-card">
+                <div class="report-icon">🚌</div>
+                <div class="report-title">Trip Occupancy</div>
+                <div class="report-desc">Measures how well seats are sold. Helps decide whether to cancel trips, increase frequency, or change pricing.</div>
+                <div class="report-action">View Report →</div>
+            </a>
+
+            <a th:href="@{/ui/reports/revenue/by-agency}" class="report-card">
+                <div class="report-icon">💰</div>
+                <div class="report-title">Revenue by Agency</div>
+                <div class="report-desc">Shows which agency generates maximum revenue. Used for partner evaluation and business expansion decisions.</div>
+                <div class="report-action">View Report →</div>
+            </a>
+
+            <a th:href="@{/ui/reports/customers/frequent}" class="report-card">
+                <div class="report-icon">👑</div>
+                <div class="report-title">Frequent Customers</div>
+                <div class="report-desc">Identifies high-value customers based on total bookings and spending. Useful for loyalty programs and retention strategies.</div>
+                <div class="report-action">View Report →</div>
+            </a>
+        </div>
+    </section>
+
+</div>
+
+</body>
+</html>

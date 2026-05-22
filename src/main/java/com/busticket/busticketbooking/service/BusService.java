@@ -18,5 +18,5 @@ public interface BusService {
     BusResponseDTO updateBus(Integer busId,
                              BusRequestDTO dto);
 
-    void deleteBus(Integer id);
+    String deleteBus(Integer id);
 }

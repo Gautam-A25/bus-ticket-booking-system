@@ -97,9 +97,7 @@ public class TripController {
     @PatchMapping("/{id}/close")
     public String closeTrip(@PathVariable Integer id) {
 
-        tripService.closeTrip(id);
-
-        return "Trip closed successfully";
+        return tripService.closeTrip(id);
     }
      /*
      * GET API to search trips between cities.

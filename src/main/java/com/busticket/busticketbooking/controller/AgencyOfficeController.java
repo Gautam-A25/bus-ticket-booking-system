@@ -25,6 +25,7 @@ public class AgencyOfficeController {
     @PostMapping("/agencies/{agencyId}/offices")
     public AgencyOfficeResponseDTO addAgencyOffice(@PathVariable Integer agencyId,
                                                    @Valid @RequestBody AgencyOfficeRequestDTO agencyOfficeRequestDTO) {
+        agencyOfficeRequestDTO.setAgencyId(agencyId);
         return agencyOfficeService.addAgencyOffice(agencyId, agencyOfficeRequestDTO);
     }
 
