@@ -1285,24 +1285,52 @@ body::before {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* ============================================================
+   HEADER RIGHT + LOGOUT BUTTON
+   ============================================================ */
+
 .header-right {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 1rem;
 }
 
 .logout-btn {
     border: none;
-    padding: 0.7rem 1rem;
-    border-radius: 12px;
+    padding: 0.72rem 1.1rem;
+    border-radius: 14px;
     background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    font-weight: 700;
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+    box-shadow:
+        0 10px 22px rgba(220, 38, 38, 0.22),
+        inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
 .logout-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 20px rgba(220, 38, 38, 0.22);
+    transform: translateY(-2px);
+    box-shadow:
+        0 14px 28px rgba(220, 38, 38, 0.28),
+        inset 0 1px 0 rgba(255,255,255,0.16);
 }
+
+.logout-btn:active {
+    transform: translateY(0);
+    opacity: 0.92;
+}
+
+.logout-btn:focus {
+    outline: none;
+    box-shadow:
+        0 0 0 3px rgba(239, 68, 68, 0.18),
+        0 10px 22px rgba(220, 38, 38, 0.22);
+}}
