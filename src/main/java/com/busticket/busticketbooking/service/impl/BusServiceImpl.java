@@ -104,12 +104,27 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public void deleteBus(Integer id) {
+    public String deleteBus(Integer id) {
 
         Bus bus = busRepo.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Bus with ID " + id + " not found"));
+                        new ResourceNotFoundException(
+                                "Bus with ID " + id + " not found"
+                        ));
+
+        String busDetails =
+                "Bus Deleted Successfully : \n" +
+                        "ID = " + bus.getId() + "\n" +
+                        "Office ID = " +
+                        (bus.getOffice() != null
+                                ? bus.getOffice().getId()
+                                : null) + "\n" +
+                        "Registration Number = " + bus.getRegistrationNumber() + "\n" +
+                        "Capacity = " + bus.getCapacity() + "\n" +
+                        "Type = " + bus.getType();
 
         busRepo.delete(bus);
+
+        return busDetails;
     }
 }

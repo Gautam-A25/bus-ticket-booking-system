@@ -107,10 +107,29 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
 
     @Override
     public String deleteAgencyOffice(Integer id) {
-        if (!agencyOfficeRepo.existsById(id)) {
-            throw new ResourceNotFoundException("Agency Office with ID " + id + " not found");
-        }
-        agencyOfficeRepo.deleteById(id);
-        return "Agency office deleted successfully";
+        AgencyOffice office = agencyOfficeRepo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Office with ID " + id + " not found"
+                        ));
+
+        String officeDetails =
+                "Agency Office Deleted Successfully : \n" +
+                        "ID = " + office.getId() + "\n" +
+                        "Agency ID = " +
+                        (office.getAgency() != null
+                                ? office.getAgency().getId()
+                                : null) + "\n" +
+                        "Office Mail = " + office.getOfficeMail() + "\n" +
+                        "Office Contact Person Name = " + office.getOfficeContactPersonName() + "\n" +
+                        "Office Contact Number = " + office.getOfficeContactNumber() + "\n" +
+                        "Address ID = " +
+                        (office.getAddress() != null
+                                ? office.getAddress().getId()
+                                : null);
+
+        agencyOfficeRepo.delete(office);
+
+        return officeDetails;
     }
 }

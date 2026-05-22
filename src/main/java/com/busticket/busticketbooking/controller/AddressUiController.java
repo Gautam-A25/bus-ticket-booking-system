@@ -128,10 +128,20 @@ public class AddressUiController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            addressService.deleteAddress(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Address deleted successfully.");
+
+            String message = addressService.deleteAddress(id);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    message
+            );
+
         } catch (ResourceNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage()
+            );
         }
 
         return "redirect:/ui/addresses";

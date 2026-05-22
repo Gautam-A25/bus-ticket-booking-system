@@ -10,6 +10,9 @@ import com.busticket.busticketbooking.repo.CustomerRepo;
 import com.busticket.busticketbooking.service.CustomerService;
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.exception.DuplicateResourceException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,6 +61,16 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Convert Entity to Response DTO
         return CustomerMapper.mapToResponseDTO(savedCustomer);
+    }
+
+    @Override
+    public Page<CustomerResponseDTO> getCustomerPage(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return customerRepo
+                .findAll(pageable)
+                .map(CustomerMapper::mapToResponseDTO);
     }
 
     // Method to get all customers
@@ -131,11 +144,16 @@ public class CustomerServiceImpl implements CustomerService {
 
         // Customer delete message
         String customerDetails =
-                "Customer Deleted Successfully : " +
-                        "ID = " + customer.getId() +
-                        ", Name = " + customer.getName() +
-                        ", Email = " + customer.getEmail() +
-                        ", Phone = " + customer.getPhone();
+                "Customer Deleted Successfully : \n" +
+                        "ID = " + customer.getId() + "\n" +
+                        "Name = " + customer.getName() + "\n" +
+                        "Email = " + customer.getEmail() + "\n" +
+                        "Phone = " + customer.getPhone() + "\n" +
+                        "Address ID = " +
+                        (customer.getAddress() != null
+                                ? customer.getAddress().getId()
+                                : null);
+
 
         // Delete customer from database
         customerRepo.delete(customer);

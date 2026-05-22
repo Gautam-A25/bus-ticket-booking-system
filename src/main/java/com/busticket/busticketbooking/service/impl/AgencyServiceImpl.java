@@ -70,10 +70,23 @@ public class AgencyServiceImpl implements AgencyService {
 
     @Override
     public String deleteAgency(Integer id) {
-        if (!agencyRepo.existsById(id)) {
-            throw new ResourceNotFoundException("Agency with ID " + id + " not found");
-        }
-        agencyRepo.deleteById(id);
-        return "Agency deleted successfully";
+
+        Agency agency = agencyRepo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Agency with ID " + id + " not found"
+                        ));
+
+        String agencyDetails =
+                "Agency Deleted Successfully : \n" +
+                        "ID = " + agency.getId() + "\n" +
+                        "Name = " + agency.getName() + "\n" +
+                        "Contact Person Name = " + agency.getContactPersonName() + "\n" +
+                        "Email = " + agency.getEmail() + "\n" +
+                        "Phone = " + agency.getPhone();
+
+        agencyRepo.delete(agency);
+
+        return agencyDetails;
     }
 }

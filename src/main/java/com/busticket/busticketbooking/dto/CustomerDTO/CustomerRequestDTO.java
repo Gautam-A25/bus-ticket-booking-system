@@ -1,23 +1,33 @@
 package com.busticket.busticketbooking.dto.CustomerDTO;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 
 // DTO used for customer request data
 public class CustomerRequestDTO {
 
     // Customer name
     @NotBlank(message = "Customer name is required")
+    @Size(
+            min = 3,
+            max = 50,
+            message = "Customer name must be between 3 and 50 characters"
+    )
+    @Pattern(
+            regexp = "^[A-Za-z ]+$",
+            message = "Customer name must contain only alphabets"
+    )
     private String name;
 
     // Customer email
-    @Email(message = "Customer email format is invalid")
+    @Pattern(
+            regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = "Customer email format is invalid"
+    )
     @NotBlank(message = "Customer email is required")
     private String email;
 
     // Customer phone number
+    @NotBlank(message = "Customer phone number is required")
     @Pattern(
             regexp = "^[0-9]{10}$",
             message = "Customer phone number must contain exactly 10 digits"
@@ -52,9 +62,7 @@ public class CustomerRequestDTO {
     }
 
     // Setter for customer name
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
     // Getter for customer email
     public String getEmail() {
