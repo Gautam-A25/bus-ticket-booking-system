@@ -2,7 +2,9 @@ package com.busticket.busticketbooking.service;
 
 import com.busticket.busticketbooking.dto.TripDTO.TripRequestDTO;
 import com.busticket.busticketbooking.dto.TripDTO.TripResponseDTO;
+import com.busticket.busticketbooking.dto.TripDTO.SeatAvailabilityDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TripService {
@@ -21,5 +23,13 @@ public interface TripService {
     List<TripResponseDTO> searchTrips(String fromCity,
                                       String toCity);
 
-    Integer getAvailableSeats(Integer id);
+    List<TripResponseDTO> searchTrips(String fromCity,
+                                      String toCity,
+                                      LocalDate date);
+
+    List<SeatAvailabilityDTO> getSeatAvailability(Integer tripId);
+
+    List<Integer> getBookedSeats(Integer tripId);
+
+    List<Integer> getAvailableSeatList(Integer tripId);
 }

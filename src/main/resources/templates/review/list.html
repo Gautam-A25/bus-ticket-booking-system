@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Management</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">⭐</div>
+            <div>
+                <div class="logo-text">Bus Ticket Booking</div>
+                <div class="logo-sub">Review CRUD</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/}">← Dashboard</a>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-sparks">
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+        </div>
+
+        <div class="hero-eyebrow">
+            <span class="hero-eyebrow-dot"></span>
+            Review Module Manager
+        </div>
+
+        <h1 class="hero-title">Passenger Reviews</h1>
+
+        <p class="hero-desc">
+            Browse, submit, and moderate post-travel passenger feedback and trip ratings.
+        </p>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-val" th:text="${reviewPage.totalElements}">0</span>
+                <span class="stat-label">Total Reviews</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val" th:text="${reviewPage.totalPages}">0</span>
+                <span class="stat-label">Pages</span>
+            </div>
+        </div>
+    </section>
+
+    <div th:if="${successMessage}" class="alert success-alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert error-alert" th:text="${errorMessage}"></div>
+
+    <section class="crud-toolbar">
+        <div>
+            <h2 class="section-title">Review List</h2>
+            <p class="crud-note">All passenger reviews across all trips. Use Trip ID or Customer ID to filter via the API.</p>
+        </div>
+
+        <div class="crud-toolbar-actions">
+            <a class="back-btn" th:href="@{/modules/review}">View Module Endpoints</a>
+            <a class="card-cta" th:href="@{/ui/reviews/new}">
+                Submit Review
+                <span class="card-cta-arrow">→</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="crud-panel">
+        <div class="table-wrapper">
+            <table class="crud-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Trip ID</th>
+                    <th>Customer ID</th>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:if="${reviewPage.totalElements == 0}">
+                    <td colspan="7" class="empty-state">No reviews found yet.</td>
+                </tr>
+
+                <tr th:each="review : ${reviewPage.content}">
+                    <td th:text="${review.reviewId}">1</td>
+                    <td th:text="${review.tripId}">10</td>
+                    <td th:text="${review.customerId}">5</td>
+                    <td>
+                        <span th:text="${
+                            review.rating == 5 ? '★★★★★' :
+                            review.rating == 4 ? '★★★★☆' :
+                            review.rating == 3 ? '★★★☆☆' :
+                            review.rating == 2 ? '★★☆☆☆' : '★☆☆☆☆'
+                        }">★★★★★</span>
+                    </td>
+                    <td th:text="${review.comment != null and #strings.length(review.comment) > 60}
+                                  ? ${#strings.substring(review.comment, 0, 60) + '…'}
+                                  : ${review.comment}">
+                        Great ride!
+                    </td>
+                    <td th:text="${review.reviewDate != null}
+                                  ? ${#temporals.format(review.reviewDate, 'dd MMM yyyy')}
+                                  : '—'">
+                        01 Jan 2025
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <form th:action="@{/ui/reviews/{id}(id=${review.reviewId})}"
+                                  method="post"
+                                  class="inline-form">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit"
+                                        class="crud-action delete-action"
+                                        onclick="return confirm('Remove this review?')">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="pagination-wrap" th:if="${reviewPage.totalPages > 1}">
+        <a class="page-link nav-link"
+           th:href="@{/ui/reviews(page=${currentPage - 1}, size=${pageSize})}"
+           th:classappend="${reviewPage.first} ? ' disabled' : ''">
+            ‹ Previous
+        </a>
+
+        <div class="pagination-pages">
+            <a class="page-link"
+               th:each="pageNum : ${#numbers.sequence(1, reviewPage.totalPages)}"
+               th:href="@{/ui/reviews(page=${pageNum}, size=${pageSize})}"
+               th:text="${pageNum}"
+               th:classappend="${pageNum == currentPage} ? ' active' : ''">
+                1
+            </a>
+        </div>
+
+        <a class="page-link nav-link"
+           th:href="@{/ui/reviews(page=${currentPage + 1}, size=${pageSize})}"
+           th:classappend="${reviewPage.last} ? ' disabled' : ''">
+            Next ›
+        </a>
+    </section>
+
+</div>
+
+</body>
+</html>
