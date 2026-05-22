@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Management</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
+</head>
+
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+
+        <div class="logo-section">
+
+            <div class="logo-icon-wrap">👤</div>
+
+            <div>
+
+                <div class="logo-text">
+                    Bus Ticket Booking
+                </div>
+
+                <div class="logo-sub">
+                    Customer CRUD
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <a class="back-btn"
+               th:href="@{/}">
+
+                ← Dashboard
+
+            </a>
+
+        </div>
+
+    </header>
+
+    <section class="hero">
+
+        <div class="hero-sparks">
+
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+
+        </div>
+
+        <div class="hero-eyebrow">
+
+            <span class="hero-eyebrow-dot"></span>
+
+            Customer Module Manager
+
+        </div>
+
+        <h1 class="hero-title">
+            Customer Records
+        </h1>
+
+        <p class="hero-desc">
+
+            Create, update, delete, and browse customer records
+            with pagination support.
+
+        </p>
+
+        <div class="hero-stats">
+
+            <div class="stat-item">
+
+                <span class="stat-val"
+                      th:text="${customerPage.totalElements}">
+                    0
+                </span>
+
+                <span class="stat-label">
+                    Total Records
+                </span>
+
+            </div>
+
+            <div class="stat-item">
+
+                <span class="stat-val"
+                      th:text="${customerPage.totalPages}">
+                    0
+                </span>
+
+                <span class="stat-label">
+                    Pages
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div th:if="${successMessage}"
+         class="alert success-alert">
+
+        <pre th:text="${successMessage}"></pre>
+
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="alert error-alert"
+         th:text="${errorMessage}">
+    </div>
+
+    <section class="crud-toolbar">
+
+        <div>
+
+            <h2 class="section-title">
+                Customer List
+            </h2>
+
+            <p class="crud-note">
+
+                Manage all customer records from here.
+
+            </p>
+
+        </div>
+
+        <div class="crud-toolbar-actions">
+
+            <a class="back-btn"
+               th:href="@{/modules/customer}">
+
+                View Module Endpoints
+
+            </a>
+
+            <a class="card-cta"
+               th:href="@{/ui/customers/new}">
+
+                Create Customer
+
+                <span class="card-cta-arrow">→</span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <section class="crud-panel">
+
+        <div class="table-wrapper">
+
+            <table class="crud-table">
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address ID</th>
+                    <th>Actions</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <tr th:if="${customerPage.totalElements == 0}">
+
+                    <td colspan="6"
+                        class="empty-state">
+
+                        No customers found yet.
+
+                    </td>
+
+                </tr>
+
+                <tr th:each="customer : ${customerPage.content}">
+
+                    <td th:text="${customer.id}">1</td>
+
+                    <td th:text="${customer.name}">Rahul</td>
+
+                    <td th:text="${customer.email}">
+                        rahul@gmail.com
+                    </td>
+
+                    <td th:text="${customer.phone}">
+                        9876543210
+                    </td>
+
+                    <td th:text="${customer.addressId}">
+                        1
+                    </td>
+
+                    <td>
+
+                        <div class="row-actions">
+
+                            <a class="crud-action edit-action"
+                               th:href="@{/ui/customers/{id}/edit(id=${customer.id})}">
+
+                                Edit
+
+                            </a>
+
+                            <form th:action="@{/ui/customers/{id}(id=${customer.id})}"
+                                  method="post"
+                                  class="inline-form">
+
+                                <input type="hidden"
+                                       name="_method"
+                                       value="DELETE">
+
+                                <button type="submit"
+                                        class="crud-action delete-action"
+                                        onclick="return confirm('Delete this customer?')">
+
+                                    Delete
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <section class="pagination-wrap"
+             th:if="${customerPage.totalPages > 1}">
+
+        <a class="page-link nav-link"
+           th:href="@{/ui/customers(page=${currentPage - 1}, size=${pageSize})}"
+           th:classappend="${customerPage.first} ? ' disabled' : ''">
+
+            ‹ Previous
+
+        </a>
+
+        <div class="pagination-pages">
+
+            <a class="page-link"
+               th:each="pageNum : ${#numbers.sequence(1, customerPage.totalPages)}"
+               th:href="@{/ui/customers(page=${pageNum}, size=${pageSize})}"
+               th:text="${pageNum}"
+               th:classappend="${pageNum == currentPage} ? ' active' : ''">
+
+                1
+
+            </a>
+
+        </div>
+
+        <a class="page-link nav-link"
+           th:href="@{/ui/customers(page=${currentPage + 1}, size=${pageSize})}"
+           th:classappend="${customerPage.last} ? ' disabled' : ''">
+
+            Next ›
+
+        </a>
+
+    </section>
+
+</div>
+
+</body>
+
+</html>

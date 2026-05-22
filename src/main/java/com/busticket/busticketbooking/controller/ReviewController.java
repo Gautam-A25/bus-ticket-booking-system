@@ -41,8 +41,9 @@ public class ReviewController {
 
     // DELETE /api/v1/reviews/{reviewId} — permanently delete a review by its ID; returns 204 No Content
     @DeleteMapping("/reviews/{reviewId}")
-    public ResponseEntity<Void> removeReview(@PathVariable Integer reviewId) {
-        reviewService.removeReview(reviewId);
-        return ResponseEntity.noContent().build();
+    public String removeReview(
+            @PathVariable Integer reviewId) {
+
+        return reviewService.removeReview(reviewId);
     }
 }

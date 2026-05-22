@@ -3,6 +3,7 @@ package com.busticket.busticketbooking.service.impl;
 import com.busticket.busticketbooking.dto.RouteDTO.RouteRequestDTO;
 import com.busticket.busticketbooking.dto.RouteDTO.RouteResponseDTO;
 import com.busticket.busticketbooking.entity.Route;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.repo.RouteRepo;
 import com.busticket.busticketbooking.service.RouteService;
 
@@ -72,13 +73,25 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public void deleteRoute(Integer id) {
+    public String deleteRoute(Integer id) {
 
         Route route = routeRepo.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Route not found with id: " + id));
+                        new ResourceNotFoundException(
+                                "Route with ID " + id + " not found"
+                        ));
+
+        String routeDetails =
+                "Route Deleted Successfully : \n" +
+                        "ID = " + route.getId() + "\n" +
+                        "From City = " + route.getFromCity() + "\n" +
+                        "To City = " + route.getToCity() + "\n" +
+                        "Break Points = " + route.getBreakPoints() + "\n" +
+                        "Duration = " + route.getDuration();
 
         routeRepo.delete(route);
+
+        return routeDetails;
     }
 
     private RouteResponseDTO mapToResponseDto(Route route) {

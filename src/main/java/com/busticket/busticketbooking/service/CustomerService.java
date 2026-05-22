@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.service;
 
 import com.busticket.busticketbooking.dto.CustomerDTO.CustomerRequestDTO;
 import com.busticket.busticketbooking.dto.CustomerDTO.CustomerResponseDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ public interface CustomerService {
     CustomerResponseDTO createCustomer(
             CustomerRequestDTO customerRequestDTO
     );
+
+    Page<CustomerResponseDTO> getCustomerPage(int page, int size);
 
     // Method to get all customers
     List<CustomerResponseDTO> getAllCustomers();
