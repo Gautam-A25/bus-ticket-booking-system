@@ -4,30 +4,51 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-
+/*
+ * Entity class representing Route table.
+ * Used to store route details in database.
+ */
 @Entity
+/*
+ * Maps this entity to "routes" table.
+ */
 @Table(name = "routes")
 public class Route {
-
+     /*
+     * Primary key for route table.
+     * Auto-generated using IDENTITY strategy.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "route_id")
     private Integer id;
-
+     /*
+     * Starting city of route.
+     * Cannot be empty.
+     */
     @NotBlank(message = "From city is required")
     @Size(max = 255, message = "From city must not exceed 255 characters")
     @Column(name = "from_city", nullable = false, length = 255)
     private String fromCity;
-
+     /*
+     * Destination city of route.
+     * Cannot be empty.
+     */
     @NotBlank(message = "To city is required")
     @Size(max = 255, message = "To city must not exceed 255 characters")
     @Column(name = "to_city", nullable = false, length = 255)
     private String toCity;
-
+    /*
+     * Number of break points in route.
+     * Cannot be negative.
+     */
     @PositiveOrZero(message = "Break points cannot be negative")
     @Column(name = "break_points")
     private Integer breakPoints;
-
+     /*
+     * Total route duration.
+     * Cannot be negative.
+     */
     @PositiveOrZero(message = "Duration cannot be negative")
     @Column(name = "duration")
     private Integer duration;
@@ -82,7 +103,7 @@ public class Route {
     public void setDuration(Integer duration) {
         this.duration = duration;
     }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,12 +111,16 @@ public class Route {
         Route route = (Route) o;
         return id != null && id.equals(route.id);
     }
-
+    /*
+     * Generates hash code for entity.
+     */
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
-
+    /*
+     * Converts object data into readable string.
+     */
     @Override
     public String toString() {
         return "Route{" +

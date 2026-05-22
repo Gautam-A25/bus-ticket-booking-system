@@ -1,8 +1,11 @@
 package com.busticket.busticketbooking.dto.RouteDTO;
-
+/*
+ * DTO used for sending route data
+ * as API response.
+ */
 public class RouteResponseDTO {
-
-    private Integer id;
+    
+    private Integer id;// Unique route ID
     private String fromCity;
     private String toCity;
     private Integer breakPoints;

@@ -2,7 +2,10 @@ package com.busticket.busticketbooking.dto.TripDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+/*
+ * DTO used for sending trip data
+ * as API response.
+ */
 public class TripResponseDTO {
 
     private Integer id;

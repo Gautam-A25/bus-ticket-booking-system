@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Route Management
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
+</head>
+
+<body>
+
+<div class="bg-mesh"></div>
+
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+
+        <div class="logo-section">
+
+            <div class="logo-icon-wrap">
+                🛣️
+            </div>
+
+            <div>
+
+                <div class="logo-text">
+                    Bus Ticket Booking
+                </div>
+
+                <div class="logo-sub">
+                    Route CRUD
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <section class="crud-toolbar">
+
+        <div>
+
+            <h2 class="section-title">
+                Route List
+            </h2>
+
+        </div>
+
+        <div class="crud-toolbar-actions">
+
+            <a class="card-cta"
+               th:href="@{/ui/routes/new}">
+
+                Create Route
+
+                <span class="card-cta-arrow">
+                    →
+                </span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <section class="crud-panel">
+
+        <div class="table-wrapper">
+
+            <table class="crud-table">
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>From City</th>
+
+                    <th>To City</th>
+
+                    <th>Break Points</th>
+
+                    <th>Duration</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <tr th:each="route : ${routePage.content}">
+
+                    <td th:text="${route.id}"></td>
+
+                    <td th:text="${route.fromCity}"></td>
+
+                    <td th:text="${route.toCity}"></td>
+
+                    <td th:text="${route.breakPoints}"></td>
+
+                    <td th:text="${route.duration}"></td>
+
+                    <td>
+
+                        <div class="row-actions">
+
+                            <!-- Edit -->
+
+                            <a class="crud-action edit-action"
+
+                               th:href="@{/ui/routes/{id}/edit(id=${route.id})}">
+
+                                Edit
+
+                            </a>
+
+                            <!-- Delete -->
+
+                            <form th:action="@{/ui/routes/{id}/delete(id=${route.id})}"
+
+                                  method="post"
+
+                                  class="inline-form">
+
+                                <button type="submit"
+
+                                        class="crud-action delete-action"
+
+                                        onclick="return confirm('Delete this route?')">
+
+                                    Delete
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>

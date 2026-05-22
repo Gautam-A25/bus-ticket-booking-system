@@ -7,6 +7,10 @@ import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/*
+ * DTO used for creating and updating trips.
+ * Contains validation rules for trip data.
+ */
 public class TripRequestDTO {
 
     @NotNull
