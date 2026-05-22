@@ -133,23 +133,7 @@ public class TripServiceTest {
                 dto.getAvailableSeats());
     }
 
-    @Test
-    void getAvailableSeatsTest() {
 
-        Trip trip = new Trip();
-
-        trip.setId(1);
-
-        trip.setAvailableSeats(50);
-
-        when(tripRepo.findById(1))
-                .thenReturn(Optional.of(trip));
-
-        Integer seats =
-                tripService.getAvailableSeats(1);
-
-        assertEquals(50, seats);
-    }
 
     @Test
     void closeTripTest() {

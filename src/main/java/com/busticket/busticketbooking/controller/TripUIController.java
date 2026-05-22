@@ -1,10 +1,12 @@
 package com.busticket.busticketbooking.controller;
 
+import com.busticket.busticketbooking.entity.Address;
+import com.busticket.busticketbooking.entity.Bus;
+import com.busticket.busticketbooking.entity.Driver;
+import com.busticket.busticketbooking.entity.Route;
 import com.busticket.busticketbooking.entity.Trip;
 
 import com.busticket.busticketbooking.repo.TripRepo;
-
-import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,13 +14,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 
-import org.springframework.validation.BindingResult;
-
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/ui/trips")
@@ -28,7 +34,7 @@ public class TripUIController {
     private TripRepo tripRepo;
 
     /*
-     * Display paginated trip list
+     * Display all trips
      */
     @GetMapping
     public String getAllTrips(
@@ -86,23 +92,120 @@ public class TripUIController {
     @PostMapping
     public String createTrip(
 
-            @Valid
-            @ModelAttribute("trip")
-            Trip trip,
+            @RequestParam Integer routeId,
 
-            BindingResult result,
+            @RequestParam Integer busId,
 
-            Model model) {
+            @RequestParam Integer driver1Id,
 
-        if (result.hasErrors()) {
+            @RequestParam Integer driver2Id,
 
-            model.addAttribute(
-                    "isEdit",
-                    false);
+            @RequestParam Integer boardingAddressId,
 
-            return "trips/form";
-        }
+            @RequestParam Integer droppingAddressId,
 
+            @RequestParam Integer availableSeats,
+
+            @RequestParam BigDecimal fare,
+
+            @RequestParam
+            @DateTimeFormat(
+                    iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime tripDate,
+
+            @RequestParam
+            @DateTimeFormat(
+                    iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime arrivalTime,
+
+            @RequestParam
+            @DateTimeFormat(
+                    iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime departureTime) {
+
+        Trip trip = new Trip();
+
+        /*
+         * Route
+         */
+        Route route = new Route();
+
+        route.setId(routeId);
+
+        trip.setRoute(route);
+
+        /*
+         * Bus
+         */
+        Bus bus = new Bus();
+
+        bus.setId(busId);
+
+        trip.setBus(bus);
+
+        /*
+         * Driver 1
+         */
+        Driver driver1 = new Driver();
+
+        driver1.setId(driver1Id);
+
+        trip.setDriver1(driver1);
+
+        /*
+         * Driver 2
+         */
+        Driver driver2 = new Driver();
+
+        driver2.setId(driver2Id);
+
+        trip.setDriver2(driver2);
+
+        /*
+         * Boarding Address
+         */
+        Address boardingAddress =
+                new Address();
+
+        boardingAddress.setId(
+                boardingAddressId);
+
+        trip.setBoardingAddress(
+                boardingAddress);
+
+        /*
+         * Dropping Address
+         */
+        Address droppingAddress =
+                new Address();
+
+        droppingAddress.setId(
+                droppingAddressId);
+
+        trip.setDroppingAddress(
+                droppingAddress);
+
+        /*
+         * Other fields
+         */
+        trip.setAvailableSeats(
+                availableSeats);
+
+        trip.setFare(
+                fare);
+
+        trip.setTripDate(
+                tripDate);
+
+        trip.setArrivalTime(
+                arrivalTime);
+
+        trip.setDepartureTime(
+                departureTime);
+
+        /*
+         * Save trip
+         */
         tripRepo.save(trip);
 
         return "redirect:/ui/trips";
@@ -147,29 +250,127 @@ public class TripUIController {
 
             @PathVariable Integer id,
 
-            @Valid
-            @ModelAttribute("trip")
-            Trip trip,
+            @RequestParam Integer routeId,
 
-            BindingResult result,
+            @RequestParam Integer busId,
 
-            Model model) {
+            @RequestParam Integer driver1Id,
 
-        if (result.hasErrors()) {
+            @RequestParam Integer driver2Id,
 
-            model.addAttribute(
-                    "tripId",
-                    id);
+            @RequestParam Integer boardingAddressId,
 
-            model.addAttribute(
-                    "isEdit",
-                    true);
+            @RequestParam Integer droppingAddressId,
 
-            return "trips/form";
-        }
+            @RequestParam Integer availableSeats,
 
-        trip.setId(id);
+            @RequestParam BigDecimal fare,
 
+            @RequestParam
+            @DateTimeFormat(
+                    iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime tripDate,
+
+            @RequestParam
+            @DateTimeFormat(
+                    iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime arrivalTime,
+
+            @RequestParam
+            @DateTimeFormat(
+                    iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime departureTime) {
+
+        /*
+         * Fetch existing trip
+         */
+        Trip trip =
+                tripRepo.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Trip not found"));
+
+        /*
+         * Route
+         */
+        Route route = new Route();
+
+        route.setId(routeId);
+
+        trip.setRoute(route);
+
+        /*
+         * Bus
+         */
+        Bus bus = new Bus();
+
+        bus.setId(busId);
+
+        trip.setBus(bus);
+
+        /*
+         * Driver 1
+         */
+        Driver driver1 = new Driver();
+
+        driver1.setId(driver1Id);
+
+        trip.setDriver1(driver1);
+
+        /*
+         * Driver 2
+         */
+        Driver driver2 = new Driver();
+
+        driver2.setId(driver2Id);
+
+        trip.setDriver2(driver2);
+
+        /*
+         * Boarding Address
+         */
+        Address boardingAddress =
+                new Address();
+
+        boardingAddress.setId(
+                boardingAddressId);
+
+        trip.setBoardingAddress(
+                boardingAddress);
+
+        /*
+         * Dropping Address
+         */
+        Address droppingAddress =
+                new Address();
+
+        droppingAddress.setId(
+                droppingAddressId);
+
+        trip.setDroppingAddress(
+                droppingAddress);
+
+        /*
+         * Other fields
+         */
+        trip.setAvailableSeats(
+                availableSeats);
+
+        trip.setFare(
+                fare);
+
+        trip.setTripDate(
+                tripDate);
+
+        trip.setArrivalTime(
+                arrivalTime);
+
+        trip.setDepartureTime(
+                departureTime);
+
+        /*
+         * Save updated trip
+         */
         tripRepo.save(trip);
 
         return "redirect:/ui/trips";
