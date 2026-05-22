@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Trip Management</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
+</head>
+
+<body>
+
+<div class="bg-mesh"></div>
+
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+
+        <div class="logo-section">
+
+            <div class="logo-icon-wrap">
+                🚌
+            </div>
+
+            <div>
+
+                <div class="logo-text">
+                    Bus Ticket Booking
+                </div>
+
+                <div class="logo-sub">
+                    Trip CRUD
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <section class="crud-toolbar">
+
+        <div>
+
+            <h2 class="section-title">
+                Trip List
+            </h2>
+
+        </div>
+
+        <div class="crud-toolbar-actions">
+
+            <a class="card-cta"
+               th:href="@{/ui/trips/new}">
+
+                Create Trip
+
+                <span class="card-cta-arrow">
+                    →
+                </span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+    <section class="crud-panel">
+
+        <div class="table-wrapper">
+
+            <table class="crud-table">
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Route</th>
+
+                    <th>Bus</th>
+
+                    <th>Seats</th>
+
+                    <th>Fare</th>
+
+                    <th>Departure</th>
+
+                    <th>Arrival</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <tr th:each="trip : ${tripPage.content}">
+
+                    <td th:text="${trip.id}"></td>
+
+                    <td th:text="${trip.route.id}"></td>
+
+                    <td th:text="${trip.bus.id}"></td>
+
+                    <td th:text="${trip.availableSeats}"></td>
+
+                    <td th:text="${trip.fare}"></td>
+
+                    <td th:text="${trip.departureTime}"></td>
+
+                    <td th:text="${trip.arrivalTime}"></td>
+
+                    <td>
+
+                        <div class="row-actions">
+
+                            <!-- Edit -->
+
+                            <a class="crud-action edit-action"
+
+                               th:href="@{/ui/trips/{id}/edit(id=${trip.id})}">
+
+                                Edit
+
+                            </a>
+
+                            <!-- Delete -->
+
+                            <form th:action="@{/ui/trips/{id}/delete(id=${trip.id})}"
+
+                                  method="post"
+
+                                  class="inline-form">
+
+                                <button type="submit"
+
+                                        class="crud-action delete-action"
+
+                                        onclick="return confirm('Delete this trip?')">
+
+                                    Delete
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>

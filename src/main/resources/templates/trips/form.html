@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Trip Form</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
+</head>
+
+<body>
+
+<div class="bg-mesh"></div>
+
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+
+        <div class="logo-section">
+
+            <div class="logo-icon-wrap">
+                🚌
+            </div>
+
+            <div>
+
+                <div class="logo-text">
+                    Bus Ticket Booking
+                </div>
+
+                <div class="logo-sub">
+                    Trip CRUD
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <a class="back-btn"
+               th:href="@{/ui/trips}">
+
+                ← Back to List
+
+            </a>
+
+        </div>
+
+    </header>
+
+    <section class="detail-hero">
+
+        <div class="detail-icon-box">
+            🚌
+        </div>
+
+        <div class="detail-title-block">
+
+            <div class="detail-eyebrow"
+                 th:text="${isEdit}
+                 ? 'Update Trip'
+                 : 'New Trip'}">
+            </div>
+
+            <h1 class="detail-title"
+                th:text="${isEdit}
+                ? 'Edit Trip'
+                : 'Create Trip'}">
+            </h1>
+
+        </div>
+
+    </section>
+
+    <section class="crud-panel">
+
+        <form th:action="${isEdit}
+                         ? '/ui/trips/' + tripId
+                         : '/ui/trips'}"
+
+              th:object="${trip}"
+
+              method="post"
+
+              class="crud-form">
+
+            <!-- Route ID -->
+
+            <div class="field-grid">
+
+                <label>Route ID</label>
+
+                <input type="number"
+                       th:field="*{route.id}">
+
+            </div>
+
+            <!-- Bus ID -->
+
+            <div class="field-grid">
+
+                <label>Bus ID</label>
+
+                <input type="number"
+                       th:field="*{bus.id}">
+
+            </div>
+
+            <!-- Available Seats -->
+
+            <div class="field-grid">
+
+                <label>Available Seats</label>
+
+                <input type="number"
+                       th:field="*{availableSeats}">
+
+            </div>
+
+            <!-- Fare -->
+
+            <div class="field-grid">
+
+                <label>Fare</label>
+
+                <input type="number"
+                       step="0.01"
+                       th:field="*{fare}">
+
+            </div>
+
+            <!-- Departure Time -->
+
+            <div class="field-grid">
+
+                <label>Departure Time</label>
+
+                <input type="datetime-local"
+                       th:field="*{departureTime}">
+
+            </div>
+
+            <!-- Arrival Time -->
+
+            <div class="field-grid">
+
+                <label>Arrival Time</label>
+
+                <input type="datetime-local"
+                       th:field="*{arrivalTime}">
+
+            </div>
+
+            <div class="form-actions">
+
+                <button type="submit"
+                        class="card-cta crud-submit">
+
+                    <span th:text="${isEdit}
+                    ? 'Update Trip'
+                    : 'Create Trip'}">
+                    </span>
+
+                    <span class="card-cta-arrow">
+                        →
+                    </span>
+
+                </button>
+
+                <a th:href="@{/ui/trips}"
+                   class="secondary-button">
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+</body>
+</html>
