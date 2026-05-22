@@ -9,6 +9,15 @@ import com.busticket.busticketbooking.repo.BusRepo;
 import com.busticket.busticketbooking.service.BusService;
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.mapper.BusMapper;
+import com.busticket.busticketbooking.repo.TripRepo;
+import com.busticket.busticketbooking.repo.BookingRepo;
+import com.busticket.busticketbooking.repo.PaymentRepo;
+import com.busticket.busticketbooking.repo.ReviewRepo;
+import com.busticket.busticketbooking.entity.Trip;
+import com.busticket.busticketbooking.entity.Booking;
+import com.busticket.busticketbooking.entity.Review;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -20,6 +29,15 @@ public class BusServiceImpl implements BusService {
 
     private final BusRepo busRepo;
     private final AgencyOfficeRepo officeRepo;
+
+    @Autowired
+    private TripRepo tripRepo;
+    @Autowired
+    private BookingRepo bookingRepo;
+    @Autowired
+    private PaymentRepo paymentRepo;
+    @Autowired
+    private ReviewRepo reviewRepo;
 
     public BusServiceImpl(BusRepo busRepo,
                           AgencyOfficeRepo officeRepo) {
@@ -104,6 +122,7 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
+    @Transactional
     public String deleteBus(Integer id) {
 
         Bus bus = busRepo.findById(id)
@@ -122,6 +141,24 @@ public class BusServiceImpl implements BusService {
                         "Registration Number = " + bus.getRegistrationNumber() + "\n" +
                         "Capacity = " + bus.getCapacity() + "\n" +
                         "Type = " + bus.getType();
+
+        // Find and delete trips referencing this bus
+        List<Trip> trips = tripRepo.findByBusId(id);
+        for (Trip trip : trips) {
+            // Cascade delete bookings and payments first
+            List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
+            for (Booking booking : bookings) {
+                paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
+            }
+            bookingRepo.deleteAll(bookings);
+
+            // Cascade delete reviews
+            List<Review> reviews = reviewRepo.findByTripId(trip.getId());
+            reviewRepo.deleteAll(reviews);
+
+            // Delete trip
+            tripRepo.delete(trip);
+        }
 
         busRepo.delete(bus);
 

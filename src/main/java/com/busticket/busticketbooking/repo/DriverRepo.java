@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface DriverRepo extends JpaRepository<Driver, Integer> {
 
-    List<Driver> findByOffice_id(Integer officeId);
+    List<Driver> findByOffice_Id(Integer officeId);
 
     boolean existsByLicenseNumber(String licenseNumber);
+
+    List<Driver> findByAddressId(Integer addressId);
 }

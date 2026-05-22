@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface AgencyOfficeRepo extends JpaRepository<AgencyOffice, Integer> {
     List<AgencyOffice> findByAgency_Id(Integer agencyId);
+
+    List<AgencyOffice> findByAddressId(Integer addressId);
 }

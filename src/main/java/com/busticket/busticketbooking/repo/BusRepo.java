@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface BusRepo extends JpaRepository<Bus, Integer> {
 
-    List<Bus> findByOffice_id(Integer officeId);
+    List<Bus> findByOffice_Id(Integer officeId);
 
 }

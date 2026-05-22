@@ -226,7 +226,7 @@ void findRouteByFromCityAndToCityTest() {
 
         Bus savedBus = busRepo.save(bus);
 
-        List<Bus> buses = busRepo.findByOffice_id(office.getId());
+        List<Bus> buses = busRepo.findByOffice_Id(office.getId());
 
         assertFalse(buses.isEmpty());
         assertEquals(savedBus.getId(), buses.get(0).getId());
@@ -246,7 +246,7 @@ void findRouteByFromCityAndToCityTest() {
 
         Driver savedDriver = driverRepo.save(driver);
 
-        List<Driver> drivers = driverRepo.findByOffice_id(office.getId());
+        List<Driver> drivers = driverRepo.findByOffice_Id(office.getId());
 
         assertFalse(drivers.isEmpty());
         assertEquals(savedDriver.getId(), drivers.get(0).getId());
