@@ -1,9 +1,14 @@
 package com.busticket.busticketbooking.dto.AgencyOfficeDTO;
 
-import jakarta.validation.constraints.*;
-
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public class AgencyOfficeRequestDTO {
+
+    private Integer agencyId;
 
     @NotBlank(message = "Office email is required")
     @Email(message = "Office email format is invalid")
@@ -28,11 +33,20 @@ public class AgencyOfficeRequestDTO {
     public AgencyOfficeRequestDTO() {
     }
 
-    public AgencyOfficeRequestDTO(String officeMail, String officeContactPersonName, String officeContactNumber, Integer addressId) {
+    public AgencyOfficeRequestDTO(Integer agencyId, String officeMail, String officeContactPersonName, String officeContactNumber, Integer addressId) {
+        this.agencyId = agencyId;
         this.officeMail = officeMail;
         this.officeContactPersonName = officeContactPersonName;
         this.officeContactNumber = officeContactNumber;
         this.addressId = addressId;
+    }
+
+    public Integer getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Integer agencyId) {
+        this.agencyId = agencyId;
     }
 
     public String getOfficeMail() {
