@@ -78,6 +78,20 @@
 
     </section>
 
+    <!-- SUCCESS MESSAGE -->
+
+    <div th:if="${successMessage}"
+         class="alert success-alert"
+         th:text="${successMessage}">
+    </div>
+
+    <!-- ERROR MESSAGE -->
+
+    <div th:if="${errorMessage}"
+         class="alert error-alert"
+         th:text="${errorMessage}">
+    </div>
+
     <!-- TABLE HEADER -->
     <section style="margin-top:40px;">
 
@@ -199,7 +213,8 @@
 
                         <!-- DELETE -->
                         <a class="crud-action delete-action"
-                           th:href="@{/ui/buses/{id}/delete(id=${bus.id})}">
+                           th:href="@{/ui/buses/{id}/delete(id=${bus.id})}"
+                           onclick="return confirm('Delete this bus?')">
 
                             Delete
 

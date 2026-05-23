@@ -91,10 +91,21 @@ public class ReviewUiController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            reviewService.removeReview(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Review removed successfully.");
+
+            String successMessage =
+                    reviewService.removeReview(id);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    successMessage
+            );
+
         } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage()
+            );
         }
 
         return "redirect:/ui/reviews";

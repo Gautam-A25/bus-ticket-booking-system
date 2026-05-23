@@ -4,6 +4,7 @@ import com.busticket.busticketbooking.entity.Route;
 
 import com.busticket.busticketbooking.repo.RouteRepo;
 
+import com.busticket.busticketbooking.service.RouteService;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/ui/routes")
@@ -26,6 +28,8 @@ public class RouteUIController {
 
     @Autowired
     private RouteRepo routeRepo;
+    @Autowired
+    private RouteService routeService;
 
     /*
      * Display paginated route list
@@ -92,7 +96,9 @@ public class RouteUIController {
 
             BindingResult result,
 
-            Model model) {
+            Model model,
+
+            RedirectAttributes redirectAttributes) {
 
         /*
          * Validation check
@@ -110,6 +116,10 @@ public class RouteUIController {
          * Save route in database
          */
         routeRepo.save(route);
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Route created successfully."
+        );
 
         /*
          * Redirect to route list
@@ -168,7 +178,9 @@ public class RouteUIController {
 
             BindingResult result,
 
-            Model model) {
+            Model model,
+
+            RedirectAttributes redirectAttributes) {
 
         /*
          * Validation check
@@ -195,6 +207,10 @@ public class RouteUIController {
          * Save updated route
          */
         routeRepo.save(route);
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Route updated successfully."
+        );
 
         /*
          * Redirect to route list
@@ -207,16 +223,25 @@ public class RouteUIController {
      */
     @PostMapping("/{id}/delete")
     public String deleteRoute(
-            @PathVariable Integer id) {
+            @PathVariable Integer id,
+            RedirectAttributes redirectAttributes) {
 
-        /*
-         * Delete route from database
-         */
-        routeRepo.deleteById(id);
+        try {
 
-        /*
-         * Redirect to route list
-         */
+            String successMessage =
+                    routeService.deleteRoute(id);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    successMessage);
+
+        } catch (Exception ex) {
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage());
+        }
+
         return "redirect:/ui/routes";
     }
 }

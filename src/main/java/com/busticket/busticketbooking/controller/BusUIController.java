@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.controller;
 
 import com.busticket.busticketbooking.dto.BusDTO.BusRequestDTO;
 import com.busticket.busticketbooking.dto.BusDTO.BusResponseDTO;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.service.BusService;
 
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/ui/buses")
@@ -61,7 +63,8 @@ public class BusUIController {
     public String saveBus(
             @Valid @ModelAttribute("bus") BusRequestDTO dto,
             BindingResult result,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
 
         if (result.hasErrors()) {
@@ -72,6 +75,11 @@ public class BusUIController {
         }
 
         busService.createBus(dto);
+
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Bus created successfully."
+        );
 
         return "redirect:/ui/buses";
     }
@@ -132,9 +140,28 @@ public class BusUIController {
      * Delete bus
      */
     @GetMapping("/{id}/delete")
-    public String deleteBus(@PathVariable Integer id) {
+    public String deleteBus(
+            @PathVariable Integer id,
+            RedirectAttributes redirectAttributes
+    ) {
 
-        busService.deleteBus(id);
+        try {
+
+            String successMessage =
+                    busService.deleteBus(id);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    successMessage
+            );
+
+        } catch (ResourceNotFoundException ex) {
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage()
+            );
+        }
 
         return "redirect:/ui/buses";
     }

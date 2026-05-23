@@ -163,10 +163,21 @@ public class DriverUiController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            driverService.deleteDriver(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Driver deleted successfully.");
+
+            String successMessage =
+                    driverService.deleteDriver(id);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    successMessage
+            );
+
         } catch (ResourceNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage()
+            );
         }
 
         return "redirect:/ui/drivers";

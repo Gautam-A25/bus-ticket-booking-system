@@ -129,10 +129,8 @@
     <!-- SUCCESS MESSAGE -->
 
     <div th:if="${successMessage}"
-         class="alert success-alert">
-
-        <pre th:text="${successMessage}"></pre>
-
+         class="alert success-alert"
+         th:text="${successMessage}">
     </div>
 
     <!-- ERROR MESSAGE -->
