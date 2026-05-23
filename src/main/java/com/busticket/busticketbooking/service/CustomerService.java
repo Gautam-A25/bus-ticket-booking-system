@@ -6,30 +6,31 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-// Service interface for Customer operations
+// Service interface defines customer business operations
 public interface CustomerService {
 
-    // Method to create customer
+    // Creates a new customer record
     CustomerResponseDTO createCustomer(
             CustomerRequestDTO customerRequestDTO
     );
 
+    // Fetches customer records using pagination
     Page<CustomerResponseDTO> getCustomerPage(int page, int size);
 
-    // Method to get all customers
+    // Fetches all customer records
     List<CustomerResponseDTO> getAllCustomers();
 
-    // Method to get customer by ID
+    // Fetches customer details using customer ID
     CustomerResponseDTO getCustomerById(
             Integer customerId
     );
 
-    // Method to update customer details
+    // Updates existing customer details
     CustomerResponseDTO updateCustomer(
             Integer customerId,
             CustomerRequestDTO customerRequestDTO
     );
 
-    // Method to delete customer
+    // Deletes customer record using customer ID
     String deleteCustomer(Integer customerId);
 }

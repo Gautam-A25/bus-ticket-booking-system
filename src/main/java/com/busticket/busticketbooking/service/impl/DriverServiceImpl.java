@@ -13,6 +13,9 @@ import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.exception.DuplicateResourceException;
 import com.busticket.busticketbooking.mapper.DriverMapper;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -72,6 +75,13 @@ public class DriverServiceImpl implements DriverService {
                 .stream()
                 .map(DriverMapper::mapToResponseDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<DriverResponseDTO> getDriverPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return driverRepo.findAll(pageable)
+                .map(DriverMapper::mapToResponseDto);
     }
 
     @Override
