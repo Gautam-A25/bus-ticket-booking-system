@@ -2,26 +2,26 @@ package com.busticket.busticketbooking.dto.BookingDTO;
 
 import com.busticket.busticketbooking.entity.Booking.BookingStatus;
 
-// DTO used for booking response data
+// DTO used to send booking details as response
 public class BookingResponseDTO {
 
-    // Booking ID
+    // Stores unique booking ID
     private Integer id;
 
-    // Trip ID associated with booking
+    // Stores associated trip ID
     private Integer tripId;
 
-    // Booked seat number
+    // Stores booked seat number
     private Integer seatNumber;
 
-    // Booking status
+    // Stores current booking status
     private BookingStatus status;
 
     // Default constructor
     public BookingResponseDTO() {
     }
 
-    // Parameterized constructor
+    // Parameterized constructor for object initialization
     public BookingResponseDTO(
             Integer id,
             Integer tripId,
@@ -34,42 +34,42 @@ public class BookingResponseDTO {
         this.status = status;
     }
 
-    // Getter for booking ID
+    // Returns booking ID
     public Integer getId() {
         return id;
     }
 
-    // Setter for booking ID
+    // Sets booking ID
     public void setId(Integer id) {
         this.id = id;
     }
 
-    // Getter for trip ID
+    // Returns trip ID
     public Integer getTripId() {
         return tripId;
     }
 
-    // Setter for trip ID
+    // Sets trip ID
     public void setTripId(Integer tripId) {
         this.tripId = tripId;
     }
 
-    // Getter for seat number
+    // Returns booked seat number
     public Integer getSeatNumber() {
         return seatNumber;
     }
 
-    // Setter for seat number
+    // Sets booked seat number
     public void setSeatNumber(Integer seatNumber) {
         this.seatNumber = seatNumber;
     }
 
-    // Getter for booking status
+    // Returns booking status
     public BookingStatus getStatus() {
         return status;
     }
 
-    // Setter for booking status
+    // Sets booking status
     public void setStatus(BookingStatus status) {
         this.status = status;
     }

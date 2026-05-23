@@ -5,34 +5,34 @@ import com.busticket.busticketbooking.dto.CustomerDTO.CustomerResponseDTO;
 import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.Customer;
 
-// Mapper class for Customer entity and DTO conversion
+// Mapper class used for Customer entity and DTO conversion
 public class CustomerMapper {
 
-    // Converts CustomerRequestDTO to Customer Entity
+    // Converts CustomerRequestDTO into Customer entity object
     public static Customer mapToEntity(
             CustomerRequestDTO customerRequestDTO,
             Address address
     ) {
 
-        // Create new Customer entity object
+        // Creates new Customer entity object
         Customer customer = new Customer();
 
-        // Set customer name
+        // Sets customer name
         customer.setName(customerRequestDTO.getName());
 
-        // Set customer email
+        // Sets customer email address
         customer.setEmail(customerRequestDTO.getEmail());
 
-        // Set customer phone number
+        // Sets customer phone number
         customer.setPhone(customerRequestDTO.getPhone());
 
-        // Set customer address
+        // Sets associated address object
         customer.setAddress(address);
 
         return customer;
     }
 
-    // Converts Customer Entity to CustomerResponseDTO
+    // Converts Customer entity into CustomerResponseDTO
     public static CustomerResponseDTO mapToResponseDTO(
             Customer customer
     ) {

@@ -8,22 +8,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Marks this class as REST Controller
+// Controller layer handles customer-related APIs
 @RestController
 
-// Base URL for Customer APIs
+// Base URL for customer APIs
 @RequestMapping("/api/v1")
 public class CustomerController {
 
-    // Service layer dependency
+    // Service layer object for customer business logic
     private final CustomerService customerService;
 
-    // Constructor Injection
+    // Constructor injection for dependency injection
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
 
-    // API to create customer
+    // Creates a new customer record
     @PostMapping("/customers")
     public CustomerResponseDTO createCustomer(
             @Valid @RequestBody CustomerRequestDTO customerRequestDTO) {
@@ -31,14 +31,14 @@ public class CustomerController {
         return customerService.createCustomer(customerRequestDTO);
     }
 
-    // API to get all customers
+    // Fetches all customer records
     @GetMapping("/customers")
     public List<CustomerResponseDTO> getAllCustomers() {
 
         return customerService.getAllCustomers();
     }
 
-    // API to get customer by ID
+    // Fetches customer details using customer ID
     @GetMapping("/customers/{customerId}")
     public CustomerResponseDTO getCustomerById(
             @PathVariable Integer customerId) {
@@ -46,7 +46,7 @@ public class CustomerController {
         return customerService.getCustomerById(customerId);
     }
 
-    // API to update customer details
+    // Updates existing customer details
     @PutMapping("/customers/{customerId}")
     public CustomerResponseDTO updateCustomer(
             @PathVariable Integer customerId,
@@ -58,7 +58,7 @@ public class CustomerController {
         );
     }
 
-    // API to delete customer
+    // Deletes customer record using customer ID
     @DeleteMapping("/customers/{customerId}")
     public String deleteCustomer(
             @PathVariable Integer customerId

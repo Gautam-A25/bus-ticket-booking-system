@@ -2,39 +2,47 @@ package com.busticket.busticketbooking.dto.CustomerDTO;
 
 import jakarta.validation.constraints.*;
 
-// DTO used for customer request data
+// DTO used to receive customer request data
 public class CustomerRequestDTO {
 
-    // Customer name
+    // Stores customer name
     @NotBlank(message = "Customer name is required")
+
+    // Validates name length between 3 and 50 characters
     @Size(
             min = 3,
             max = 50,
             message = "Customer name must be between 3 and 50 characters"
     )
+
+    // Allows only alphabets and spaces in name
     @Pattern(
             regexp = "^[A-Za-z ]+$",
             message = "Customer name must contain only alphabets"
     )
     private String name;
 
-    // Customer email
+    // Stores customer email address
     @Pattern(
             regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
             message = "Customer email format is invalid"
     )
+
+    // Ensures email field is not empty
     @NotBlank(message = "Customer email is required")
     private String email;
 
-    // Customer phone number
+    // Stores customer phone number
     @NotBlank(message = "Customer phone number is required")
+
+    // Validates 10-digit phone number format
     @Pattern(
             regexp = "^[0-9]{10}$",
             message = "Customer phone number must contain exactly 10 digits"
     )
     private String phone;
 
-    // Address ID associated with customer
+    // Stores address ID linked to customer
     @NotNull(message = "Customer address ID is required")
     private Integer addressId;
 
@@ -42,7 +50,7 @@ public class CustomerRequestDTO {
     public CustomerRequestDTO() {
     }
 
-    // Parameterized constructor
+    // Parameterized constructor for object initialization
     public CustomerRequestDTO(
             String name,
             String email,
@@ -56,40 +64,40 @@ public class CustomerRequestDTO {
         this.addressId = addressId;
     }
 
-    // Getter for customer name
+    // Returns customer name
     public String getName() {
         return name;
     }
 
-    // Setter for customer name
+    // Sets customer name
     public void setName(String name) { this.name = name; }
 
-    // Getter for customer email
+    // Returns customer email
     public String getEmail() {
         return email;
     }
 
-    // Setter for customer email
+    // Sets customer email
     public void setEmail(String email) {
         this.email = email;
     }
 
-    // Getter for customer phone number
+    // Returns customer phone number
     public String getPhone() {
         return phone;
     }
 
-    // Setter for customer phone number
+    // Sets customer phone number
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    // Getter for address ID
+    // Returns address ID
     public Integer getAddressId() {
         return addressId;
     }
 
-    // Setter for address ID
+    // Sets address ID
     public void setAddressId(Integer addressId) {
         this.addressId = addressId;
     }

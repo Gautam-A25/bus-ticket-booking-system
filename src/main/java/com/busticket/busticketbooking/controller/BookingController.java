@@ -8,22 +8,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Marks this class as REST Controller
+// Controller layer handles booking-related HTTP requests
 @RestController
 
-// Base URL for Booking APIs
+// Base URL for all booking APIs
 @RequestMapping("/api/v1")
 public class BookingController {
 
-    // Service layer dependency
+    // Service layer object used for booking business logic
     private final BookingService bookingService;
 
-    // Constructor Injection
+    // Constructor injection for dependency injection
     public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
     }
 
-    // API to create booking for a trip
+    // Creates a new booking for the given trip
     @PostMapping("/trips/{tripId}/bookings")
     public BookingResponseDTO createBooking(
             @PathVariable Integer tripId,
@@ -35,7 +35,7 @@ public class BookingController {
         );
     }
 
-    // API to get all bookings of a customer
+    // Fetches all bookings of a specific customer
     @GetMapping("/customers/{customerId}/bookings")
     public List<BookingResponseDTO> getBookingsByCustomer(
             @PathVariable Integer customerId) {
@@ -43,7 +43,7 @@ public class BookingController {
         return bookingService.getBookingsByCustomer(customerId);
     }
 
-    // API to get booking details by booking ID
+    // Fetches booking details using booking ID
     @GetMapping("/bookings/{bookingId}")
     public BookingResponseDTO getBookingById(
             @PathVariable Integer bookingId) {
@@ -51,7 +51,7 @@ public class BookingController {
         return bookingService.getBookingById(bookingId);
     }
 
-    // API to cancel booking
+    // Cancels an existing booking
     @PatchMapping("/bookings/{bookingId}/cancel")
     public String cancelBooking(
             @PathVariable Integer bookingId) {

@@ -6,28 +6,29 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-// Service interface for Booking operations
+// Service interface defines booking business operations
 public interface BookingService {
 
-    // Method to create booking
+    // Creates a new booking for a trip
     BookingResponseDTO createBooking(
             Integer tripId,
             BookingRequestDTO bookingRequestDTO
     );
 
+    // Fetches booking records using pagination
     Page<BookingResponseDTO> getBookingPage(int page, int size);
 
-    // Method to get bookings by customer ID
+    // Fetches all bookings of a specific customer
     List<BookingResponseDTO> getBookingsByCustomer(
             Integer customerId
     );
 
-    // Method to get booking by booking ID
+    // Fetches booking details using booking ID
     BookingResponseDTO getBookingById(
             Integer bookingId
     );
 
-    // Method to cancel booking
+    // Cancels an existing booking
     String cancelBooking(
             Integer bookingId
     );
