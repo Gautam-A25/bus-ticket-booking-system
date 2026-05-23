@@ -4,15 +4,17 @@ import com.busticket.busticketbooking.entity.Booking.BookingStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-// DTO used for booking request data
+// DTO used to receive booking request data from client
 public class BookingRequestDTO {
 
-    // Seat number for booking
+    // Stores seat number selected for booking
     @NotNull(message = "Seat number is required")
+
+    // Ensures seat number is greater than 0
     @Min(value = 1, message = "Seat number must be greater than 0")
     private Integer seatNumber;
 
-    // Booking status
+    // Stores current booking status
     @NotNull(message = "Booking status is required")
     private BookingStatus status;
 
@@ -20,7 +22,7 @@ public class BookingRequestDTO {
     public BookingRequestDTO() {
     }
 
-    // Parameterized constructor
+    // Parameterized constructor for object initialization
     public BookingRequestDTO(
             Integer seatNumber,
             BookingStatus status
@@ -29,22 +31,22 @@ public class BookingRequestDTO {
         this.status = status;
     }
 
-    // Getter for seat number
+    // Returns seat number value
     public Integer getSeatNumber() {
         return seatNumber;
     }
 
-    // Setter for seat number
+    // Sets seat number value
     public void setSeatNumber(Integer seatNumber) {
         this.seatNumber = seatNumber;
     }
 
-    // Getter for booking status
+    // Returns booking status value
     public BookingStatus getStatus() {
         return status;
     }
 
-    // Setter for booking status
+    // Sets booking status value
     public void setStatus(BookingStatus status) {
         this.status = status;
     }

@@ -17,17 +17,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-// Marks this class as Service layer component
+// Service layer handles customer business logic
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-    // Repository dependency for Customer table
+    // Repository object for customer database operations
     private final CustomerRepo customerRepo;
 
-    // Repository dependency for Address table
+    // Repository object for address database operations
     private final AddressRepo addressRepo;
 
-    // Constructor Injection
+    // Constructor injection for dependency injection
     public CustomerServiceImpl(
             CustomerRepo customerRepo,
             AddressRepo addressRepo
@@ -36,113 +36,118 @@ public class CustomerServiceImpl implements CustomerService {
         this.addressRepo = addressRepo;
     }
 
-    // Method to create customer
+    // Creates a new customer record
     @Override
     public CustomerResponseDTO createCustomer(
             CustomerRequestDTO customerRequestDTO
     ) {
 
+        // Checks whether customer email already exists
         if (customerRepo.existsByEmail(customerRequestDTO.getEmail())) {
             throw new DuplicateResourceException("Customer with email " + customerRequestDTO.getEmail() + " already exists");
         }
 
-        // Fetch address by ID
+        // Fetches address using address ID
         Address address = addressRepo.findById(customerRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + customerRequestDTO.getAddressId() + " not found"));
 
-        // Convert DTO to Entity
+        // Converts DTO object into entity object
         Customer customer = CustomerMapper.mapToEntity(
                 customerRequestDTO,
                 address
         );
 
-        // Save customer into database
+        // Saves customer into database
         Customer savedCustomer = customerRepo.save(customer);
 
-        // Convert Entity to Response DTO
+        // Converts entity into response DTO
         return CustomerMapper.mapToResponseDTO(savedCustomer);
     }
 
+    // Fetches customer records using pagination
     @Override
     public Page<CustomerResponseDTO> getCustomerPage(int page, int size) {
 
+        // Creates pageable object using page number and size
         Pageable pageable = PageRequest.of(page, size);
 
         return customerRepo
                 .findAll(pageable)
+
+                // Converts entity objects into response DTOs
                 .map(CustomerMapper::mapToResponseDTO);
     }
 
-    // Method to get all customers
+    // Fetches all customer records
     @Override
     public List<CustomerResponseDTO> getAllCustomers() {
 
         return customerRepo.findAll()
                 .stream()
 
-                // Convert Entity to Response DTO
+                // Converts entity into response DTO
                 .map(CustomerMapper::mapToResponseDTO)
 
                 .toList();
     }
 
-    // Method to get customer by ID
+    // Fetches customer details using customer ID
     @Override
     public CustomerResponseDTO getCustomerById(
             Integer customerId
     ) {
 
-        // Fetch customer by ID
+        // Fetches customer using customer ID
         Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + customerId + " not found"));
 
-        // Convert Entity to Response DTO
+        // Converts entity into response DTO
         return CustomerMapper.mapToResponseDTO(customer);
     }
 
-    // Method to update customer details
+    // Updates existing customer details
     @Override
     public CustomerResponseDTO updateCustomer(
             Integer customerId,
             CustomerRequestDTO customerRequestDTO
     ) {
 
-        // Fetch customer by ID
+        // Fetches customer using customer ID
         Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + customerId + " not found"));
 
-        // Fetch address by ID
+        // Fetches address using address ID
         Address address = addressRepo.findById(customerRequestDTO.getAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + customerRequestDTO.getAddressId() + " not found"));
 
-        // Update customer name
+        // Updates customer name
         customer.setName(customerRequestDTO.getName());
 
-        // Update customer email
+        // Updates customer email
         customer.setEmail(customerRequestDTO.getEmail());
 
-        // Update customer phone number
+        // Updates customer phone number
         customer.setPhone(customerRequestDTO.getPhone());
 
-        // Update customer address
+        // Updates associated address
         customer.setAddress(address);
 
-        // Save updated customer into database
+        // Saves updated customer into database
         Customer updatedCustomer = customerRepo.save(customer);
 
-        // Convert Entity to Response DTO
+        // Converts entity into response DTO
         return CustomerMapper.mapToResponseDTO(updatedCustomer);
     }
 
-    // Method to delete customer
+    // Deletes customer record using customer ID
     @Override
     public String deleteCustomer(Integer customerId) {
 
-        // Fetch customer by ID
+        // Fetches customer using customer ID
         Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + customerId + " not found"));
 
-        // Customer delete message
+        // Creates customer deletion message
         String customerDetails =
                 "Customer Deleted Successfully : \n" +
                         "ID = " + customer.getId() + "\n" +
@@ -154,8 +159,7 @@ public class CustomerServiceImpl implements CustomerService {
                                 ? customer.getAddress().getId()
                                 : null);
 
-
-        // Delete customer from database
+        // Deletes customer from database
         customerRepo.delete(customer);
 
         return customerDetails;
