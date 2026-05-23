@@ -151,18 +151,31 @@ public class TripServiceImpl
      * Close trip
      */
     @Override
-    public void closeTrip(
-            Integer id) {
+    public String closeTrip(Integer id) {
 
-        Trip trip =
-                tripRepo.findById(id)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Trip not found with id: " + id));
+        Trip trip = tripRepo.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Trip not found with id: " + id
+                        ));
 
         trip.setAvailableSeats(0);
 
         tripRepo.save(trip);
+
+        return "Trip Closed Successfully : \n" +
+                "ID = " + trip.getId() + "\n" +
+                "Route = " + trip.getRoute() + "\n" +
+                "Bus = " + trip.getBus() + "\n" +
+                "Boarding Address = " + trip.getBoardingAddress() + "\n" +
+                "Dropping Address = " + trip.getDroppingAddress() + "\n" +
+                "Departure Time = " + trip.getDepartureTime() + "\n" +
+                "Arrival Time = " + trip.getArrivalTime() + "\n" +
+                "Driver 1 = " + trip.getDriver1() + "\n" +
+                "Driver 2 = " + trip.getDriver2() + "\n" +
+                "Available Seats = " + trip.getAvailableSeats() + "\n" +
+                "Fare = " + trip.getFare() + "\n" +
+                "Trip Date = " + trip.getTripDate();
     }
 
     /*

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Occupancy Report</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">🚌</div>
+            <div>
+                <div class="logo-text">Enterprise Reports</div>
+                <div class="logo-sub">Trip Occupancy</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/ui/reports}">← All Reports</a>
+        </div>
+    </header>
+
+    <section class="crud-toolbar">
+        <div>
+            <h2 class="section-title">Occupancy Report</h2>
+            <p class="crud-note">Measures how well seats are sold for a specific date.</p>
+        </div>
+
+        <div class="crud-toolbar-actions">
+            <!-- Filter Form -->
+            <form th:action="@{/ui/reports/trips/occupancy}" method="get" class="inline-form" style="display: flex; gap: 10px; align-items: center;">
+                <label for="tripDate" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Date:</label>
+                <input type="date" id="tripDate" name="tripDate" th:value="${tripDate}" style="padding: 6px 12px; border-radius: 6px; background: rgba(0,0,0,0.2); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                <button type="submit" class="card-cta" style="padding: 6px 16px;">Filter</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="crud-panel">
+        <div class="table-wrapper">
+            <table class="crud-table">
+                <thead>
+                <tr>
+                    <th>Trip ID</th>
+                    <th>Route</th>
+                    <th>Capacity</th>
+                    <th>Booked Seats</th>
+                    <th>Available Seats</th>
+                    <th>Occupancy %</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:if="${#lists.isEmpty(reportData)}">
+                    <td colspan="6" class="empty-state">No trips found for the selected date.</td>
+                </tr>
+
+                <tr th:each="data : ${reportData}">
+                    <td th:text="${data.tripId}">1</td>
+                    <td th:text="${data.route}">Mumbai-Pune</td>
+                    <td th:text="${data.capacity}">50</td>
+                    <td th:text="${data.bookedSeats}">45</td>
+                    <td th:text="${data.availableSeats}">5</td>
+                    <td>
+                        <span class="crud-action"
+                              th:classappend="${data.occupancyPercentage >= 80 ? 'edit-action' : (data.occupancyPercentage < 40 ? 'delete-action' : '')}"
+                              th:text="${data.occupancyPercentage + '%'}">
+                            90%
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+</body>
+</html>

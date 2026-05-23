@@ -1,9 +1,9 @@
 package com.busticket.busticketbooking.controller;
 
-import com.busticket.busticketbooking.dto.AddressDTO.AddressRequestDTO;
-import com.busticket.busticketbooking.dto.AddressDTO.AddressResponseDTO;
+import com.busticket.busticketbooking.dto.AgencyDTO.AgencyRequestDTO;
+import com.busticket.busticketbooking.dto.AgencyDTO.AgencyResponseDTO;
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
-import com.busticket.busticketbooking.service.AddressService;
+import com.busticket.busticketbooking.service.AgencyService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/ui/addresses")
-public class AddressUiController {
+@RequestMapping("/ui/agencies")
+public class AgencyUiController {
 
-    private final AddressService addressService;
+    private final AgencyService agencyService;
 
-    public AddressUiController(AddressService addressService) {
-        this.addressService = addressService;
+    public AgencyUiController(AgencyService agencyService) {
+        this.agencyService = agencyService;
     }
 
     @GetMapping
-    public String listAddresses(
+    public String listAgencies(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "6") int size,
             Model model
@@ -38,39 +38,39 @@ public class AddressUiController {
         int requestedPage = Math.max(page, 1);
         int safePageIndex = requestedPage - 1;
 
-        Page<AddressResponseDTO> addressPage = addressService.getAddressPage(safePageIndex, size);
+        Page<AgencyResponseDTO> agencyPage = agencyService.getAgencyPage(safePageIndex, size);
 
-        model.addAttribute("addressPage", addressPage);
+        model.addAttribute("agencyPage", agencyPage);
         model.addAttribute("currentPage", requestedPage);
         model.addAttribute("pageSize", size);
 
-        return "address/list";
+        return "agency/list";
     }
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        if (!model.containsAttribute("address")) {
-            model.addAttribute("address", new AddressRequestDTO());
+        if (!model.containsAttribute("agency")) {
+            model.addAttribute("agency", new AgencyRequestDTO());
         }
         model.addAttribute("isEdit", false);
-        return "address/form";
+        return "agency/form";
     }
 
     @PostMapping
-    public String createAddress(
-            @Valid @ModelAttribute("address") AddressRequestDTO address,
+    public String createAgency(
+            @Valid @ModelAttribute("agency") AgencyRequestDTO agency,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("isEdit", false);
-            return "address/form";
+            return "agency/form";
         }
 
-        addressService.addAddress(address);
-        redirectAttributes.addFlashAttribute("successMessage", "Address created successfully.");
-        return "redirect:/ui/addresses";
+        agencyService.addAgency(agency);
+        redirectAttributes.addFlashAttribute("successMessage", "Agency created successfully.");
+        return "redirect:/ui/agencies";
     }
 
     @GetMapping("/{id}/edit")
@@ -80,70 +80,61 @@ public class AddressUiController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            AddressResponseDTO existing = addressService.getAddressById(id);
+            AgencyResponseDTO existing = agencyService.getAgencyById(id);
 
-            AddressRequestDTO address = new AddressRequestDTO();
-            address.setAddress(existing.getAddress());
-            address.setCity(existing.getCity());
-            address.setState(existing.getState());
-            address.setZipCode(existing.getZipCode());
+            AgencyRequestDTO agency = new AgencyRequestDTO(
+                    existing.getName(),
+                    existing.getContactPersonName(),
+                    existing.getEmail(),
+                    existing.getPhone()
+            );
 
-            model.addAttribute("addressId", id);
-            model.addAttribute("address", address);
+            model.addAttribute("agencyId", id);
+            model.addAttribute("agency", agency);
             model.addAttribute("isEdit", true);
-            return "address/form";
+            return "agency/form";
         } catch (ResourceNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-            return "redirect:/ui/addresses";
+            return "redirect:/ui/agencies";
         }
     }
 
     @PutMapping("/{id}")
-    public String updateAddress(
+    public String updateAgency(
             @PathVariable Integer id,
-            @Valid @ModelAttribute("address") AddressRequestDTO address,
+            @Valid @ModelAttribute("agency") AgencyRequestDTO agency,
             BindingResult bindingResult,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("addressId", id);
+            model.addAttribute("agencyId", id);
             model.addAttribute("isEdit", true);
-            return "address/form";
+            return "agency/form";
         }
 
         try {
-            addressService.updateAddress(id, address);
-            redirectAttributes.addFlashAttribute("successMessage", "Address updated successfully.");
+            agencyService.updateAgency(id, agency);
+            redirectAttributes.addFlashAttribute("successMessage", "Agency updated successfully.");
         } catch (ResourceNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
 
-        return "redirect:/ui/addresses";
+        return "redirect:/ui/agencies";
     }
 
     @DeleteMapping("/{id}")
-    public String deleteAddress(
+    public String deleteAgency(
             @PathVariable Integer id,
             RedirectAttributes redirectAttributes
     ) {
         try {
-
-            String message = addressService.deleteAddress(id);
-
-            redirectAttributes.addFlashAttribute(
-                    "successMessage",
-                    message
-            );
-
+            agencyService.deleteAgency(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Agency deleted successfully.");
         } catch (ResourceNotFoundException ex) {
-
-            redirectAttributes.addFlashAttribute(
-                    "errorMessage",
-                    ex.getMessage()
-            );
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
 
-        return "redirect:/ui/addresses";
+        return "redirect:/ui/agencies";
     }
 }

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue by Agency Report</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">💰</div>
+            <div>
+                <div class="logo-text">Enterprise Reports</div>
+                <div class="logo-sub">Agency Revenue</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/ui/reports}">← All Reports</a>
+        </div>
+    </header>
+
+    <section class="crud-toolbar">
+        <div>
+            <h2 class="section-title">Revenue by Agency Report</h2>
+            <p class="crud-note">Shows which agency generates maximum revenue in a date range.</p>
+        </div>
+
+        <div class="crud-toolbar-actions">
+            <!-- Filter Form -->
+            <form th:action="@{/ui/reports/revenue/by-agency}" method="get" class="inline-form" style="display: flex; gap: 10px; align-items: center;">
+                <label for="fromDate" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">From:</label>
+                <input type="date" id="fromDate" name="fromDate" th:value="${fromDate}" style="padding: 6px 12px; border-radius: 6px; background: rgba(0,0,0,0.2); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                
+                <label for="toDate" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">To:</label>
+                <input type="date" id="toDate" name="toDate" th:value="${toDate}" style="padding: 6px 12px; border-radius: 6px; background: rgba(0,0,0,0.2); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                
+                <button type="submit" class="card-cta" style="padding: 6px 16px;">Filter</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="crud-panel">
+        <div class="table-wrapper">
+            <table class="crud-table">
+                <thead>
+                <tr>
+                    <th>Agency ID</th>
+                    <th>Agency Name</th>
+                    <th>Total Bookings</th>
+                    <th>Total Revenue (₹)</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:if="${#lists.isEmpty(reportData)}">
+                    <td colspan="4" class="empty-state">No revenue data found for the selected period.</td>
+                </tr>
+
+                <tr th:each="data : ${reportData}">
+                    <td th:text="${data.agencyId}">1</td>
+                    <td th:text="${data.agencyName}">Indian Travels</td>
+                    <td th:text="${data.totalBookings}">120</td>
+                    <td th:text="${'₹ ' + data.totalRevenue}">₹ 50000</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+
+</body>
+</html>

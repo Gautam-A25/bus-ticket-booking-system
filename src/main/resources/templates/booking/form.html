@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Create Booking
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
+</head>
+
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header id="main-header">
+
+        <div class="logo-section">
+
+            <div class="logo-icon-wrap">
+                🎟️
+            </div>
+
+            <div>
+
+                <div class="logo-text">
+                    Bus Ticket Booking
+                </div>
+
+                <div class="logo-sub">
+                    Booking CRUD
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <a class="back-btn"
+               th:href="@{/ui/bookings}">
+
+                ← Back to List
+
+            </a>
+
+        </div>
+
+    </header>
+
+    <!-- HERO -->
+
+    <section class="detail-hero">
+
+        <div class="detail-icon-box">
+            🎟️
+        </div>
+
+        <div class="detail-title-block">
+
+            <div class="detail-eyebrow">
+                New Booking
+            </div>
+
+            <h1 class="detail-title">
+                Create Booking
+            </h1>
+
+            <p class="detail-desc">
+
+                Fill in booking details below.
+                Validation messages will appear next to each field.
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- FORM PANEL -->
+
+    <section class="crud-panel">
+
+        <!-- ERROR MESSAGE -->
+
+        <div th:if="${errorMessage}"
+             class="alert error-alert">
+
+            <span th:text="${errorMessage}">
+            </span>
+
+        </div>
+
+        <!-- SUCCESS MESSAGE -->
+
+        <div th:if="${successMessage}"
+             class="alert success-alert">
+
+            <span th:text="${successMessage}">
+            </span>
+
+        </div>
+
+        <!-- FORM -->
+
+        <form th:action="@{/ui/bookings}"
+              th:object="${booking}"
+              method="post"
+              class="crud-form">
+
+            <!-- TRIP ID -->
+
+            <div class="field-grid">
+
+                <label for="tripId">
+                    Trip ID
+                </label>
+
+                <input id="tripId"
+                       type="number"
+                       name="tripId"
+                       placeholder="Enter trip ID"
+                       required>
+
+            </div>
+
+            <!-- SEAT NUMBER -->
+
+            <div class="field-grid">
+
+                <label for="seatNumber">
+                    Seat Number
+                </label>
+
+                <input id="seatNumber"
+                       type="number"
+                       th:field="*{seatNumber}"
+                       placeholder="Enter seat number">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('seatNumber')}"
+                   th:errors="*{seatNumber}">
+                </p>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="field-grid">
+
+                <label for="status">
+                    Booking Status
+                </label>
+
+                <select id="status"
+                        th:field="*{status}">
+
+                    <option value="">
+                        Select Status
+                    </option>
+
+                    <option value="Available">
+                        Available
+                    </option>
+
+                    <option value="Booked">
+                        Booked
+                    </option>
+
+                </select>
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('status')}"
+                   th:errors="*{status}">
+                </p>
+
+            </div>
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="form-actions">
+
+                <button type="submit"
+                        class="card-cta crud-submit">
+
+                    <span>
+                        Create Booking
+                    </span>
+
+                    <span class="card-cta-arrow">
+                        →
+                    </span>
+
+                </button>
+
+                <a th:href="@{/ui/bookings}"
+                   class="secondary-button">
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+</body>
+
+</html>

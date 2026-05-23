@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${isEdit ? 'Edit Customer' : 'Create Customer'}">
+        Customer Form
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
+</head>
+
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header id="main-header">
+
+        <div class="logo-section">
+
+            <div class="logo-icon-wrap">👤</div>
+
+            <div>
+
+                <div class="logo-text">
+                    Bus Ticket Booking
+                </div>
+
+                <div class="logo-sub">
+                    Customer CRUD
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <a class="back-btn"
+               th:href="@{/ui/customers}">
+
+                ← Back to List
+
+            </a>
+
+        </div>
+
+    </header>
+
+    <!-- HERO -->
+
+    <section class="detail-hero">
+
+        <div class="detail-icon-box">
+            👤
+        </div>
+
+        <div class="detail-title-block">
+
+            <div class="detail-eyebrow"
+                 th:text="${isEdit ? 'Update Customer' : 'New Customer'}">
+
+                New Customer
+
+            </div>
+
+            <h1 class="detail-title"
+                th:text="${isEdit ? 'Edit Customer' : 'Create Customer'}">
+
+                Customer Form
+
+            </h1>
+
+            <p class="detail-desc">
+
+                Fill in customer details below.
+                Validation messages will appear next to each field.
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- FORM PANEL -->
+
+    <section class="crud-panel">
+
+        <!-- ERROR MESSAGE -->
+
+        <div th:if="${errorMessage}"
+             class="alert error-alert">
+
+            <span th:text="${errorMessage}">
+            </span>
+
+        </div>
+
+        <!-- SUCCESS MESSAGE -->
+
+        <div th:if="${successMessage}"
+             class="alert success-alert">
+
+            <span th:text="${successMessage}">
+            </span>
+
+        </div>
+
+        <form th:action="${isEdit ? '/ui/customers/' + customerId : '/ui/customers'}"
+              th:object="${customer}"
+              method="post"
+              class="crud-form">
+
+            <!-- PUT METHOD -->
+
+            <input type="hidden"
+                   th:if="${isEdit}"
+                   name="_method"
+                   value="PUT">
+
+            <!-- NAME -->
+
+            <div class="field-grid">
+
+                <label for="name">
+                    Name
+                </label>
+
+                <input id="name"
+                       type="text"
+                       th:field="*{name}"
+                       placeholder="Enter customer name">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('name')}"
+                   th:errors="*{name}">
+                </p>
+
+            </div>
+
+            <!-- EMAIL -->
+
+            <div class="field-grid">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input id="email"
+                       type="email"
+                       th:field="*{email}"
+                       placeholder="Enter email">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('email')}"
+                   th:errors="*{email}">
+                </p>
+
+            </div>
+
+            <!-- PHONE -->
+
+            <div class="field-grid">
+
+                <label for="phone">
+                    Phone
+                </label>
+
+                <input id="phone"
+                       type="text"
+                       th:field="*{phone}"
+                       placeholder="Enter phone number">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('phone')}"
+                   th:errors="*{phone}">
+                </p>
+
+            </div>
+
+            <!-- ADDRESS ID -->
+
+            <div class="field-grid">
+
+                <label for="addressId">
+                    Address ID
+                </label>
+
+                <input id="addressId"
+                       type="number"
+                       th:field="*{addressId}"
+                       placeholder="Enter address ID">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('addressId')}"
+                   th:errors="*{addressId}">
+                </p>
+
+            </div>
+
+            <!-- ACTION BUTTONS -->
+
+            <div class="form-actions">
+
+                <button type="submit"
+                        class="card-cta crud-submit">
+
+                    <span th:text="${isEdit ? 'Update Customer' : 'Create Customer'}">
+
+                        Submit
+
+                    </span>
+
+                    <span class="card-cta-arrow">
+                        →
+                    </span>
+
+                </button>
+
+                <a th:href="@{/ui/customers}"
+                   class="secondary-button">
+
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+</body>
+
+</html>

@@ -3,10 +3,13 @@ package com.busticket.busticketbooking.service.impl;
 import com.busticket.busticketbooking.dto.AgencyDTO.AgencyRequestDTO;
 import com.busticket.busticketbooking.dto.AgencyDTO.AgencyResponseDTO;
 import com.busticket.busticketbooking.entity.Agency;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.mapper.AgencyMapper;
 import com.busticket.busticketbooking.repo.AgencyRepo;
 import com.busticket.busticketbooking.service.AgencyService;
-import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,6 +47,14 @@ public class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
+    public Page<AgencyResponseDTO> getAgencyPage(int page, int size) {
+        return agencyRepo.findAll(
+                        PageRequest.of(page, size, Sort.by("id").ascending())
+                )
+                .map(AgencyMapper::toResponseDTO);
+    }
+
+    @Override
     public AgencyResponseDTO updateAgency(Integer id, AgencyRequestDTO agencyRequestDTO) {
         Agency existingAgency = agencyRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + id + " not found"));
@@ -59,10 +70,23 @@ public class AgencyServiceImpl implements AgencyService {
 
     @Override
     public String deleteAgency(Integer id) {
-        if (!agencyRepo.existsById(id)) {
-            throw new ResourceNotFoundException("Agency with ID " + id + " not found");
-        }
-        agencyRepo.deleteById(id);
-        return "Agency deleted successfully";
+
+        Agency agency = agencyRepo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Agency with ID " + id + " not found"
+                        ));
+
+        String agencyDetails =
+                "Agency Deleted Successfully : \n" +
+                        "ID = " + agency.getId() + "\n" +
+                        "Name = " + agency.getName() + "\n" +
+                        "Contact Person Name = " + agency.getContactPersonName() + "\n" +
+                        "Email = " + agency.getEmail() + "\n" +
+                        "Phone = " + agency.getPhone();
+
+        agencyRepo.delete(agency);
+
+        return agencyDetails;
     }
 }

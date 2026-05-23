@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Edit Office' : 'Create Office'">Office Form</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <header id="main-header">
+        <div class="logo-section">
+            <div class="logo-icon-wrap">🏬</div>
+            <div>
+                <div class="logo-text">Bus Ticket Booking</div>
+                <div class="logo-sub">Agency Office CRUD</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a class="back-btn" th:href="@{/ui/offices}">← Back to List</a>
+        </div>
+    </header>
+
+    <section class="detail-hero">
+        <div class="detail-icon-box">🏬</div>
+
+        <div class="detail-title-block">
+            <div class="detail-eyebrow" th:text="${isEdit} ? 'Update Office' : 'New Office'">
+                New Office
+            </div>
+            <h1 class="detail-title" th:text="${isEdit} ? 'Edit Agency Office' : 'Create Agency Office'">
+                Office Form
+            </h1>
+            <p class="detail-desc">
+                Fill in the office details below. Validation messages will appear next to each field.
+            </p>
+        </div>
+    </section>
+
+    <section class="crud-panel">
+        <form th:action="${isEdit} ? @{/ui/offices/{id}(id=${officeId})} : @{/ui/offices}"
+              th:object="${office}"
+              method="post"
+              class="crud-form">
+
+            <input type="hidden" th:if="${isEdit}" name="_method" value="PUT">
+
+            <div class="field-grid">
+                <label for="agencyId">Agency</label>
+                <select id="agencyId" th:field="*{agencyId}">
+                    <option value="">Select Agency</option>
+                    <option th:each="agency : ${agencies}"
+                            th:value="${agency.agencyId}"
+                            th:text="${agency.agencyId + ' - ' + agency.name}">
+                        Agency
+                    </option>
+                </select>
+                <p class="field-error" th:if="${#fields.hasErrors('agencyId')}" th:errors="*{agencyId}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="officeMail">Office Email</label>
+                <input id="officeMail"
+                       type="email"
+                       th:field="*{officeMail}"
+                       placeholder="Enter office email">
+                <p class="field-error" th:if="${#fields.hasErrors('officeMail')}" th:errors="*{officeMail}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="officeContactPersonName">Contact Person Name</label>
+                <input id="officeContactPersonName"
+                       type="text"
+                       th:field="*{officeContactPersonName}"
+                       placeholder="Enter contact person name">
+                <p class="field-error" th:if="${#fields.hasErrors('officeContactPersonName')}" th:errors="*{officeContactPersonName}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="officeContactNumber">Contact Number</label>
+                <input id="officeContactNumber"
+                       type="text"
+                       th:field="*{officeContactNumber}"
+                       placeholder="Enter 10-digit contact number">
+                <p class="field-error" th:if="${#fields.hasErrors('officeContactNumber')}" th:errors="*{officeContactNumber}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="addressId">Address</label>
+                <select id="addressId" th:field="*{addressId}">
+                    <option value="">Select Address</option>
+                    <option th:each="address : ${addresses}"
+                            th:value="${address.addressId}"
+                            th:text="${address.addressId + ' - ' + address.address}">
+                        Address
+                    </option>
+                </select>
+                <p class="field-error" th:if="${#fields.hasErrors('addressId')}" th:errors="*{addressId}"></p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="card-cta crud-submit">
+                    <span th:text="${isEdit} ? 'Update Office' : 'Create Office'">Submit</span>
+                    <span class="card-cta-arrow">→</span>
+                </button>
+
+                <a th:href="@{/ui/offices}" class="secondary-button">Cancel</a>
+            </div>
+        </form>
+    </section>
+
+</div>
+
+</body>
+</html>

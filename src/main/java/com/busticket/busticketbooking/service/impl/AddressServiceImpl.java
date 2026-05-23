@@ -70,10 +70,23 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public String deleteAddress(Integer id) {
-        if (!addressRepo.existsById(id)) {
-            throw new ResourceNotFoundException("Address with ID " + id + " not found");
-        }
-        addressRepo.deleteById(id);
-        return "Address deleted successfully";
+
+        Address address = addressRepo.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Address with ID " + id + " not found"
+                        ));
+
+        String addressDetails =
+                "Address Deleted Successfully : \n" +
+                        "ID = " + address.getId() + "\n" +
+                        "Address = " + address.getAddress() + "\n" +
+                        "City = " + address.getCity() + "\n" +
+                        "State = " + address.getState() + "\n" +
+                        "Zip Code = " + address.getZipCode();
+
+        addressRepo.delete(address);
+
+        return addressDetails;
     }
 }

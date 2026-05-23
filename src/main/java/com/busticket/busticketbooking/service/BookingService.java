@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.service;
 
 import com.busticket.busticketbooking.dto.BookingDTO.BookingRequestDTO;
 import com.busticket.busticketbooking.dto.BookingDTO.BookingResponseDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ public interface BookingService {
             Integer tripId,
             BookingRequestDTO bookingRequestDTO
     );
+
+    Page<BookingResponseDTO> getBookingPage(int page, int size);
 
     // Method to get bookings by customer ID
     List<BookingResponseDTO> getBookingsByCustomer(
