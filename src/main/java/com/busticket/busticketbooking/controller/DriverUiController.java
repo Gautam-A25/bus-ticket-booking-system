@@ -441,14 +441,12 @@ public class DriverUiController {
 
         try {
 
-            /*
-             * Delete driver
-             */
-            driverService.deleteDriver(id);
+            String successMessage =
+                    driverService.deleteDriver(id);
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    "Driver deleted successfully."
+                    successMessage
             );
 
         } catch (ResourceNotFoundException ex) {

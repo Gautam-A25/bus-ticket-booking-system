@@ -51,6 +51,16 @@
         </div>
     </header>
 
+    <div th:if="${successMessage}"
+         class="alert success-alert"
+         th:text="${successMessage}">
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="alert error-alert"
+         th:text="${errorMessage}">
+    </div>
+
     <section class="crud-toolbar">
 
         <div>
