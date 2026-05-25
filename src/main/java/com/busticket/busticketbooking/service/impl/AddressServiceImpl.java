@@ -54,28 +54,17 @@ public class AddressServiceImpl implements AddressService {
                 .map(AddressMapper::toResponseDTO);
     }
 
-    @Override
-    public AddressResponseDTO updateAddress(Integer id, AddressRequestDTO addressRequestDTO) {
-        Address existingAddress = addressRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + id + " not found"));
+   @Override
+    public String deleteAddress(
+            Integer id) {
 
-        existingAddress.setAddress(addressRequestDTO.getAddress());
-        existingAddress.setCity(addressRequestDTO.getCity());
-        existingAddress.setState(addressRequestDTO.getState());
-        existingAddress.setZipCode(addressRequestDTO.getZipCode());
-
-        Address updatedAddress = addressRepo.save(existingAddress);
-        return AddressMapper.toResponseDTO(updatedAddress);
-    }
-
-    @Override
-    public String deleteAddress(Integer id) {
-
-        Address address = addressRepo.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Address with ID " + id + " not found"
-                        ));
+        Address address =
+                addressRepo.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Address with ID "
+                                                + id
+                                                + " not found"));
 
         String addressDetails =
                 "Address Deleted Successfully : \n" +
@@ -89,4 +78,38 @@ public class AddressServiceImpl implements AddressService {
 
         return addressDetails;
     }
+
+   @Override
+public AddressResponseDTO updateAddress(
+
+        Integer id,
+
+        AddressRequestDTO addressRequestDTO) {
+
+    Address existingAddress =
+            addressRepo.findById(id)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Address with ID "
+                                            + id
+                                            + " not found"));
+
+    existingAddress.setAddress(
+            addressRequestDTO.getAddress());
+
+    existingAddress.setCity(
+            addressRequestDTO.getCity());
+
+    existingAddress.setState(
+            addressRequestDTO.getState());
+
+    existingAddress.setZipCode(
+            addressRequestDTO.getZipCode());
+
+    Address updatedAddress =
+            addressRepo.save(existingAddress);
+
+    return AddressMapper.toResponseDTO(
+            updatedAddress);
+   }
 }
