@@ -162,9 +162,25 @@ public class ReviewServiceTest {
     /**
      * 8. testRemoveReview_Success - Verify that removing a review triggers correct deletion.
      */
-    @Test
-    public void testRemoveReview_Success() {
-        doNothing().when(reviewRepo).deleteById(50);
-        assertAll(() -> reviewService.removeReview(50));
-    }
+    
+   @Test
+public void testRemoveReview_Success() {
+
+    Review review = new Review();
+
+    review.setId(50);
+
+    when(reviewRepo.findById(50))
+            .thenReturn(Optional.of(review));
+
+    doNothing().when(reviewRepo)
+            .delete(review);
+
+    String result =
+            reviewService.removeReview(50);
+
+    assertNotNull(result);
+
+    verify(reviewRepo).delete(review);
+}
 }

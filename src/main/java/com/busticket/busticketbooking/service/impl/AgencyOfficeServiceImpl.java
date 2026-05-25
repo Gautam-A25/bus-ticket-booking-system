@@ -106,30 +106,33 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     }
 
     @Override
-    public String deleteAgencyOffice(Integer id) {
-        AgencyOffice office = agencyOfficeRepo.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Office with ID " + id + " not found"
-                        ));
+public String deleteAgencyOffice(Integer id) {
 
-        String officeDetails =
-                "Agency Office Deleted Successfully : \n" +
-                        "ID = " + office.getId() + "\n" +
-                        "Agency ID = " +
-                        (office.getAgency() != null
-                                ? office.getAgency().getId()
-                                : null) + "\n" +
-                        "Office Mail = " + office.getOfficeMail() + "\n" +
-                        "Office Contact Person Name = " + office.getOfficeContactPersonName() + "\n" +
-                        "Office Contact Number = " + office.getOfficeContactNumber() + "\n" +
-                        "Address ID = " +
-                        (office.getAddress() != null
-                                ? office.getAddress().getId()
-                                : null);
+    AgencyOffice office =
+            agencyOfficeRepo.findById(id)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Office with ID "
+                                            + id
+                                            + " not found"));
 
-        agencyOfficeRepo.delete(office);
+    String officeDetails =
+            "Agency Office Deleted Successfully : \n" +
+                    "ID = " + office.getId() + "\n" +
+                    "Agency ID = " +
+                    (office.getAgency() != null
+                            ? office.getAgency().getId()
+                            : null) + "\n" +
+                    "Office Mail = " + office.getOfficeMail() + "\n" +
+                    "Office Contact Person Name = " + office.getOfficeContactPersonName() + "\n" +
+                    "Office Contact Number = " + office.getOfficeContactNumber() + "\n" +
+                    "Address ID = " +
+                    (office.getAddress() != null
+                            ? office.getAddress().getId()
+                            : null);
 
-        return officeDetails;
+    agencyOfficeRepo.delete(office);
+
+    return officeDetails;
     }
 }

@@ -8,7 +8,9 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>Trip Management</title>
+    <title>
+        Trip Management
+    </title>
 
     <link rel="stylesheet"
           th:href="@{/css/index.css}">
@@ -22,6 +24,8 @@
 <div class="bg-grid"></div>
 
 <div class="container">
+
+    <!-- HEADER -->
 
     <header id="main-header">
 
@@ -44,11 +48,38 @@
             </div>
 
         </div>
-         <div class="header-right">
-            <a class="back-btn" th:href="@{/}">← Dashboard</a>
+
+        <div class="header-right">
+
+            <a class="back-btn"
+               th:href="@{/}">
+
+                ← Dashboard
+
+            </a>
+
         </div>
+
     </header>
 
+    <!-- TOOLBAR -->
+    <!-- SUCCESS MESSAGE -->
+
+<div th:if="${successMessage}"
+     class="success-message">
+
+    <span th:text="${successMessage}"></span>
+
+</div>
+
+<!-- ERROR MESSAGE -->
+
+<div th:if="${errorMessage}"
+     class="error-message">
+
+    <span th:text="${errorMessage}"></span>
+
+</div>
     <section class="crud-toolbar">
 
         <div>
@@ -75,78 +106,82 @@
         </div>
 
     </section>
-        <!-- Search Form -->
 
-<section class="crud-panel">
+    <!-- SEARCH FORM -->
 
-    <form th:action="@{/ui/trips/search}"
+    <section class="crud-panel">
 
-          method="get"
+        <form th:action="@{/ui/trips/search}"
 
-          class="crud-form">
+              method="get"
 
-        <div class="field-grid">
+              class="crud-form">
 
-            <label>
-                From City
-            </label>
+            <div class="field-grid">
 
-            <input type="text"
+                <label>
+                    From City
+                </label>
 
-                   name="fromCity"
+                <input type="text"
 
-                   placeholder="Enter source city"
+                       name="fromCity"
 
-                   required>
+                       placeholder="Enter source city"
 
-        </div>
+                       required>
 
-        <div class="field-grid">
+            </div>
 
-            <label>
-                To City
-            </label>
+            <div class="field-grid">
 
-            <input type="text"
+                <label>
+                    To City
+                </label>
 
-                   name="toCity"
+                <input type="text"
 
-                   placeholder="Enter destination city"
+                       name="toCity"
 
-                   required>
+                       placeholder="Enter destination city"
 
-        </div>
+                       required>
 
-        <div class="field-grid">
+            </div>
 
-            <label>
-                Date
-            </label>
+            <div class="field-grid">
 
-            <input type="date"
+                <label>
+                    Date
+                </label>
 
-                   name="date">
+                <input type="date"
 
-        </div>
+                       name="date">
 
-        <div class="form-actions">
+            </div>
 
-            <button type="submit"
-                    class="card-cta crud-submit">
+            <div class="form-actions">
 
-                Search Trips
+                <button type="submit"
+                        class="card-cta crud-submit">
 
-                <span class="card-cta-arrow">
-                    →
-                </span>
+                    Search Trips
 
-            </button>
+                    <span class="card-cta-arrow">
+                        →
+                    </span>
 
-        </div>
+                </button>
 
-    </form>
+            </div>
 
-</section>
+        </form>
+
+    </section>
+
+    <!-- TABLE -->
+
     <section class="crud-panel">
 
         <div class="table-wrapper">
@@ -183,7 +218,15 @@
 
                     <td th:text="${trip.id}"></td>
 
-                    <td th:text="${trip.route.id}"></td>
+                    <td>
+
+                        <span th:text="${trip.route.fromCity}"></span>
+
+                        →
+
+                        <span th:text="${trip.route.toCity}"></span>
+
+                    </td>
 
                     <td th:text="${trip.bus.id}"></td>
 
@@ -199,7 +242,7 @@
 
                         <div class="row-actions">
 
-                            <!-- Edit -->
+                            <!-- EDIT -->
 
                             <a class="crud-action edit-action"
 
@@ -209,7 +252,7 @@
 
                             </a>
 
-                            <!-- Delete -->
+                            <!-- DELETE -->
 
                             <form th:action="@{/ui/trips/{id}/delete(id=${trip.id})}"
 
@@ -243,7 +286,59 @@
 
     </section>
 
+    <!-- PAGINATION -->
+
+    <section class="pagination-wrap"
+             th:if="${tripPage.totalPages > 1}">
+
+        <!-- PREVIOUS -->
+
+        <a class="page-link nav-link"
+
+           th:href="@{/ui/trips(page=${currentPage - 1}, size=${pageSize})}"
+
+           th:classappend="${tripPage.first} ? ' disabled' : ''">
+
+            ‹ Previous
+
+        </a>
+
+        <!-- PAGE NUMBERS -->
+
+        <div class="pagination-pages">
+
+            <a class="page-link"
+
+               th:each="pageNum : ${#numbers.sequence(1, tripPage.totalPages)}"
+
+               th:href="@{/ui/trips(page=${pageNum}, size=${pageSize})}"
+
+               th:text="${pageNum}"
+
+               th:classappend="${pageNum == currentPage} ? ' active' : ''">
+
+                1
+
+            </a>
+
+        </div>
+
+        <!-- NEXT -->
+
+        <a class="page-link nav-link"
+
+           th:href="@{/ui/trips(page=${currentPage + 1}, size=${pageSize})}"
+
+           th:classappend="${tripPage.last} ? ' disabled' : ''">
+
+            Next ›
+
+        </a>
+
+    </section>
+
 </div>
 
 </body>
+
 </html>
