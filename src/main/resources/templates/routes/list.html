@@ -42,13 +42,22 @@
                 <div class="logo-sub">
                     Route CRUD
                 </div>
-                
+
             </div>
 
         </div>
-         <div class="header-right">
-            <a class="back-btn" th:href="@{/}">← Dashboard</a>
+
+        <div class="header-right">
+
+            <a class="back-btn"
+               th:href="@{/}">
+
+                ← Dashboard
+
+            </a>
+
         </div>
+
     </header>
 
     <section class="crud-toolbar">
@@ -166,7 +175,59 @@
 
     </section>
 
-</div>
+    <!-- Pagination -->
+
+   <!-- PAGINATION -->
+
+<section class="pagination-wrap"
+         th:if="${routePage.totalPages > 1}">
+
+    <!-- PREVIOUS -->
+
+    <a class="page-link nav-link"
+
+       th:href="@{/ui/routes(page=${currentPage - 1}, size=${pageSize})}"
+
+       th:classappend="${routePage.first} ? ' disabled' : ''">
+
+        ‹ Previous
+
+    </a>
+
+    <!-- PAGE NUMBERS -->
+
+    <div class="pagination-pages">
+
+        <a class="page-link"
+
+           th:each="pageNum : ${#numbers.sequence(1, routePage.totalPages)}"
+
+           th:href="@{/ui/routes(page=${pageNum}, size=${pageSize})}"
+
+           th:text="${pageNum}"
+
+           th:classappend="${pageNum == currentPage} ? ' active' : ''">
+
+            1
+
+        </a>
+
+    </div>
+
+    <!-- NEXT -->
+
+    <a class="page-link nav-link"
+
+       th:href="@{/ui/routes(page=${currentPage + 1}, size=${pageSize})}"
+
+       th:classappend="${routePage.last} ? ' disabled' : ''">
+
+        Next ›
+
+    </a>
+
+</section>
 
 </body>
+
 </html>

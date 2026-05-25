@@ -1333,4 +1333,67 @@ body::before {
     box-shadow:
         0 0 0 3px rgba(239, 68, 68, 0.18),
         0 10px 22px rgba(220, 38, 38, 0.22);
-}}
+}
+/* ============================================================
+   ERROR MESSAGE
+   ============================================================ */
+
+.error-message {
+
+    width: 100%;
+
+    margin-bottom: 25px;
+
+    padding: 18px 20px;
+
+    border-radius: 18px;
+
+    background: rgba(255, 60, 60, 0.12);
+
+    border: 1px solid rgba(255, 60, 60, 0.28);
+
+    color: #ffb3b3;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    box-shadow:
+            0 0 20px rgba(255, 0, 0, 0.08);
+
+    backdrop-filter: blur(10px);
+
+    animation: fadeSlideDown 0.4s ease;
+
+    /* SUCCESS MESSAGE */
+
+.success-message {
+
+    width: 100%;
+
+    margin-bottom: 20px;
+
+    padding: 16px 20px;
+
+    border-radius: 18px;
+
+    background: rgba(0, 255, 140, 0.12);
+
+    border: 1px solid rgba(0, 255, 140, 0.28);
+
+    color: #9fffcf;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+            0 0 20px rgba(0, 255, 140, 0.08);
+}
+}
