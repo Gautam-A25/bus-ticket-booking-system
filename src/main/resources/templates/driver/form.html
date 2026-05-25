@@ -1,136 +1,118 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${isEdit} ? 'Edit Driver' : 'Register Driver'">Driver Form</title>
     <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
+
 <body>
 
-<div class="bg-mesh"></div>
-<div class="bg-grid"></div>
+    <div class="bg-mesh"></div>
+    <div class="bg-grid"></div>
 
-<div class="container">
+    <div class="container">
 
-    <header id="main-header">
-        <div class="logo-section">
-            <div class="logo-icon-wrap">👨‍✈️</div>
-            <div>
-                <div class="logo-text">Bus Ticket Booking</div>
-                <div class="logo-sub">Driver CRUD</div>
-            </div>
-        </div>
-
-        <div class="header-right">
-            <a class="back-btn" th:href="@{/ui/drivers}">← Back to List</a>
-        </div>
-    </header>
-
-    <section class="detail-hero">
-        <div class="detail-icon-box">👨‍✈️</div>
-
-        <div class="detail-title-block">
-            <div class="detail-eyebrow" th:text="${isEdit} ? 'Update Driver' : 'New Driver'">
-                New Driver
-            </div>
-            <h1 class="detail-title" th:text="${isEdit} ? 'Edit Driver' : 'Create Driver'">
-                Driver Form
-            </h1>
-            <p class="detail-desc">
-                Fill in the driver details below. Validation messages will appear next to each field.
-            </p>
-        </div>
-    </section>
-
-    <div th:if="${errorMessage}" class="alert error-alert" th:text="${errorMessage}"></div>
-
-    <section class="crud-panel">
-        <form th:action="${isEdit} ? @{/ui/drivers/{id}(id=${driverId})} : @{/ui/drivers}"
-              th:object="${driver}"
-              method="post"
-              class="crud-form">
-
-            <input type="hidden" th:if="${isEdit}" name="_method" value="PUT">
-
-            <!-- Driver Name -->
-            <div class="field-grid">
-                <label for="name">Driver Name</label>
-                <input id="name"
-                       type="text"
-                       th:field="*{name}"
-                       placeholder="Enter full legal name">
-                <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+        <header id="main-header">
+            <div class="logo-section">
+                <div class="logo-icon-wrap">👨‍✈️</div>
+                <div>
+                    <div class="logo-text">Bus Ticket Booking</div>
+                    <div class="logo-sub">Driver CRUD</div>
+                </div>
             </div>
 
-            <!-- License Number -->
-            <div class="field-grid">
-                <label for="licenseNumber">Commercial License Number</label>
-                <input id="licenseNumber"
-                       type="text"
-                       th:field="*{licenseNumber}"
-                       placeholder="e.g. DL-12345678">
-                <p class="field-error" th:if="${#fields.hasErrors('licenseNumber')}" th:errors="*{licenseNumber}"></p>
+            <div class="header-right">
+                <a class="back-btn" th:href="@{/ui/drivers}">← Back to List</a>
             </div>
+        </header>
 
-            <!-- Phone Number -->
-            <div class="field-grid">
-                <label for="phone">Phone Number</label>
-                <input id="phone"
-                       type="text"
-                       th:field="*{phone}"
-                       placeholder="Enter phone number">
-                <p class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+        <section class="detail-hero">
+            <div class="detail-icon-box">👨‍✈️</div>
+
+            <div class="detail-title-block">
+                <div class="detail-eyebrow" th:text="${isEdit} ? 'Update Driver' : 'New Driver'">
+                    New Driver
+                </div>
+                <h1 class="detail-title" th:text="${isEdit} ? 'Edit Driver' : 'Create Driver'">
+                    Driver Form
+                </h1>
+                <p class="detail-desc">
+                    Fill in the driver details below. Validation messages will appear next to each field.
+                </p>
             </div>
+        </section>
 
-            <div class="field-grid">
-                <label for="licenseNumber">License Number</label>
-                <input id="licenseNumber"
-                       type="text"
-                       th:field="*{licenseNumber}"
-                       placeholder="Enter license number">
-                <p class="field-error" th:if="${#fields.hasErrors('licenseNumber')}" th:errors="*{licenseNumber}"></p>
-            </div>
+        <div th:if="${errorMessage}" class="alert error-alert" th:text="${errorMessage}"></div>
 
-            <div class="field-grid">
-                <label for="officeId">Agency Office</label>
-                <select id="officeId" th:field="*{officeId}">
-                    <option value="">Select Office</option>
-                    <option th:each="office : ${offices}"
-                            th:value="${office.officeId}"
+        <section class="crud-panel">
+            <form th:action="${isEdit} ? @{/ui/drivers/{id}(id=${driverId})} : @{/ui/drivers}" th:object="${driver}"
+                method="post" class="crud-form">
+
+                <input type="hidden" th:if="${isEdit}" name="_method" value="PUT">
+
+                <!-- Driver Name -->
+                <div class="field-grid">
+                    <label for="name">Driver Name</label>
+                    <input id="name" type="text" th:field="*{name}" placeholder="Enter full legal name">
+                    <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                </div>
+
+                <!-- License Number -->
+                <div class="field-grid">
+                    <label for="licenseNumber">Commercial License Number</label>
+                    <input id="licenseNumber" type="text" th:field="*{licenseNumber}" placeholder="e.g. DL-12345678">
+                    <p class="field-error" th:if="${#fields.hasErrors('licenseNumber')}" th:errors="*{licenseNumber}">
+                    </p>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="field-grid">
+                    <label for="phone">Phone Number</label>
+                    <input id="phone" type="text" th:field="*{phone}" placeholder="Enter phone number">
+                    <p class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+                </div>
+
+                <div class="field-grid">
+                    <label for="officeId">Agency Office</label>
+                    <select id="officeId" th:field="*{officeId}">
+                        <option value="">Select Office</option>
+                        <option th:each="office : ${offices}" th:value="${office.officeId}"
                             th:text="${'Office ' + office.officeId + ' (' + office.officeMail + ')'}">
-                        Office
-                    </option>
-                </select>
-                <p class="field-error" th:if="${#fields.hasErrors('officeId')}" th:errors="*{officeId}"></p>
-            </div>
+                            Office
+                        </option>
+                    </select>
+                    <p class="field-error" th:if="${#fields.hasErrors('officeId')}" th:errors="*{officeId}"></p>
+                </div>
 
-            <!-- Home Address -->
-            <div class="field-grid">
-                <label for="addressId">Home Address (Optional)</label>
-                <select id="addressId" th:field="*{addressId}">
-                    <option value="">-- Select Address (Optional) --</option>
-                    <option th:each="addr : ${addresses}"
-                            th:value="${addr.addressId}"
+                <!-- Home Address -->
+                <div class="field-grid">
+                    <label for="addressId">Home Address (Optional)</label>
+                    <select id="addressId" th:field="*{addressId}">
+                        <option value="">-- Select Address (Optional) --</option>
+                        <option th:each="addr : ${addresses}" th:value="${addr.addressId}"
                             th:text="'Address #' + ${addr.addressId} + ' - ' + ${addr.address} + ', ' + ${addr.city} + ', ' + ${addr.state} + ' (' + ${addr.zipCode} + ')'">
-                    </option>
-                </select>
-                <p class="field-error" th:if="${#fields.hasErrors('addressId')}" th:errors="*{addressId}"></p>
-            </div>
+                        </option>
+                    </select>
+                    <p class="field-error" th:if="${#fields.hasErrors('addressId')}" th:errors="*{addressId}"></p>
+                </div>
 
-            <!-- Form Actions -->
-            <div class="form-actions">
-                <button type="submit" class="card-cta crud-submit">
-                    <span th:text="${isEdit} ? 'Update Profile' : 'Register Driver'">Submit</span>
-                    <span class="card-cta-arrow">→</span>
-                </button>
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="submit" class="card-cta crud-submit">
+                        <span th:text="${isEdit} ? 'Update Profile' : 'Register Driver'">Submit</span>
+                        <span class="card-cta-arrow">→</span>
+                    </button>
 
-                <a th:href="@{/ui/drivers}" class="secondary-button">Cancel</a>
-            </div>
-        </form>
-    </section>
+                    <a th:href="@{/ui/drivers}" class="secondary-button">Cancel</a>
+                </div>
+            </form>
+        </section>
 
-</div>
+    </div>
 
 </body>
+
 </html>

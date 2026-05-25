@@ -1,14 +1,15 @@
 package com.busticket.busticketbooking.controller;
+import jakarta.transaction.Transactional;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.Bus;
 import com.busticket.busticketbooking.entity.Driver;
 import com.busticket.busticketbooking.entity.Route;
 import com.busticket.busticketbooking.entity.Trip;
-
+import com.busticket.busticketbooking.repo.BookingRepo;
 import com.busticket.busticketbooking.repo.TripRepo;
 
-import com.busticket.busticketbooking.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
@@ -38,9 +38,8 @@ public class TripUIController {
 
     @Autowired
     private TripRepo tripRepo;
-
-    @Autowired
-    private TripService tripService;
+        @Autowired
+        private BookingRepo bookingRepo;
 
     /*
      * Display all trips
@@ -122,40 +121,33 @@ public String searchTrips(
      * Create trip
      */
     @PostMapping
-    public String createTrip(
+public String createTrip(
 
-            RedirectAttributes redirectAttributes,
+        @RequestParam Integer routeId,
 
-            @RequestParam Integer routeId,
+        @RequestParam Integer busId,
 
-            @RequestParam Integer busId,
+        @RequestParam Integer driver1Id,
 
-            @RequestParam Integer driver1Id,
+        @RequestParam Integer driver2Id,
 
-            @RequestParam Integer driver2Id,
+        @RequestParam Integer boardingAddressId,
 
-            @RequestParam Integer boardingAddressId,
+        @RequestParam Integer droppingAddressId,
 
-            @RequestParam Integer droppingAddressId,
+        @RequestParam Integer availableSeats,
 
-            @RequestParam Integer availableSeats,
+        @RequestParam BigDecimal fare,
 
-            @RequestParam BigDecimal fare,
+        @RequestParam LocalDateTime tripDate,
 
-            @RequestParam
-            @DateTimeFormat(
-                    iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime tripDate,
+        @RequestParam LocalDateTime arrivalTime,
 
-            @RequestParam
-            @DateTimeFormat(
-                    iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime arrivalTime,
+        @RequestParam LocalDateTime departureTime,
 
-            @RequestParam
-            @DateTimeFormat(
-                    iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime departureTime) {
+        Model model) {
+
+    try {
 
         Trip trip = new Trip();
 
@@ -163,91 +155,81 @@ public String searchTrips(
          * Route
          */
         Route route = new Route();
-
         route.setId(routeId);
-
         trip.setRoute(route);
 
         /*
          * Bus
          */
         Bus bus = new Bus();
-
         bus.setId(busId);
-
         trip.setBus(bus);
 
         /*
          * Driver 1
          */
         Driver driver1 = new Driver();
-
         driver1.setId(driver1Id);
-
         trip.setDriver1(driver1);
 
         /*
          * Driver 2
          */
         Driver driver2 = new Driver();
-
         driver2.setId(driver2Id);
-
         trip.setDriver2(driver2);
 
         /*
          * Boarding Address
          */
-        Address boardingAddress =
-                new Address();
-
-        boardingAddress.setId(
-                boardingAddressId);
-
-        trip.setBoardingAddress(
-                boardingAddress);
+        Address boardingAddress = new Address();
+        boardingAddress.setId(boardingAddressId);
+        trip.setBoardingAddress(boardingAddress);
 
         /*
          * Dropping Address
          */
-        Address droppingAddress =
-                new Address();
-
-        droppingAddress.setId(
-                droppingAddressId);
-
-        trip.setDroppingAddress(
-                droppingAddress);
+        Address droppingAddress = new Address();
+        droppingAddress.setId(droppingAddressId);
+        trip.setDroppingAddress(droppingAddress);
 
         /*
          * Other fields
          */
-        trip.setAvailableSeats(
-                availableSeats);
+        trip.setAvailableSeats(availableSeats);
 
-        trip.setFare(
-                fare);
+        trip.setFare(fare);
 
-        trip.setTripDate(
-                tripDate);
+        trip.setTripDate(tripDate);
 
-        trip.setArrivalTime(
-                arrivalTime);
+        trip.setArrivalTime(arrivalTime);
 
-        trip.setDepartureTime(
-                departureTime);
+        trip.setDepartureTime(departureTime);
 
         /*
-         * Save trip
+         * Save
          */
         tripRepo.save(trip);
-        redirectAttributes.addFlashAttribute(
-                "successMessage",
-                "Trip created successfully."
-        );
 
         return "redirect:/ui/trips";
+
+    } catch (Exception ex) {
+
+        model.addAttribute(
+                "errorMessage",
+                "Invalid IDs entered. Please check Route, Bus, Driver and Address IDs.");
+
+        model.addAttribute(
+                "trip",
+                new Trip());
+
+        model.addAttribute(
+                "isEdit",
+                false);
+
+        return "trips/form";
     }
+}
 
     /*
      * Show edit form
@@ -283,43 +265,36 @@ public String searchTrips(
     /*
      * Update trip
      */
-    @PostMapping("/{id}")
-    public String updateTrip(
+   @PostMapping("/{id}")
+public String updateTrip(
 
-            RedirectAttributes redirectAttributes,
+        @PathVariable Integer id,
 
-            @PathVariable Integer id,
+        @RequestParam Integer routeId,
 
-            @RequestParam Integer routeId,
+        @RequestParam Integer busId,
 
-            @RequestParam Integer busId,
+        @RequestParam Integer driver1Id,
 
-            @RequestParam Integer driver1Id,
+        @RequestParam Integer driver2Id,
 
-            @RequestParam Integer driver2Id,
+        @RequestParam Integer boardingAddressId,
 
-            @RequestParam Integer boardingAddressId,
+        @RequestParam Integer droppingAddressId,
 
-            @RequestParam Integer droppingAddressId,
+        @RequestParam Integer availableSeats,
 
-            @RequestParam Integer availableSeats,
+        @RequestParam BigDecimal fare,
 
-            @RequestParam BigDecimal fare,
+        @RequestParam LocalDateTime tripDate,
 
-            @RequestParam
-            @DateTimeFormat(
-                    iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime tripDate,
+        @RequestParam LocalDateTime arrivalTime,
 
-            @RequestParam
-            @DateTimeFormat(
-                    iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime arrivalTime,
+        @RequestParam LocalDateTime departureTime,
 
-            @RequestParam
-            @DateTimeFormat(
-                    iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime departureTime) {
+        Model model) {
+
+    try {
 
         Trip trip =
                 tripRepo.findById(id)
@@ -327,117 +302,109 @@ public String searchTrips(
                                 new RuntimeException(
                                         "Trip not found"));
 
-        /*
-         * Route
-         */
         Route route = new Route();
-
         route.setId(routeId);
-
         trip.setRoute(route);
 
-        /*
-         * Bus
-         */
         Bus bus = new Bus();
-
         bus.setId(busId);
-
         trip.setBus(bus);
 
-        /*
-         * Driver 1
-         */
         Driver driver1 = new Driver();
-
         driver1.setId(driver1Id);
-
         trip.setDriver1(driver1);
 
-        /*
-         * Driver 2
-         */
         Driver driver2 = new Driver();
-
         driver2.setId(driver2Id);
-
         trip.setDriver2(driver2);
 
-        /*
-         * Boarding Address
-         */
-        Address boardingAddress =
-                new Address();
+        Address boardingAddress = new Address();
+        boardingAddress.setId(boardingAddressId);
+        trip.setBoardingAddress(boardingAddress);
 
-        boardingAddress.setId(
-                boardingAddressId);
+        Address droppingAddress = new Address();
+        droppingAddress.setId(droppingAddressId);
+        trip.setDroppingAddress(droppingAddress);
 
-        trip.setBoardingAddress(
-                boardingAddress);
+        trip.setAvailableSeats(availableSeats);
 
-        /*
-         * Dropping Address
-         */
-        Address droppingAddress =
-                new Address();
+        trip.setFare(fare);
 
-        droppingAddress.setId(
-                droppingAddressId);
+        trip.setTripDate(tripDate);
 
-        trip.setDroppingAddress(
-                droppingAddress);
+        trip.setArrivalTime(arrivalTime);
 
-        /*
-         * Other fields
-         */
-        trip.setAvailableSeats(
-                availableSeats);
+        trip.setDepartureTime(departureTime);
 
-        trip.setFare(
-                fare);
-
-        trip.setTripDate(
-                tripDate);
-
-        trip.setArrivalTime(
-                arrivalTime);
-
-        trip.setDepartureTime(
-                departureTime);
-
-        /*
-         * Save updated trip
-         */
         tripRepo.save(trip);
-        redirectAttributes.addFlashAttribute(
-                "successMessage",
-                "Trip updated successfully."
-        );
 
         return "redirect:/ui/trips";
-    }
 
-    /*
-     * Delete trip
-     */
+    } catch (Exception ex) {
+
+        /*
+         * IMPORTANT
+         * reload existing trip
+         */
+        Trip trip =
+                tripRepo.findById(id)
+                        .orElse(new Trip());
+
+        model.addAttribute(
+                "errorMessage",
+                "Invalid IDs entered. Please check Route, Bus, Driver and Address IDs.");
+
+        model.addAttribute(
+                "trip",
+                trip);
+
+        model.addAttribute(
+                "tripId",
+                id);
+
+        model.addAttribute(
+                "isEdit",
+                true);
+
+        return "trips/form";
+    }
+}
+
     @PostMapping("/{id}/delete")
     public String deleteTrip(
             @PathVariable Integer id,
             RedirectAttributes redirectAttributes) {
 
         try {
+            /*
+             * Delete payments
+             */
+            bookingRepo.deletePaymentsByTripId(id);
 
-            tripService.deleteTrip(id);
+            /*
+             * Delete reviews
+             */
+            bookingRepo.deleteReviewsByTripId(id);
+
+            /*
+             * Delete bookings
+             */
+            bookingRepo.deleteBookingsByTripId(id);
+
+            /*
+             * Delete trip
+             */
+            tripRepo.deleteById(id);
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
                     "Trip deleted successfully.");
 
         } catch (Exception ex) {
-
+            ex.printStackTrace();
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
-                    ex.getMessage());
+                    "Unable to delete trip.");
         }
 
         return "redirect:/ui/trips";
