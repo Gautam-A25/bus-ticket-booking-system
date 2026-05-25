@@ -162,13 +162,6 @@ public class CustomerServiceImpl implements CustomerService {
         // Deletes customer from database
         customerRepo.delete(customer);
 
-         return "Customer Deleted Successfully : ID = "
-        + customer.getId()
-        + ", Name = "
-        + customer.getName()
-        + ", Email = "
-        + customer.getEmail()
-        + ", Phone = "
-        + customer.getPhone();
+        return customerDetails;
     }
 }
