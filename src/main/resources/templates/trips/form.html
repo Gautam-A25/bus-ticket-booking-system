@@ -93,7 +93,7 @@
                 </span>
 
             </h1>
-
+            
             <p class="detail-desc">
 
                 Fill in the trip details below.
@@ -107,7 +107,15 @@
     <!-- Form Section -->
 
     <section class="crud-panel">
+        <!-- ERROR MESSAGE -->
 
+<div th:if="${errorMessage}"
+
+     class="error-message">
+
+    <p th:text="${errorMessage}"></p>
+
+</div>
         <form th:action="${isEdit}
                          ? @{/ui/trips/{id}(id=${tripId})}
                          : @{/ui/trips}"

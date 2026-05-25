@@ -147,21 +147,21 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with ID " + customerId + " not found"));
 
-        // Creates customer deletion message
-        String customerDetails =
-                "Customer Deleted Successfully : \n" +
-                        "ID = " + customer.getId() + "\n" +
-                        "Name = " + customer.getName() + "\n" +
-                        "Email = " + customer.getEmail() + "\n" +
-                        "Phone = " + customer.getPhone() + "\n" +
-                        "Address ID = " +
-                        (customer.getAddress() != null
-                                ? customer.getAddress().getId()
-                                : null);
+      // Creates customer deletion message
+String customerDetails =
+        "Customer Deleted Successfully : ID = "
+                + customer.getId()
+                + ", Name = "
+                + customer.getName()
+                + ", Email = "
+                + customer.getEmail()
+                + ", Phone = "
+                + customer.getPhone();
 
-        // Deletes customer from database
-        customerRepo.delete(customer);
+// Deletes customer from database
+customerRepo.delete(customer);
 
-        return customerDetails;
+return customerDetails;
     }
 }
+        

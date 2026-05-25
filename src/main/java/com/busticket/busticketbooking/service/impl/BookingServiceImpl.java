@@ -169,21 +169,22 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepo.findById(bookingId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Booking with ID " + bookingId + " not found"));
+// Creates booking cancellation message
+String bookingDetails =
+        "Booking Cancelled Successfully : ID = "
+                + booking.getId()
+                + ", Trip ID = "
+                + (booking.getTrip() != null
+                        ? booking.getTrip().getId()
+                        : null)
+                + ", Seat Number = "
+                + booking.getSeatNumber()
+                + ", Status = "
+                + booking.getStatus();
 
-        // Creates booking cancellation message
-        String bookingDetails =
-                "Booking Cancelled Successfully : \n" +
-                        "ID = " + booking.getId() + "\n" +
-                        "Trip ID = " +
-                        (booking.getTrip() != null
-                                ? booking.getTrip().getId()
-                                : null) + "\n" +
-                        "Seat Number = " + booking.getSeatNumber() + "\n" +
-                        "Status = " + booking.getStatus();
+// Deletes booking from database
+bookingRepo.delete(booking);
 
-        // Deletes booking from database
-        bookingRepo.delete(booking);
-
-        return bookingDetails;
-    }
+return bookingDetails;
+}
 }
