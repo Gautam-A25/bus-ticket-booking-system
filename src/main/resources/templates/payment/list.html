@@ -39,13 +39,13 @@
 
         <div class="hero-eyebrow">
             <span class="hero-eyebrow-dot"></span>
-            Payment Ledger Manager
+            Payment Module Manager
         </div>
 
-        <h1 class="hero-title">Payment Records</h1>
+        <h1 class="hero-title">Payment Transactions</h1>
 
         <p class="hero-desc">
-            Record passenger transactions, monitor payment status, manage audit ledgers, and adjust validation status values.
+            Monitor ticket payment transactions, track payment status, record payments, and edit status.
         </p>
 
         <div class="hero-stats">
@@ -65,8 +65,8 @@
 
     <section class="crud-toolbar">
         <div>
-            <h2 class="section-title">Financial Ledgers</h2>
-            <p class="crud-note">Audit registered financial records and transaction logs.</p>
+            <h2 class="section-title">Transaction Log</h2>
+            <p class="crud-note">View payment dates, booking mappings, transaction status, and process records.</p>
         </div>
 
         <div class="crud-toolbar-actions">
@@ -83,11 +83,11 @@
             <table class="crud-table">
                 <thead>
                 <tr>
-                    <th>Payment ID</th>
+                    <th>ID</th>
                     <th>Booking ID</th>
                     <th>Amount</th>
                     <th>Payment Date</th>
-                    <th>Status</th>
+                    <th>Payment Status</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
@@ -95,21 +95,17 @@
                 <tbody>
                 <tr th:if="${paymentPage.totalElements == 0}">
                     <td colspan="6" class="empty-state">
-                        No payment transactions recorded in the system.
+                        No payments registered in the system.
                     </td>
                 </tr>
 
                 <tr th:each="payment : ${paymentPage.content}">
                     <td th:text="${payment.paymentId}">1</td>
-                    <td>
-                        <span class="badge method-get" th:text="'Booking #' + ${payment.bookingId}">Booking #1</span>
-                    </td>
+                    <td th:text="${payment.bookingId}">1</td>
                     <td th:text="'₹ ' + ${payment.amount}">₹ 499.00</td>
-                    <td th:text="${#temporals.format(payment.paymentDate, 'yyyy-MM-dd HH:mm:ss')}">2026-05-25 10:00:00</td>
+                    <td th:text="${#temporals.format(payment.paymentDate, 'yyyy-MM-dd HH:mm:ss')}">2026-05-25 12:00:00</td>
                     <td>
-                        <span th:if="${payment.paymentStatus == 'Success'}" class="badge method-get">Success</span>
-                        <span th:if="${payment.paymentStatus == 'Failed'}" class="badge method-delete">Failed</span>
-                        <span th:if="${payment.paymentStatus != 'Success' && payment.paymentStatus != 'Failed'}" class="badge method-put" th:text="${payment.paymentStatus}">Pending</span>
+                        <span class="badge" th:classappend="${payment.paymentStatus == 'Success'} ? 'method-get' : 'method-delete'" th:text="${payment.paymentStatus}">Success</span>
                     </td>
                     <td>
                         <div class="row-actions">
