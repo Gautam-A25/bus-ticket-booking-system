@@ -8,6 +8,7 @@ import com.busticket.busticketbooking.entity.Trip;
 
 import com.busticket.busticketbooking.repo.TripRepo;
 
+import com.busticket.busticketbooking.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
@@ -22,6 +23,8 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.math.BigDecimal;
 
 import java.time.LocalDate;
@@ -35,6 +38,9 @@ public class TripUIController {
 
     @Autowired
     private TripRepo tripRepo;
+
+    @Autowired
+    private TripService tripService;
 
     /*
      * Display all trips
@@ -117,6 +123,8 @@ public String searchTrips(
      */
     @PostMapping
     public String createTrip(
+
+            RedirectAttributes redirectAttributes,
 
             @RequestParam Integer routeId,
 
@@ -233,6 +241,10 @@ public String searchTrips(
          * Save trip
          */
         tripRepo.save(trip);
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Trip created successfully."
+        );
 
         return "redirect:/ui/trips";
     }
@@ -273,6 +285,8 @@ public String searchTrips(
      */
     @PostMapping("/{id}")
     public String updateTrip(
+
+            RedirectAttributes redirectAttributes,
 
             @PathVariable Integer id,
 
@@ -395,6 +409,10 @@ public String searchTrips(
          * Save updated trip
          */
         tripRepo.save(trip);
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Trip updated successfully."
+        );
 
         return "redirect:/ui/trips";
     }
@@ -404,9 +422,24 @@ public String searchTrips(
      */
     @PostMapping("/{id}/delete")
     public String deleteTrip(
-            @PathVariable Integer id) {
+            @PathVariable Integer id,
+            RedirectAttributes redirectAttributes) {
 
-        tripRepo.deleteById(id);
+        try {
+
+            String successMessage =
+                    tripService.closeTrip(id);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    successMessage);
+
+        } catch (Exception ex) {
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage());
+        }
 
         return "redirect:/ui/trips";
     }

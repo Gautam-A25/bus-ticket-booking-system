@@ -10,6 +10,10 @@ import com.busticket.busticketbooking.service.BusService;
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.mapper.BusMapper;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -257,5 +261,17 @@ public class BusServiceImpl implements BusService {
         busRepo.delete(bus);
 
         return busDetails;
+    }
+
+    @Override
+    public Page<BusResponseDTO> getBusPage(int page, int size) {
+
+        Pageable pageable =
+                PageRequest.of(page, size);
+
+        Page<Bus> busPage =
+                busRepo.findAll(pageable);
+
+        return busPage.map(BusMapper::mapToResponseDto);
     }
 }

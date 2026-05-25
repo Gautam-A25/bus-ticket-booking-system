@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.controller;
 
 import com.busticket.busticketbooking.dto.BusDTO.BusRequestDTO;
 import com.busticket.busticketbooking.dto.BusDTO.BusResponseDTO;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.service.BusService;
 
 import jakarta.validation.Valid;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
 
 @Controller
 @RequestMapping("/ui/buses")
@@ -25,11 +28,40 @@ public class BusUIController {
      * Show all buses
      */
     @GetMapping
-    public String listBuses(Model model) {
+    public String listBuses(
+
+            @RequestParam(name = "page", defaultValue = "1")
+            int page,
+
+            @RequestParam(name = "size", defaultValue = "6")
+            int size,
+
+            Model model
+    ) {
+
+        int requestedPage = Math.max(page, 1);
+
+        int safePageIndex = requestedPage - 1;
+
+        Page<BusResponseDTO> busPage =
+                busService.getBusPage(
+                        safePageIndex,
+                        size
+                );
 
         model.addAttribute(
-                "buses",
-                busService.getAllBuses()
+                "busPage",
+                busPage
+        );
+
+        model.addAttribute(
+                "currentPage",
+                requestedPage
+        );
+
+        model.addAttribute(
+                "pageSize",
+                size
         );
 
         return "buses/list";
@@ -61,7 +93,8 @@ public class BusUIController {
     public String saveBus(
             @Valid @ModelAttribute("bus") BusRequestDTO dto,
             BindingResult result,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
 
         if (result.hasErrors()) {
@@ -72,6 +105,11 @@ public class BusUIController {
         }
 
         busService.createBus(dto);
+
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Bus created successfully."
+        );
 
         return "redirect:/ui/buses";
     }
@@ -112,7 +150,8 @@ public class BusUIController {
             @PathVariable Integer id,
             @Valid @ModelAttribute("bus") BusRequestDTO dto,
             BindingResult result,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
 
         if (result.hasErrors()) {
@@ -123,7 +162,22 @@ public class BusUIController {
             return "buses/form";
         }
 
-        busService.updateBus(id, dto);
+        try {
+
+            busService.updateBus(id, dto);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    "Bus updated successfully."
+            );
+
+        } catch (ResourceNotFoundException ex) {
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage()
+            );
+        }
 
         return "redirect:/ui/buses";
     }
@@ -131,10 +185,29 @@ public class BusUIController {
     /*
      * Delete bus
      */
-    @GetMapping("/{id}/delete")
-    public String deleteBus(@PathVariable Integer id) {
+    @DeleteMapping("/{id}")
+    public String deleteBus(
+            @PathVariable Integer id,
+            RedirectAttributes redirectAttributes
+    ) {
 
-        busService.deleteBus(id);
+        try {
+
+            String successMessage =
+                    busService.deleteBus(id);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    successMessage
+            );
+
+        } catch (ResourceNotFoundException ex) {
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage()
+            );
+        }
 
         return "redirect:/ui/buses";
     }

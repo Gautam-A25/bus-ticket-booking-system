@@ -2,22 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Bus Management</title>
 
-    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
 </head>
 
 <body>
 
 <div class="bg-mesh"></div>
+
 <div class="bg-grid"></div>
 
 <div class="container">
 
     <!-- HEADER -->
+
     <header id="main-header">
 
         <div class="logo-section">
@@ -42,10 +49,11 @@
 
         <div class="header-right">
 
-            <!-- DASHBOARD BUTTON -->
             <a class="back-btn"
                th:href="@{/}">
+
                 ← Dashboard
+
             </a>
 
         </div>
@@ -53,171 +61,289 @@
     </header>
 
     <!-- HERO SECTION -->
-    <section class="detail-hero">
 
-        <div class="detail-icon-box">
-            🚌
+    <section class="hero">
+
+        <div class="hero-sparks">
+
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+            <span class="spark"></span>
+
         </div>
 
-        <div class="detail-title-block">
+        <div class="hero-eyebrow">
 
-            <div class="detail-eyebrow">
-                BUS MODULE MANAGER
+            <span class="hero-eyebrow-dot"></span>
+
+            BUS MODULE MANAGER
+
+        </div>
+
+        <h1 class="hero-title">
+            Bus Records
+        </h1>
+
+        <p class="hero-desc">
+
+            Register buses, update transport details,
+            manage seating capacity and office allocations.
+
+        </p>
+
+        <div class="hero-stats">
+
+            <div class="stat-item">
+
+                <span class="stat-val"
+                      th:text="${busPage.totalElements}">
+                    0
+                </span>
+
+                <span class="stat-label">
+                    Total Records
+                </span>
+
             </div>
 
-            <h1 class="detail-title">
-                Bus Records
-            </h1>
+            <div class="stat-item">
 
-            <p class="detail-desc">
-                Register buses, update transport details,
-                manage seating capacity and office allocations.
-            </p>
+                <span class="stat-val"
+                      th:text="${busPage.totalPages}">
+                    0
+                </span>
+
+                <span class="stat-label">
+                    Pages
+                </span>
+
+            </div>
 
         </div>
 
     </section>
 
-    <!-- TABLE HEADER -->
-    <section style="margin-top:40px;">
+    <!-- SUCCESS MESSAGE -->
 
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:25px;
-        ">
+    <div th:if="${successMessage}"
+         class="alert success-alert"
+         th:text="${successMessage}">
+    </div>
 
-            <div>
+    <!-- ERROR MESSAGE -->
 
-                <h2 style="
-                    font-size:38px;
-                    margin-bottom:10px;
-                ">
-                    Active Fleet
-                </h2>
+    <div th:if="${errorMessage}"
+         class="alert error-alert"
+         th:text="${errorMessage}">
+    </div>
 
-                <p class="detail-desc">
-                    Configure buses, transport types,
-                    and office allocations.
-                </p>
+    <!-- TOOLBAR -->
 
-            </div>
+    <section class="crud-toolbar">
 
-            <div style="
-                display:flex;
-                gap:18px;
-                align-items:center;
-            ">
+        <div>
 
-                <!-- VIEW MODULE BUTTON -->
-                <a class="secondary-button"
-                   th:href="@{/swagger-ui/index.html}">
+            <h2 class="section-title">
+                Active Fleet
+            </h2>
 
-                    View Module Endpoints
+            <p class="crud-note">
 
-                </a>
+                Configure buses, transport types,
+                and office allocations.
 
-                <!-- ADD BUS BUTTON -->
-                <a class="card-cta"
-                   th:href="@{/ui/buses/new}">
+            </p>
 
-                    <span>Add Bus</span>
+        </div>
 
-                    <span class="card-cta-arrow">
-                        →
-                    </span>
+        <div class="crud-toolbar-actions">
 
-                </a>
+            <a class="back-btn"
+               th:href="@{/swagger-ui/index.html}">
 
-            </div>
+                View Module Endpoints
+
+            </a>
+
+            <a class="card-cta"
+               th:href="@{/ui/buses/new}">
+
+                Add Bus
+
+                <span class="card-cta-arrow">
+                    →
+                </span>
+
+            </a>
 
         </div>
 
     </section>
 
     <!-- TABLE -->
+
     <section class="crud-panel">
 
-        <table class="crud-table">
+        <div class="table-wrapper">
 
-            <thead>
+            <table class="crud-table">
 
-            <tr>
+                <thead>
 
-                <th>ID</th>
-                <th>REGISTRATION NUMBER</th>
-                <th>CAPACITY</th>
-                <th>TYPE</th>
-                <th>OFFICE ID</th>
-                <th>ACTIONS</th>
+                <tr>
 
-            </tr>
+                    <th>ID</th>
+                    <th>REGISTRATION NUMBER</th>
+                    <th>CAPACITY</th>
+                    <th>TYPE</th>
+                    <th>OFFICE ID</th>
+                    <th>ACTIONS</th>
 
-            </thead>
+                </tr>
 
-            <tbody>
+                </thead>
 
-            <tr th:each="bus : ${buses}">
+                <tbody>
 
-                <td th:text="${bus.id}"></td>
+                <!-- EMPTY STATE -->
 
-                <td th:text="${bus.registrationNumber}"></td>
+                <tr th:if="${busPage.totalElements == 0}">
 
-                <td th:text="${bus.capacity}"></td>
+                    <td colspan="6"
+                        class="empty-state">
 
-                <td th:text="${bus.type}"></td>
+                        No buses found yet.
 
-                <!-- OFFICE BADGE -->
-                <td>
+                    </td>
 
-                    <span class="badge method-get">
+                </tr>
 
-                        Office #<span th:text="${bus.officeId}"></span>
+                <!-- DATA -->
 
-                    </span>
+                <tr th:each="bus : ${busPage.content}">
 
-                </td>
+                    <td th:text="${bus.id}"></td>
 
-                <!-- ACTION BUTTONS -->
-                <td>
+                    <td th:text="${bus.registrationNumber}"></td>
 
-                    <div style="
-                        display:flex;
-                        flex-direction:column;
-                        gap:10px;
-                        width:90px;
-                    ">
+                    <td th:text="${bus.capacity}"></td>
 
-                        <!-- EDIT -->
-                        <a class="crud-action edit-action"
-                           th:href="@{/ui/buses/{id}/edit(id=${bus.id})}">
+                    <td th:text="${bus.type}"></td>
 
-                            Edit
+                    <td>
 
-                        </a>
+                        <span class="badge method-get">
 
-                        <!-- DELETE -->
-                        <a class="crud-action delete-action"
-                           th:href="@{/ui/buses/{id}/delete(id=${bus.id})}">
+                            Office #<span th:text="${bus.officeId}"></span>
 
-                            Delete
+                        </span>
 
-                        </a>
+                    </td>
 
-                    </div>
+                    <td>
 
-                </td>
+                        <div class="row-actions">
 
-            </tr>
+                            <!-- EDIT -->
 
-            </tbody>
+                            <a class="crud-action edit-action"
 
-        </table>
+                               th:href="@{/ui/buses/{id}/edit(id=${bus.id})}">
+
+                                Edit
+
+                            </a>
+
+                            <!-- DELETE -->
+
+                            <form th:action="@{/ui/buses/{id}(id=${bus.id})}"
+                                  method="post"
+                                  class="inline-form">
+
+                                <input type="hidden"
+                                       name="_method"
+                                       value="delete">
+
+                                <button type="submit"
+                                        class="crud-action delete-action"
+                                        onclick="return confirm('Delete this bus?')">
+
+                                    Delete
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- PAGINATION -->
+
+    <section class="pagination-wrap"
+             th:if="${busPage.totalPages > 1}">
+
+        <!-- PREVIOUS -->
+
+        <a class="page-link nav-link"
+
+           th:href="@{/ui/buses(page=${currentPage - 1}, size=${pageSize})}"
+
+           th:classappend="${busPage.first} ? ' disabled' : ''">
+
+            ‹ Previous
+
+        </a>
+
+        <!-- PAGE NUMBERS -->
+
+        <div class="pagination-pages">
+
+            <a class="page-link"
+
+               th:each="pageNum : ${#numbers.sequence(1, busPage.totalPages)}"
+
+               th:href="@{/ui/buses(page=${pageNum}, size=${pageSize})}"
+
+               th:text="${pageNum}"
+
+               th:classappend="${pageNum == currentPage} ? ' active' : ''">
+
+                1
+
+            </a>
+
+        </div>
+
+        <!-- NEXT -->
+
+        <a class="page-link nav-link"
+
+           th:href="@{/ui/buses(page=${currentPage + 1}, size=${pageSize})}"
+
+           th:classappend="${busPage.last} ? ' disabled' : ''">
+
+            Next ›
+
+        </a>
 
     </section>
 
 </div>
 
 </body>
+
 </html>
