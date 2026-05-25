@@ -8,14 +8,14 @@ spring:
         enabled: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/busticketbooking
-    username: root
-    password: root
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/busticketbooking}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:AayushCode@5252}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
 
     show-sql: true
 
@@ -32,5 +32,5 @@ springdoc:
     path: /swagger-ui.html
 
 jwt:
-  secret: Ultra-Super-Duper-Mega-Secret-crazy-encrypted-password-do-not-mess-up
+  secret: ${JWT_SECRET:change-me-locally}
   expiration-ms: 86400000
