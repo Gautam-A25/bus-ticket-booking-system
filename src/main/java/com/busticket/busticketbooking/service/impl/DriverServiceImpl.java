@@ -231,17 +231,6 @@ public class DriverServiceImpl implements DriverService {
         return driverRepo.findAll(pageable)
                 .map(DriverMapper::mapToResponseDto);
     }
-
-    /*
-     * Fetch Driver using Driver ID
-     */
-    @Override
-    public Page<DriverResponseDTO> getDriverPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return driverRepo.findAll(pageable)
-                .map(DriverMapper::mapToResponseDto);
-    }
-
     @Override
     public DriverResponseDTO getDriverById(Integer id) {
 

@@ -427,12 +427,11 @@ public String searchTrips(
 
         try {
 
-            String successMessage =
-                    tripService.closeTrip(id);
+            tripService.deleteTrip(id);
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    successMessage);
+                    "Trip deleted successfully.");
 
         } catch (Exception ex) {
 

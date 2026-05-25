@@ -43,7 +43,7 @@ public interface DriverRepo extends JpaRepository<Driver, Integer> {
      *
      * SELECT * FROM drivers WHERE office_id = ?
      */
-    List<Driver> findByOffice_id(Integer officeId);
+    List<Driver> findByOffice_Id(Integer officeId);
 
     /*
      * Checks whether a driver already exists

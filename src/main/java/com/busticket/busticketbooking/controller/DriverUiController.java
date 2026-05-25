@@ -1,6 +1,6 @@
 package com.busticket.busticketbooking.controller;
 
-+/*
+/*
  * Importing Driver Request DTO
  * Used to receive driver form data from UI
  */
@@ -129,8 +129,7 @@ public class DriverUiController {
     public DriverUiController(
             DriverService driverService,
             AddressService addressService,
-            AgencyOfficeRepo agencyOfficeRepo
-    ) {
+            AgencyOfficeRepo agencyOfficeRepo) {
         this.driverService = driverService;
         this.addressService = addressService;
         this.agencyOfficeRepo = agencyOfficeRepo;
@@ -156,8 +155,7 @@ public class DriverUiController {
             /*
              * Model object to send data to UI
              */
-            Model model
-    ) {
+            Model model) {
 
         /*
          * Prevent page value less than 1
@@ -172,8 +170,7 @@ public class DriverUiController {
         /*
          * Fetch paginated drivers
          */
-        Page<DriverResponseDTO> driverPage =
-                driverService.getDriverPage(safePageIndex, size);
+        Page<DriverResponseDTO> driverPage = driverService.getDriverPage(safePageIndex, size);
 
         /*
          * Send data to HTML page
@@ -202,8 +199,7 @@ public class DriverUiController {
 
             model.addAttribute(
                     "driver",
-                    new DriverRequestDTO()
-            );
+                    new DriverRequestDTO());
         }
 
         /*
@@ -232,10 +228,10 @@ public class DriverUiController {
 
             /*
              * Receive form data
+             * 
              * @Valid triggers validations
              */
-            @Valid @ModelAttribute("driver")
-            DriverRequestDTO driver,
+            @Valid @ModelAttribute("driver") DriverRequestDTO driver,
 
             /*
              * Stores validation errors
@@ -244,8 +240,7 @@ public class DriverUiController {
 
             Model model,
 
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
 
         /*
          * If validation fails
@@ -271,8 +266,7 @@ public class DriverUiController {
              */
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    "Driver created successfully."
-            );
+                    "Driver created successfully.");
 
         } catch (Exception ex) {
 
@@ -285,8 +279,7 @@ public class DriverUiController {
              */
             model.addAttribute(
                     "errorMessage",
-                    ex.getMessage()
-            );
+                    ex.getMessage());
 
             return "driver/form";
         }
@@ -311,22 +304,19 @@ public class DriverUiController {
 
             Model model,
 
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
 
         try {
 
             /*
              * Fetch driver data
              */
-            DriverResponseDTO existing =
-                    driverService.getDriverById(id);
+            DriverResponseDTO existing = driverService.getDriverById(id);
 
             /*
              * Create Request DTO object
              */
-            DriverRequestDTO driver =
-                    new DriverRequestDTO();
+            DriverRequestDTO driver = new DriverRequestDTO();
 
             /*
              * Set existing values
@@ -356,8 +346,7 @@ public class DriverUiController {
 
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
-                    ex.getMessage()
-            );
+                    ex.getMessage());
 
             return "redirect:/ui/drivers";
         }
@@ -372,15 +361,13 @@ public class DriverUiController {
 
             @PathVariable Integer id,
 
-            @Valid @ModelAttribute("driver")
-            DriverRequestDTO driver,
+            @Valid @ModelAttribute("driver") DriverRequestDTO driver,
 
             BindingResult bindingResult,
 
             Model model,
 
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
 
         /*
          * Validation error handling
@@ -405,8 +392,7 @@ public class DriverUiController {
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    "Driver updated successfully."
-            );
+                    "Driver updated successfully.");
 
         } catch (Exception ex) {
 
@@ -418,8 +404,7 @@ public class DriverUiController {
 
             model.addAttribute(
                     "errorMessage",
-                    ex.getMessage()
-            );
+                    ex.getMessage());
 
             return "driver/form";
         }
@@ -436,25 +421,21 @@ public class DriverUiController {
 
             @PathVariable Integer id,
 
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
 
         try {
 
-            String successMessage =
-                    driverService.deleteDriver(id);
+            String successMessage = driverService.deleteDriver(id);
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    successMessage
-            );
+                    successMessage);
 
         } catch (ResourceNotFoundException ex) {
 
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
-                    ex.getMessage()
-            );
+                    ex.getMessage());
         }
 
         return "redirect:/ui/drivers";
@@ -469,17 +450,15 @@ public class DriverUiController {
         /*
          * Fetch all addresses
          */
-        List<AddressResponseDTO> addresses =
-                addressService.getAllAddresses();
+        List<AddressResponseDTO> addresses = addressService.getAllAddresses();
 
         /*
          * Fetch all offices
          */
-        List<AgencyOfficeResponseDTO> offices =
-                agencyOfficeRepo.findAll()
-                        .stream()
-                        .map(AgencyOfficeMapper::toResponseDTO)
-                        .collect(Collectors.toList());
+        List<AgencyOfficeResponseDTO> offices = agencyOfficeRepo.findAll()
+                .stream()
+                .map(AgencyOfficeMapper::toResponseDTO)
+                .collect(Collectors.toList());
 
         /*
          * Send dropdown data to UI

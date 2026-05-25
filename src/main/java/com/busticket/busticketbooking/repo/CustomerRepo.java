@@ -4,6 +4,8 @@ import com.busticket.busticketbooking.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 // Repository layer handles database operations for Customer entity
 @Repository
 public interface CustomerRepo extends JpaRepository<Customer, Integer> {
