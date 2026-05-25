@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.service;
 
 import com.busticket.busticketbooking.dto.BusDTO.BusRequestDTO;
 import com.busticket.busticketbooking.dto.BusDTO.BusResponseDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -73,4 +74,6 @@ public interface BusService {
     );
 
     String deleteBus(Integer id);
+
+    Page<BusResponseDTO> getBusPage(int page, int size);
 }
