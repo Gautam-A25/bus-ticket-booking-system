@@ -38,4 +38,12 @@ public interface TripRepo
 
             LocalDateTime tripDate
     );
+
+    List<Trip> findByBusId(Integer busId);
+
+    List<Trip> findByRouteId(Integer routeId);
+
+    List<Trip> findByDriver1IdOrDriver2Id(Integer driver1Id, Integer driver2Id);
+
+    List<Trip> findByBoardingAddressIdOrDroppingAddressId(Integer boardingAddressId, Integer droppingAddressId);
 }

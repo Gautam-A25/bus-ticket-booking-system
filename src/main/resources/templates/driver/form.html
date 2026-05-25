@@ -31,14 +31,14 @@
         <div class="detail-icon-box">👨‍✈️</div>
 
         <div class="detail-title-block">
-            <div class="detail-eyebrow" th:text="${isEdit} ? 'Update Driver Profile' : 'Register Driver Profile'">
-                Register Driver Profile
+            <div class="detail-eyebrow" th:text="${isEdit} ? 'Update Driver' : 'New Driver'">
+                New Driver
             </div>
-            <h1 class="detail-title" th:text="${isEdit} ? 'Edit Driver Profile' : 'Create Driver Profile'">
+            <h1 class="detail-title" th:text="${isEdit} ? 'Edit Driver' : 'Create Driver'">
                 Driver Form
             </h1>
             <p class="detail-desc">
-                Fill in the commercial driver profile details below. Custom validation highlights and assignment parameters will apply.
+                Fill in the driver details below. Validation messages will appear next to each field.
             </p>
         </div>
     </section>
@@ -79,18 +79,27 @@
                 <input id="phone"
                        type="text"
                        th:field="*{phone}"
-                       placeholder="Enter 10-15 digit contact number">
+                       placeholder="Enter phone number">
                 <p class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
             </div>
 
-            <!-- Office Assignment -->
             <div class="field-grid">
-                <label for="officeId">Office Assignment</label>
+                <label for="licenseNumber">License Number</label>
+                <input id="licenseNumber"
+                       type="text"
+                       th:field="*{licenseNumber}"
+                       placeholder="Enter license number">
+                <p class="field-error" th:if="${#fields.hasErrors('licenseNumber')}" th:errors="*{licenseNumber}"></p>
+            </div>
+
+            <div class="field-grid">
+                <label for="officeId">Agency Office</label>
                 <select id="officeId" th:field="*{officeId}">
-                    <option value="">-- Select Office Branch --</option>
+                    <option value="">Select Office</option>
                     <option th:each="office : ${offices}"
                             th:value="${office.officeId}"
-                            th:text="'Office #' + ${office.officeId} + ' - ' + ${office.officeContactPersonName} + ' (' + ${office.officeContactNumber} + ')'">
+                            th:text="${'Office ' + office.officeId + ' (' + office.officeMail + ')'}">
+                        Office
                     </option>
                 </select>
                 <p class="field-error" th:if="${#fields.hasErrors('officeId')}" th:errors="*{officeId}"></p>

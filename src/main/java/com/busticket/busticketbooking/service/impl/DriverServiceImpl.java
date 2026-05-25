@@ -63,17 +63,19 @@ import com.busticket.busticketbooking.exception.DuplicateResourceException;
  * Mapper class used to convert Entity to DTO
  */
 import com.busticket.busticketbooking.mapper.DriverMapper;
+import com.busticket.busticketbooking.repo.TripRepo;
+import com.busticket.busticketbooking.repo.BookingRepo;
+import com.busticket.busticketbooking.repo.PaymentRepo;
+import com.busticket.busticketbooking.repo.ReviewRepo;
+import com.busticket.busticketbooking.entity.Trip;
+import com.busticket.busticketbooking.entity.Booking;
+import com.busticket.busticketbooking.entity.Review;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
-/*
- * Spring Pagination Classes
- */
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-/*
- * @Service marks this class as Service Layer
- */
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -102,11 +104,15 @@ public class DriverServiceImpl implements DriverService {
      */
     private final AddressRepo addressRepo;
 
-    /*
-     * Constructor Injection
-     *
-     * Spring automatically injects repositories
-     */
+    @Autowired
+    private TripRepo tripRepo;
+    @Autowired
+    private BookingRepo bookingRepo;
+    @Autowired
+    private PaymentRepo paymentRepo;
+    @Autowired
+    private ReviewRepo reviewRepo;
+
     public DriverServiceImpl(
             DriverRepo driverRepo,
             AgencyOfficeRepo officeRepo,
@@ -230,6 +236,13 @@ public class DriverServiceImpl implements DriverService {
      * Fetch Driver using Driver ID
      */
     @Override
+    public Page<DriverResponseDTO> getDriverPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return driverRepo.findAll(pageable)
+                .map(DriverMapper::mapToResponseDto);
+    }
+
+    @Override
     public DriverResponseDTO getDriverById(Integer id) {
 
         /*
@@ -347,6 +360,7 @@ public class DriverServiceImpl implements DriverService {
      * Delete Driver using Driver ID
      */
     @Override
+    @Transactional
     public String deleteDriver(Integer id) {
 
         Driver driver = driverRepo.findById(id)
@@ -355,6 +369,24 @@ public class DriverServiceImpl implements DriverService {
                                 "Driver with ID " + id + " not found"
                         )
                 );
+
+        // Find and delete trips where this driver is driver1 or driver2
+        List<Trip> trips = tripRepo.findByDriver1IdOrDriver2Id(id, id);
+        for (Trip trip : trips) {
+            // Cascade delete payments first
+            List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
+            for (Booking booking : bookings) {
+                paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
+            }
+            bookingRepo.deleteAll(bookings);
+
+            // Cascade delete reviews
+            List<Review> reviews = reviewRepo.findByTripId(trip.getId());
+            reviewRepo.deleteAll(reviews);
+
+            // Delete trip
+            tripRepo.delete(trip);
+        }
 
         driverRepo.delete(driver);
 

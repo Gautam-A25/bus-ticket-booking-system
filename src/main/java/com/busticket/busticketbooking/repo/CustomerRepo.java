@@ -10,4 +10,6 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
 
     // Checks whether customer email already exists in database
     boolean existsByEmail(String email);
+
+    List<Customer> findByAddressId(Integer addressId);
 }

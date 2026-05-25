@@ -60,4 +60,6 @@ public interface DriverRepo extends JpaRepository<Driver, Integer> {
      * WHERE license_number = ?
      */
     boolean existsByLicenseNumber(String licenseNumber);
+
+    List<Driver> findByAddressId(Integer addressId);
 }
