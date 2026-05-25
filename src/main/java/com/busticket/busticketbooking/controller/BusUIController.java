@@ -185,7 +185,7 @@ public class BusUIController {
     /*
      * Delete bus
      */
-    @GetMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public String deleteBus(
             @PathVariable Integer id,
             RedirectAttributes redirectAttributes
