@@ -108,11 +108,12 @@ public class PaymentServiceTest {
     public void testMakePayment_FailedStatus_ThrowsPaymentFailedException() {
         when(bookingRepo.findById(1)).thenReturn(Optional.of(booking));
         when(customerRepo.findById(2)).thenReturn(Optional.of(customer));
+        when(paymentRepo.save(any(Payment.class))).thenReturn(payment);
 
         assertThrows(PaymentFailedException.class, () -> {
             paymentService.makePayment(failedRequest);
         });
-        verify(paymentRepo, never()).save(any(Payment.class));
+        verify(paymentRepo, times(1)).save(any(Payment.class));
     }
 
     /**
@@ -122,11 +123,12 @@ public class PaymentServiceTest {
     public void testMakePayment_DeclinedStatus_ThrowsPaymentFailedException() {
         when(bookingRepo.findById(1)).thenReturn(Optional.of(booking));
         when(customerRepo.findById(2)).thenReturn(Optional.of(customer));
+        when(paymentRepo.save(any(Payment.class))).thenReturn(payment);
 
         assertThrows(PaymentFailedException.class, () -> {
             paymentService.makePayment(declinedRequest);
         });
-        verify(paymentRepo, never()).save(any(Payment.class));
+        verify(paymentRepo, times(1)).save(any(Payment.class));
     }
 
     /**

@@ -21,6 +21,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 // Service layer handles booking business logic
+import org.springframework.transaction.annotation.Transactional;
+
+// Marks this class as Service layer component
 @Service
 public class BookingServiceImpl implements BookingService {
 
@@ -161,6 +164,7 @@ public class BookingServiceImpl implements BookingService {
 
     // Cancels existing booking
     @Override
+    @Transactional
     public String cancelBooking(
             Integer bookingId
     ) {
@@ -181,7 +185,10 @@ public class BookingServiceImpl implements BookingService {
                         "Seat Number = " + booking.getSeatNumber() + "\n" +
                         "Status = " + booking.getStatus();
 
-        // Deletes booking from database
+        // Cascade delete: delete associated payment if it exists
+        paymentRepo.findByBookingId(bookingId).ifPresent(paymentRepo::delete);
+
+        // Delete booking from database
         bookingRepo.delete(booking);
 
         return "Booking Cancelled Successfully : ID = "

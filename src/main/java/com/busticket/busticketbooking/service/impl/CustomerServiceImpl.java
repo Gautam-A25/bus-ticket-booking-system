@@ -10,6 +10,12 @@ import com.busticket.busticketbooking.repo.CustomerRepo;
 import com.busticket.busticketbooking.service.CustomerService;
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.exception.DuplicateResourceException;
+import com.busticket.busticketbooking.repo.PaymentRepo;
+import com.busticket.busticketbooking.repo.ReviewRepo;
+import com.busticket.busticketbooking.entity.Payment;
+import com.busticket.busticketbooking.entity.Review;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +33,12 @@ public class CustomerServiceImpl implements CustomerService {
     // Repository object for address database operations
     private final AddressRepo addressRepo;
 
-    // Constructor injection for dependency injection
+    @Autowired
+    private PaymentRepo paymentRepo;
+    @Autowired
+    private ReviewRepo reviewRepo;
+
+    // Constructor Injection
     public CustomerServiceImpl(
             CustomerRepo customerRepo,
             AddressRepo addressRepo
@@ -141,6 +152,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     // Deletes customer record using customer ID
     @Override
+    @Transactional
     public String deleteCustomer(Integer customerId) {
 
         // Fetches customer using customer ID
@@ -159,7 +171,15 @@ public class CustomerServiceImpl implements CustomerService {
                                 ? customer.getAddress().getId()
                                 : null);
 
-        // Deletes customer from database
+        // Cascade delete: delete customer's reviews first
+        List<Review> reviews = reviewRepo.findByCustomerId(customerId);
+        reviewRepo.deleteAll(reviews);
+
+        // Cascade delete: delete customer's payments first
+        List<Payment> payments = paymentRepo.findByCustomerId(customerId);
+        paymentRepo.deleteAll(payments);
+
+        // Delete customer from database
         customerRepo.delete(customer);
 
          return "Customer Deleted Successfully : ID = "
