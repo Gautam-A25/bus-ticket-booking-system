@@ -11,6 +11,19 @@ import com.busticket.busticketbooking.repo.AddressRepo;
 import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
 import com.busticket.busticketbooking.repo.AgencyRepo;
 import com.busticket.busticketbooking.service.AgencyOfficeService;
+import com.busticket.busticketbooking.repo.DriverRepo;
+import com.busticket.busticketbooking.repo.BusRepo;
+import com.busticket.busticketbooking.repo.TripRepo;
+import com.busticket.busticketbooking.repo.BookingRepo;
+import com.busticket.busticketbooking.repo.PaymentRepo;
+import com.busticket.busticketbooking.repo.ReviewRepo;
+import com.busticket.busticketbooking.entity.Driver;
+import com.busticket.busticketbooking.entity.Bus;
+import com.busticket.busticketbooking.entity.Trip;
+import com.busticket.busticketbooking.entity.Booking;
+import com.busticket.busticketbooking.entity.Review;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,9 +39,22 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     private final AgencyRepo agencyRepo;
     private final AddressRepo addressRepo;
 
+    @Autowired
+    private DriverRepo driverRepo;
+    @Autowired
+    private BusRepo busRepo;
+    @Autowired
+    private TripRepo tripRepo;
+    @Autowired
+    private BookingRepo bookingRepo;
+    @Autowired
+    private PaymentRepo paymentRepo;
+    @Autowired
+    private ReviewRepo reviewRepo;
+
     public AgencyOfficeServiceImpl(AgencyOfficeRepo agencyOfficeRepo,
-                                   AgencyRepo agencyRepo,
-                                   AddressRepo addressRepo) {
+            AgencyRepo agencyRepo,
+            AddressRepo addressRepo) {
         this.agencyOfficeRepo = agencyOfficeRepo;
         this.agencyRepo = agencyRepo;
         this.addressRepo = addressRepo;
@@ -45,7 +71,8 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + agencyIdToUse + " not found"));
 
         Address address = addressRepo.findById(agencyOfficeRequestDTO.getAddressId())
-                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
 
         AgencyOffice agencyOffice = AgencyOfficeMapper.toEntity(agencyOfficeRequestDTO, agency, address);
         AgencyOffice savedAgencyOffice = agencyOfficeRepo.save(agencyOffice);
@@ -75,8 +102,7 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     @Override
     public Page<AgencyOfficeResponseDTO> getAgencyOfficePage(int page, int size) {
         return agencyOfficeRepo.findAll(
-                        PageRequest.of(page, size, Sort.by("id").ascending())
-                )
+                PageRequest.of(page, size, Sort.by("id").ascending()))
                 .map(AgencyOfficeMapper::toResponseDTO);
     }
 
@@ -93,7 +119,8 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + agencyIdToUse + " not found"));
 
         Address address = addressRepo.findById(agencyOfficeRequestDTO.getAddressId())
-                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
 
         existingAgencyOffice.setAgency(agency);
         existingAgencyOffice.setOfficeMail(agencyOfficeRequestDTO.getOfficeMail());
@@ -106,33 +133,78 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     }
 
     @Override
-public String deleteAgencyOffice(Integer id) {
+    @Transactional
+    public String deleteAgencyOffice(Integer id) {
+        AgencyOffice office = agencyOfficeRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Office with ID " + id + " not found"));
 
-    AgencyOffice office =
-            agencyOfficeRepo.findById(id)
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException(
-                                    "Office with ID "
-                                            + id
-                                            + " not found"));
+        String officeDetails = "Agency Office Deleted Successfully : \n" +
+                "ID = " + office.getId() + "\n" +
+                "Agency ID = " +
+                (office.getAgency() != null
+                        ? office.getAgency().getId()
+                        : null)
+                + "\n" +
+                "Office Mail = " + office.getOfficeMail() + "\n" +
+                "Office Contact Person Name = " + office.getOfficeContactPersonName() + "\n" +
+                "Office Contact Number = " + office.getOfficeContactNumber() + "\n" +
+                "Address ID = " +
+                (office.getAddress() != null
+                        ? office.getAddress().getId()
+                        : null);
 
-    String officeDetails =
-            "Agency Office Deleted Successfully : \n" +
-                    "ID = " + office.getId() + "\n" +
-                    "Agency ID = " +
-                    (office.getAgency() != null
-                            ? office.getAgency().getId()
-                            : null) + "\n" +
-                    "Office Mail = " + office.getOfficeMail() + "\n" +
-                    "Office Contact Person Name = " + office.getOfficeContactPersonName() + "\n" +
-                    "Office Contact Number = " + office.getOfficeContactNumber() + "\n" +
-                    "Address ID = " +
-                    (office.getAddress() != null
-                            ? office.getAddress().getId()
-                            : null);
+        // 1. Find and delete all drivers in this office
+        List<Driver> drivers = driverRepo.findByOffice_Id(id);
+        for (Driver driver : drivers) {
+            // Cascade delete driver's trips
+            List<Trip> trips = tripRepo.findByDriver1IdOrDriver2Id(driver.getId(), driver.getId());
+            for (Trip trip : trips) {
+                // Cascade delete bookings and payments
+                List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
+                for (Booking booking : bookings) {
+                    paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
+                }
+                bookingRepo.deleteAll(bookings);
 
-    agencyOfficeRepo.delete(office);
+                // Cascade delete reviews
+                List<Review> reviews = reviewRepo.findByTripId(trip.getId());
+                reviewRepo.deleteAll(reviews);
 
-    return officeDetails;
+                // Delete trip
+                tripRepo.delete(trip);
+            }
+            // Delete driver
+            driverRepo.delete(driver);
+        }
+
+        // 2. Find and delete all buses in this office
+        List<Bus> buses = busRepo.findByOffice_Id(id);
+        for (Bus bus : buses) {
+            // Cascade delete bus's trips
+            List<Trip> trips = tripRepo.findByBusId(bus.getId());
+            for (Trip trip : trips) {
+                // Cascade delete bookings and payments
+                List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
+                for (Booking booking : bookings) {
+                    paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
+                }
+                bookingRepo.deleteAll(bookings);
+
+                // Cascade delete reviews
+                List<Review> reviews = reviewRepo.findByTripId(trip.getId());
+                reviewRepo.deleteAll(reviews);
+
+                // Delete trip
+                tripRepo.delete(trip);
+            }
+            // Delete bus
+            busRepo.delete(bus);
+        }
+
+        // 3. Delete office
+        agencyOfficeRepo.delete(office);
+
+        return officeDetails;
     }
 }

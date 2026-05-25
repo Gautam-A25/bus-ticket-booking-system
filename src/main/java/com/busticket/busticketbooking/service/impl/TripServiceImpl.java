@@ -15,6 +15,10 @@ import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 
 import com.busticket.busticketbooking.repo.BookingRepo;
 import com.busticket.busticketbooking.repo.TripRepo;
+import com.busticket.busticketbooking.repo.PaymentRepo;
+import com.busticket.busticketbooking.repo.ReviewRepo;
+import com.busticket.busticketbooking.entity.Review;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.busticket.busticketbooking.service.TripService;
 
@@ -39,6 +43,12 @@ public class TripServiceImpl
 
     @Autowired
     private BookingRepo bookingRepo;
+
+    @Autowired
+    private PaymentRepo paymentRepo;
+
+    @Autowired
+    private ReviewRepo reviewRepo;
 
     /*
      * Get all trips
@@ -267,20 +277,32 @@ public class TripServiceImpl
 
         return availability;
     }
-        /*
- * Delete trip
- */
-@Override
-public void deleteTrip(Integer id) {
+    /*
+     * Delete trip
+     */
+    @Override
+    @Transactional
+    public void deleteTrip(Integer id) {
 
-    Trip trip =
-            tripRepo.findById(id)
-                    .orElseThrow(() ->
-                            new RuntimeException(
-                                    "Trip not found"));
+        Trip trip =
+                tripRepo.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Trip not found"));
 
-    tripRepo.delete(trip);
-}
+        // Cascade delete bookings and payments first
+        List<Booking> bookings = bookingRepo.findByTripId(id);
+        for (Booking booking : bookings) {
+            paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
+        }
+        bookingRepo.deleteAll(bookings);
+
+        // Cascade delete reviews
+        List<Review> reviews = reviewRepo.findByTripId(id);
+        reviewRepo.deleteAll(reviews);
+
+        tripRepo.delete(trip);
+    }
     /*
      * Get booked seats
      */

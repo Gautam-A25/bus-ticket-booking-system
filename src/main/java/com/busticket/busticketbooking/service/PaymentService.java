@@ -14,4 +14,5 @@ public interface PaymentService {
     Optional<PaymentResponseDTO> getBookingPaymentInfo(Integer bookingId);
     PaymentResponseDTO updatePaymentStatus(Integer paymentId, String status);
     Page<PaymentResponseDTO> getPaymentPage(int page, int size);
+    void deletePayment(Integer id);
 }

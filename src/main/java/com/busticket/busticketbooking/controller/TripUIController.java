@@ -370,51 +370,43 @@ public String updateTrip(
     }
 }
 
-    /*
-     * Delete trip
-     */
-@PostMapping("/{id}/delete")
-public String deleteTrip(
+    @PostMapping("/{id}/delete")
+    public String deleteTrip(
+            @PathVariable Integer id,
+            RedirectAttributes redirectAttributes) {
 
-        @PathVariable Integer id,
+        try {
+            /*
+             * Delete payments
+             */
+            bookingRepo.deletePaymentsByTripId(id);
 
-        RedirectAttributes redirectAttributes) {
+            /*
+             * Delete reviews
+             */
+            bookingRepo.deleteReviewsByTripId(id);
 
-    try {
+            /*
+             * Delete bookings
+             */
+            bookingRepo.deleteBookingsByTripId(id);
 
-        /*
-         * Delete payments
-         */
-        bookingRepo.deletePaymentsByTripId(id);
+            /*
+             * Delete trip
+             */
+            tripRepo.deleteById(id);
 
-        /*
-         * Delete reviews
-         */
-        bookingRepo.deleteReviewsByTripId(id);
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    "Trip deleted successfully.");
 
-        /*
-         * Delete bookings
-         */
-        bookingRepo.deleteBookingsByTripId(id);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Unable to delete trip.");
+        }
 
-        /*
-         * Delete trip
-         */
-        tripRepo.deleteById(id);
-
-        redirectAttributes.addFlashAttribute(
-                "successMessage",
-                "Trip deleted successfully.");
-
-    } catch (Exception ex) {
-
-        ex.printStackTrace();
-
-        redirectAttributes.addFlashAttribute(
-                "errorMessage",
-                "Unable to delete trip.");
+        return "redirect:/ui/trips";
     }
-
-    return "redirect:/ui/trips";
-}
 }
