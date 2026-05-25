@@ -1,7 +1,5 @@
 package com.busticket.busticketbooking.repo;
 import jakarta.transaction.Transactional;
-
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.busticket.busticketbooking.entity.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
