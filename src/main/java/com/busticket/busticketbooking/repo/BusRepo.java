@@ -42,6 +42,6 @@ public interface BusRepo extends JpaRepository<Bus, Integer> {
      *
      * SELECT * FROM buses WHERE office_id = ?
      */
-    List<Bus> findByOffice_id(Integer officeId);
+    List<Bus> findByOffice_Id(Integer officeId);
 
 }

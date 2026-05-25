@@ -112,17 +112,9 @@ public class PaymentUiController {
     @PatchMapping("/{id}")
     public String updatePaymentStatus(
             @PathVariable Integer id,
-            @Valid @ModelAttribute("payment") PaymentRequestDTO payment,
-            BindingResult bindingResult,
-            Model model,
+            @ModelAttribute("payment") PaymentRequestDTO payment,
             RedirectAttributes redirectAttributes
     ) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("paymentId", id);
-            model.addAttribute("isEdit", true);
-            return "payment/form";
-        }
-
         try {
             paymentService.updatePaymentStatus(id, payment.getPaymentStatus());
             redirectAttributes.addFlashAttribute("successMessage", "Payment status updated successfully.");
@@ -133,14 +125,18 @@ public class PaymentUiController {
         return "redirect:/ui/payments";
     }
 
-    // DELETE — no dedicated delete endpoint in listed API; redirects gracefully
+    // DELETE — perform actual database deletion of a payment record
     @DeleteMapping("/{id}")
     public String deletePayment(
             @PathVariable Integer id,
             RedirectAttributes redirectAttributes
     ) {
-        redirectAttributes.addFlashAttribute("errorMessage",
-                "Delete is not supported for payment records to preserve financial audit trails.");
+        try {
+            paymentService.deletePayment(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Payment record deleted successfully.");
+        } catch (ResourceNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
         return "redirect:/ui/payments";
     }
 }

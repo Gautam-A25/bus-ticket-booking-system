@@ -70,18 +70,6 @@ public class PaymentServiceImpl implements PaymentService {
                                         + requestDTO.getCustomerId()
                                         + " not found"));
 
-        // Reject payment early if the status is already FAILED or DECLINED
-        if ("FAILED".equalsIgnoreCase(
-                requestDTO.getPaymentStatus())
-                ||
-                "DECLINED".equalsIgnoreCase(
-                        requestDTO.getPaymentStatus())) {
-
-            throw new PaymentFailedException(
-                    "Payment processing failed. Transaction status: "
-                            + requestDTO.getPaymentStatus());
-        }
-
         // Build a new Payment entity and populate its fields
         Payment payment = new Payment();
 
@@ -97,9 +85,21 @@ public class PaymentServiceImpl implements PaymentService {
                 parsePaymentStatus(
                         requestDTO.getPaymentStatus()));
 
-        // Save to database and return as a response DTO
+        // Save to database
         Payment savedPayment =
                 paymentRepo.save(payment);
+
+        // Reject payment after saving to database if the status is already FAILED or DECLINED
+        if ("FAILED".equalsIgnoreCase(
+                requestDTO.getPaymentStatus())
+                ||
+                "DECLINED".equalsIgnoreCase(
+                        requestDTO.getPaymentStatus())) {
+
+            throw new PaymentFailedException(
+                    "Payment processing failed. Transaction status: "
+                            + requestDTO.getPaymentStatus());
+        }
 
         return PaymentMapper.mapToResponseDTO(
                 savedPayment);
@@ -190,5 +190,12 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepo.findAll(
                 PageRequest.of(page, size, Sort.by("id").descending())
         ).map(PaymentMapper::mapToResponseDTO);
+    }
+
+    @Override
+    public void deletePayment(Integer id) {
+        Payment payment = paymentRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment with ID " + id + " not found"));
+        paymentRepo.delete(payment);
     }
 }

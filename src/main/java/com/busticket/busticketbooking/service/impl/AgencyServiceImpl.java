@@ -7,6 +7,21 @@ import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 import com.busticket.busticketbooking.mapper.AgencyMapper;
 import com.busticket.busticketbooking.repo.AgencyRepo;
 import com.busticket.busticketbooking.service.AgencyService;
+import com.busticket.busticketbooking.repo.AgencyOfficeRepo;
+import com.busticket.busticketbooking.repo.DriverRepo;
+import com.busticket.busticketbooking.repo.BusRepo;
+import com.busticket.busticketbooking.repo.TripRepo;
+import com.busticket.busticketbooking.repo.BookingRepo;
+import com.busticket.busticketbooking.repo.PaymentRepo;
+import com.busticket.busticketbooking.repo.ReviewRepo;
+import com.busticket.busticketbooking.entity.AgencyOffice;
+import com.busticket.busticketbooking.entity.Driver;
+import com.busticket.busticketbooking.entity.Bus;
+import com.busticket.busticketbooking.entity.Trip;
+import com.busticket.busticketbooking.entity.Booking;
+import com.busticket.busticketbooking.entity.Review;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,6 +34,21 @@ import java.util.stream.Collectors;
 public class AgencyServiceImpl implements AgencyService {
 
     private final AgencyRepo agencyRepo;
+
+    @Autowired
+    private AgencyOfficeRepo agencyOfficeRepo;
+    @Autowired
+    private DriverRepo driverRepo;
+    @Autowired
+    private BusRepo busRepo;
+    @Autowired
+    private TripRepo tripRepo;
+    @Autowired
+    private BookingRepo bookingRepo;
+    @Autowired
+    private PaymentRepo paymentRepo;
+    @Autowired
+    private ReviewRepo reviewRepo;
 
     public AgencyServiceImpl(AgencyRepo agencyRepo) {
         this.agencyRepo = agencyRepo;
@@ -69,6 +99,7 @@ public class AgencyServiceImpl implements AgencyService {
     }
 
     @Override
+    @Transactional
     public String deleteAgency(Integer id) {
 
         Agency agency = agencyRepo.findById(id)
@@ -84,6 +115,61 @@ public class AgencyServiceImpl implements AgencyService {
                         "Contact Person Name = " + agency.getContactPersonName() + "\n" +
                         "Email = " + agency.getEmail() + "\n" +
                         "Phone = " + agency.getPhone();
+
+        // Find and delete all offices of this agency
+        List<AgencyOffice> offices = agencyOfficeRepo.findByAgency_Id(id);
+        for (AgencyOffice office : offices) {
+            // Cascade delete drivers in office
+            List<Driver> drivers = driverRepo.findByOffice_Id(office.getId());
+            for (Driver driver : drivers) {
+                // Cascade delete driver's trips
+                List<Trip> trips = tripRepo.findByDriver1IdOrDriver2Id(driver.getId(), driver.getId());
+                for (Trip trip : trips) {
+                    // Cascade delete bookings and payments
+                    List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
+                    for (Booking booking : bookings) {
+                        paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
+                    }
+                    bookingRepo.deleteAll(bookings);
+
+                    // Cascade delete reviews
+                    List<Review> reviews = reviewRepo.findByTripId(trip.getId());
+                    reviewRepo.deleteAll(reviews);
+
+                    // Delete trip
+                    tripRepo.delete(trip);
+                }
+                // Delete driver
+                driverRepo.delete(driver);
+            }
+
+            // Cascade delete buses in office
+            List<Bus> buses = busRepo.findByOffice_Id(office.getId());
+            for (Bus bus : buses) {
+                // Cascade delete bus's trips
+                List<Trip> trips = tripRepo.findByBusId(bus.getId());
+                for (Trip trip : trips) {
+                    // Cascade delete bookings and payments
+                    List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
+                    for (Booking booking : bookings) {
+                        paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
+                    }
+                    bookingRepo.deleteAll(bookings);
+
+                    // Cascade delete reviews
+                    List<Review> reviews = reviewRepo.findByTripId(trip.getId());
+                    reviewRepo.deleteAll(reviews);
+
+                    // Delete trip
+                    tripRepo.delete(trip);
+                }
+                // Delete bus
+                busRepo.delete(bus);
+            }
+
+            // Delete office
+            agencyOfficeRepo.delete(office);
+        }
 
         agencyRepo.delete(agency);
 

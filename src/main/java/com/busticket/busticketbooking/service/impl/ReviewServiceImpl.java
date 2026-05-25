@@ -56,8 +56,9 @@ public class ReviewServiceImpl implements ReviewService {
             throw new UnauthorizedActionException("Cannot review a trip that has not departed yet.");
         }
 
-        // Build and populate the Review entity
+        // Build and populate the Review entity with sequential manual ID
         Review review = new Review();
+        review.setId(reviewRepo.findMaxId() + 1);
         review.setTrip(trip);
         review.setCustomer(customer);
         review.setRating(requestDTO.getRating());
