@@ -53,8 +53,8 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     private ReviewRepo reviewRepo;
 
     public AgencyOfficeServiceImpl(AgencyOfficeRepo agencyOfficeRepo,
-                                   AgencyRepo agencyRepo,
-                                   AddressRepo addressRepo) {
+            AgencyRepo agencyRepo,
+            AddressRepo addressRepo) {
         this.agencyOfficeRepo = agencyOfficeRepo;
         this.agencyRepo = agencyRepo;
         this.addressRepo = addressRepo;
@@ -71,7 +71,8 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + agencyIdToUse + " not found"));
 
         Address address = addressRepo.findById(agencyOfficeRequestDTO.getAddressId())
-                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
 
         AgencyOffice agencyOffice = AgencyOfficeMapper.toEntity(agencyOfficeRequestDTO, agency, address);
         AgencyOffice savedAgencyOffice = agencyOfficeRepo.save(agencyOffice);
@@ -101,8 +102,7 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     @Override
     public Page<AgencyOfficeResponseDTO> getAgencyOfficePage(int page, int size) {
         return agencyOfficeRepo.findAll(
-                        PageRequest.of(page, size, Sort.by("id").ascending())
-                )
+                PageRequest.of(page, size, Sort.by("id").ascending()))
                 .map(AgencyOfficeMapper::toResponseDTO);
     }
 
@@ -119,7 +119,8 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Agency with ID " + agencyIdToUse + " not found"));
 
         Address address = addressRepo.findById(agencyOfficeRequestDTO.getAddressId())
-                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Address with ID " + agencyOfficeRequestDTO.getAddressId() + " not found"));
 
         existingAgencyOffice.setAgency(agency);
         existingAgencyOffice.setOfficeMail(agencyOfficeRequestDTO.getOfficeMail());
@@ -135,25 +136,23 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     @Transactional
     public String deleteAgencyOffice(Integer id) {
         AgencyOffice office = agencyOfficeRepo.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Office with ID " + id + " not found"
-                        ));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Office with ID " + id + " not found"));
 
-        String officeDetails =
-                "Agency Office Deleted Successfully : \n" +
-                        "ID = " + office.getId() + "\n" +
-                        "Agency ID = " +
-                        (office.getAgency() != null
-                                ? office.getAgency().getId()
-                                : null) + "\n" +
-                        "Office Mail = " + office.getOfficeMail() + "\n" +
-                        "Office Contact Person Name = " + office.getOfficeContactPersonName() + "\n" +
-                        "Office Contact Number = " + office.getOfficeContactNumber() + "\n" +
-                        "Address ID = " +
-                        (office.getAddress() != null
-                                ? office.getAddress().getId()
-                                : null);
+        String officeDetails = "Agency Office Deleted Successfully : \n" +
+                "ID = " + office.getId() + "\n" +
+                "Agency ID = " +
+                (office.getAgency() != null
+                        ? office.getAgency().getId()
+                        : null)
+                + "\n" +
+                "Office Mail = " + office.getOfficeMail() + "\n" +
+                "Office Contact Person Name = " + office.getOfficeContactPersonName() + "\n" +
+                "Office Contact Number = " + office.getOfficeContactNumber() + "\n" +
+                "Address ID = " +
+                (office.getAddress() != null
+                        ? office.getAddress().getId()
+                        : null);
 
         // 1. Find and delete all drivers in this office
         List<Driver> drivers = driverRepo.findByOffice_Id(id);

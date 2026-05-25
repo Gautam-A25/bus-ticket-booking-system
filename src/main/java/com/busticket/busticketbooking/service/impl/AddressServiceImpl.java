@@ -33,130 +33,129 @@ import java.util.stream.Collectors;
 @Service
 public class AddressServiceImpl implements AddressService {
 
-    private final AddressRepo addressRepo;
+        private final AddressRepo addressRepo;
 
-    @Autowired
-    private DriverRepo driverRepo;
-    @Autowired
-    private AgencyOfficeRepo officeRepo;
-    @Autowired
-    private CustomerRepo customerRepo;
-    @Autowired
-    private TripRepo tripRepo;
-    @Autowired
-    private BookingRepo bookingRepo;
-    @Autowired
-    private PaymentRepo paymentRepo;
-    @Autowired
-    private ReviewRepo reviewRepo;
+        @Autowired
+        private DriverRepo driverRepo;
+        @Autowired
+        private AgencyOfficeRepo officeRepo;
+        @Autowired
+        private CustomerRepo customerRepo;
+        @Autowired
+        private TripRepo tripRepo;
+        @Autowired
+        private BookingRepo bookingRepo;
+        @Autowired
+        private PaymentRepo paymentRepo;
+        @Autowired
+        private ReviewRepo reviewRepo;
 
-    public AddressServiceImpl(AddressRepo addressRepo) {
-        this.addressRepo = addressRepo;
-    }
-
-    @Override
-    public AddressResponseDTO addAddress(AddressRequestDTO addressRequestDTO) {
-        Address address = AddressMapper.toEntity(addressRequestDTO);
-        Address savedAddress = addressRepo.save(address);
-        return AddressMapper.toResponseDTO(savedAddress);
-    }
-
-    @Override
-    public AddressResponseDTO getAddressById(Integer id) {
-        Address address = addressRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + id + " not found"));
-        return AddressMapper.toResponseDTO(address);
-    }
-
-    @Override
-    public List<AddressResponseDTO> getAllAddresses() {
-        return addressRepo.findAll()
-                .stream()
-                .map(AddressMapper::toResponseDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Page<AddressResponseDTO> getAddressPage(int page, int size) {
-        return addressRepo.findAll(
-                        PageRequest.of(page, size, Sort.by("id").ascending())
-                )
-                .map(AddressMapper::toResponseDTO);
-    }
-
-    @Override
-    public AddressResponseDTO updateAddress(Integer id, AddressRequestDTO addressRequestDTO) {
-        Address existingAddress = addressRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Address with ID " + id + " not found"));
-
-        existingAddress.setAddress(addressRequestDTO.getAddress());
-        existingAddress.setCity(addressRequestDTO.getCity());
-        existingAddress.setState(addressRequestDTO.getState());
-        existingAddress.setZipCode(addressRequestDTO.getZipCode());
-
-        Address updatedAddress = addressRepo.save(existingAddress);
-        return AddressMapper.toResponseDTO(updatedAddress);
-    }
-
-    @Override
-    @Transactional
-    public String deleteAddress(Integer id) {
-
-        Address address = addressRepo.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Address with ID " + id + " not found"
-                        ));
-
-        String addressDetails =
-                "Address Deleted Successfully : \n" +
-                        "ID = " + address.getId() + "\n" +
-                        "Address = " + address.getAddress() + "\n" +
-                        "City = " + address.getCity() + "\n" +
-                        "State = " + address.getState() + "\n" +
-                        "Zip Code = " + address.getZipCode();
-
-        // 1. Find and update drivers referencing this address (nullable FK)
-        List<Driver> drivers = driverRepo.findByAddressId(id);
-        for (Driver driver : drivers) {
-            driver.setAddress(null);
-            driverRepo.save(driver);
+        public AddressServiceImpl(AddressRepo addressRepo) {
+                this.addressRepo = addressRepo;
         }
 
-        // 2. Find and update agency offices referencing this address (nullable FK)
-        List<AgencyOffice> offices = officeRepo.findByAddressId(id);
-        for (AgencyOffice office : offices) {
-            office.setAddress(null);
-            officeRepo.save(office);
+        @Override
+        public AddressResponseDTO addAddress(AddressRequestDTO addressRequestDTO) {
+                Address address = AddressMapper.toEntity(addressRequestDTO);
+                Address savedAddress = addressRepo.save(address);
+                return AddressMapper.toResponseDTO(savedAddress);
         }
 
-        // 3. Find and update customers referencing this address (nullable FK)
-        List<Customer> customers = customerRepo.findByAddressId(id);
-        for (Customer customer : customers) {
-            customer.setAddress(null);
-            customerRepo.save(customer);
+        @Override
+        public AddressResponseDTO getAddressById(Integer id) {
+                Address address = addressRepo.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Address with ID " + id + " not found"));
+                return AddressMapper.toResponseDTO(address);
         }
 
-        // 4. Find and delete trips referencing this address as boarding/dropping (non-nullable FK)
-        List<Trip> trips = tripRepo.findByBoardingAddressIdOrDroppingAddressId(id, id);
-        for (Trip trip : trips) {
-            // Cascade delete bookings and payments first
-            List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
-            for (Booking booking : bookings) {
-                paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
-            }
-            bookingRepo.deleteAll(bookings);
-
-            // Cascade delete reviews
-            List<Review> reviews = reviewRepo.findByTripId(trip.getId());
-            reviewRepo.deleteAll(reviews);
-
-            // Delete trip
-            tripRepo.delete(trip);
+        @Override
+        public List<AddressResponseDTO> getAllAddresses() {
+                return addressRepo.findAll()
+                                .stream()
+                                .map(AddressMapper::toResponseDTO)
+                                .collect(Collectors.toList());
         }
 
-        addressRepo.delete(address);
+        @Override
+        public Page<AddressResponseDTO> getAddressPage(int page, int size) {
+                return addressRepo.findAll(
+                                PageRequest.of(page, size, Sort.by("id").ascending()))
+                                .map(AddressMapper::toResponseDTO);
+        }
 
-        return addressDetails;
-    }
+        @Override
+        public AddressResponseDTO updateAddress(Integer id, AddressRequestDTO addressRequestDTO) {
+                Address existingAddress = addressRepo.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Address with ID " + id + " not found"));
+
+                existingAddress.setAddress(addressRequestDTO.getAddress());
+                existingAddress.setCity(addressRequestDTO.getCity());
+                existingAddress.setState(addressRequestDTO.getState());
+                existingAddress.setZipCode(addressRequestDTO.getZipCode());
+
+                Address updatedAddress = addressRepo.save(existingAddress);
+                return AddressMapper.toResponseDTO(updatedAddress);
+        }
+
+        @Override
+        @Transactional
+        public String deleteAddress(Integer id) {
+
+                Address address = addressRepo.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Address with ID " + id + " not found"));
+
+                String addressDetails = "Address Deleted Successfully : \n" +
+                                "ID = " + address.getId() + "\n" +
+                                "Address = " + address.getAddress() + "\n" +
+                                "City = " + address.getCity() + "\n" +
+                                "State = " + address.getState() + "\n" +
+                                "Zip Code = " + address.getZipCode();
+
+                // 1. Find and update drivers referencing this address (nullable FK)
+                List<Driver> drivers = driverRepo.findByAddressId(id);
+                for (Driver driver : drivers) {
+                        driver.setAddress(null);
+                        driverRepo.save(driver);
+                }
+
+                // 2. Find and update agency offices referencing this address (nullable FK)
+                List<AgencyOffice> offices = officeRepo.findByAddressId(id);
+                for (AgencyOffice office : offices) {
+                        office.setAddress(null);
+                        officeRepo.save(office);
+                }
+
+                // 3. Find and update customers referencing this address (nullable FK)
+                List<Customer> customers = customerRepo.findByAddressId(id);
+                for (Customer customer : customers) {
+                        customer.setAddress(null);
+                        customerRepo.save(customer);
+                }
+
+                // 4. Find and delete trips referencing this address as boarding/dropping
+                // (non-nullable FK)
+                List<Trip> trips = tripRepo.findByBoardingAddressIdOrDroppingAddressId(id, id);
+                for (Trip trip : trips) {
+                        // Cascade delete bookings and payments first
+                        List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
+                        for (Booking booking : bookings) {
+                                paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
+                        }
+                        bookingRepo.deleteAll(bookings);
+
+                        // Cascade delete reviews
+                        List<Review> reviews = reviewRepo.findByTripId(trip.getId());
+                        reviewRepo.deleteAll(reviews);
+
+                        // Delete trip
+                        tripRepo.delete(trip);
+                }
+
+                addressRepo.delete(address);
+
+                return addressDetails;
+        }
 }

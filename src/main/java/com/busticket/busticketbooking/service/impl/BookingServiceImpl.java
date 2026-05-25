@@ -191,6 +191,13 @@ public class BookingServiceImpl implements BookingService {
         // Delete booking from database
         bookingRepo.delete(booking);
 
-        return bookingDetails;
+        return "Booking Cancelled Successfully : ID = "
+        + booking.getId()
+        + ", Trip ID = "
+        + booking.getTrip().getId()
+        + ", Seat Number = "
+        + booking.getSeatNumber()
+        + ", Status = "
+        + booking.getStatus();
     }
 }
