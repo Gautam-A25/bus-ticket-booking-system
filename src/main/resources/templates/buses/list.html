@@ -259,16 +259,16 @@
 
                             <!-- DELETE -->
 
-                            <form th:action="@{/ui/buses/{id}/delete(id=${bus.id})}"
-
+                            <form th:action="@{/ui/buses/{id}(id=${bus.id})}"
                                   method="post"
-
                                   class="inline-form">
 
+                                <input type="hidden"
+                                       name="_method"
+                                       value="delete">
+
                                 <button type="submit"
-
                                         class="crud-action delete-action"
-
                                         onclick="return confirm('Delete this bus?')">
 
                                     Delete

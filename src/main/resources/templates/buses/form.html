@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Bus Form</title>
 
-    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${isEdit ? 'Edit Bus' : 'Create Bus'}">
+        Bus Form
+    </title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/index.css}">
+
 </head>
 
 <body>
@@ -15,22 +25,24 @@
 
 <div class="container">
 
+    <!-- HEADER -->
+
     <header id="main-header">
 
         <div class="logo-section">
 
-            <div class="logo-icon-wrap">
-                🚌
-            </div>
+            <div class="logo-icon-wrap">🚌</div>
 
             <div>
+
                 <div class="logo-text">
                     Bus Ticket Booking
                 </div>
 
                 <div class="logo-sub">
-                    BUS CRUD MANAGEMENT
+                    Bus CRUD
                 </div>
+
             </div>
 
         </div>
@@ -39,12 +51,16 @@
 
             <a class="back-btn"
                th:href="@{/ui/buses}">
-                ← Back
+
+                ← Back to List
+
             </a>
 
         </div>
 
     </header>
+
+    <!-- HERO -->
 
     <section class="detail-hero">
 
@@ -55,98 +71,157 @@
         <div class="detail-title-block">
 
             <div class="detail-eyebrow"
-                 th:text="${isEdit} ? 'UPDATE BUS' : 'NEW BUS'">
+                 th:text="${isEdit ? 'Update Bus' : 'New Bus'}">
+
+                New Bus
+
             </div>
 
             <h1 class="detail-title"
-                th:text="${isEdit} ? 'Edit Bus' : 'Create Bus'">
+                th:text="${isEdit ? 'Edit Bus' : 'Create Bus'}">
+
+                Bus Form
+
             </h1>
 
             <p class="detail-desc">
-                Manage bus information here.
+
+                Fill in bus details below.
+                Validation messages will appear next to each field.
+
             </p>
 
         </div>
 
     </section>
 
+    <!-- FORM PANEL -->
+
     <section class="crud-panel">
 
-        <form
+        <!-- ERROR MESSAGE -->
 
-                th:action="${isEdit} ?
-                @{/ui/buses/{id}(id=${busId})} :
-                @{/ui/buses}"
+        <div th:if="${errorMessage}"
+             class="alert error-alert">
 
-                th:object="${bus}"
+            <span th:text="${errorMessage}">
+            </span>
 
-                method="post"
+        </div>
 
-                class="crud-form"
-        >
+        <!-- SUCCESS MESSAGE -->
+
+        <div th:if="${successMessage}"
+             class="alert success-alert">
+
+            <span th:text="${successMessage}">
+            </span>
+
+        </div>
+
+        <form th:action="${isEdit ? '/ui/buses/' + busId : '/ui/buses'}"
+              th:object="${bus}"
+              method="post"
+              class="crud-form">
+
+            <!-- PUT METHOD -->
+
+            <input type="hidden"
+                   th:if="${isEdit}"
+                   name="_method"
+                   value="PUT">
+
+            <!-- REGISTRATION NUMBER -->
 
             <div class="field-grid">
 
-                <label>
+                <label for="registrationNumber">
                     Registration Number
                 </label>
 
-                <input
-                        type="text"
-                        th:field="*{registrationNumber}"
-                        placeholder="Enter registration number"
-                >
+                <input id="registrationNumber"
+                       type="text"
+                       th:field="*{registrationNumber}"
+                       placeholder="Enter registration number">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('registrationNumber')}"
+                   th:errors="*{registrationNumber}">
+                </p>
 
             </div>
 
+            <!-- CAPACITY -->
+
             <div class="field-grid">
 
-                <label>
+                <label for="capacity">
                     Capacity
                 </label>
 
-                <input
-                        type="number"
-                        th:field="*{capacity}"
-                        placeholder="Enter capacity"
-                >
+                <input id="capacity"
+                       type="number"
+                       th:field="*{capacity}"
+                       placeholder="Enter capacity">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('capacity')}"
+                   th:errors="*{capacity}">
+                </p>
 
             </div>
 
+            <!-- TYPE -->
+
             <div class="field-grid">
 
-                <label>
+                <label for="type">
                     Type
                 </label>
 
-                <input
-                        type="text"
-                        th:field="*{type}"
-                        placeholder="Enter bus type"
-                >
+                <input id="type"
+                       type="text"
+                       th:field="*{type}"
+                       placeholder="Enter bus type">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('type')}"
+                   th:errors="*{type}">
+                </p>
 
             </div>
+
+            <!-- OFFICE ID -->
 
             <div class="field-grid">
 
-                <label>
+                <label for="officeId">
                     Office ID
                 </label>
 
-                <input
-                        type="number"
-                        th:field="*{officeId}"
-                        placeholder="Enter office id"
-                >
+                <input id="officeId"
+                       type="number"
+                       th:field="*{officeId}"
+                       placeholder="Enter office ID">
+
+                <p class="field-error"
+                   th:if="${#fields.hasErrors('officeId')}"
+                   th:errors="*{officeId}">
+                </p>
 
             </div>
+
+            <!-- ACTION BUTTONS -->
 
             <div class="form-actions">
 
                 <button type="submit"
                         class="card-cta crud-submit">
 
-                    <span th:text="${isEdit} ? 'Update Bus' : 'Create Bus'">
+                    <span th:text="${isEdit ? 'Update Bus' : 'Create Bus'}">
+
+                        Submit
+
                     </span>
 
                     <span class="card-cta-arrow">
@@ -171,4 +246,5 @@
 </div>
 
 </body>
+
 </html>
