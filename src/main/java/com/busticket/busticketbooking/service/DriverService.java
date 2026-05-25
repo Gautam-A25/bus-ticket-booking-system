@@ -6,19 +6,49 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+/*
+ * Driver Service Interface
+ */
 public interface DriverService {
 
+    /*
+     * Create Driver
+     */
     DriverResponseDTO createDriver(DriverRequestDTO dto);
 
+    /*
+     * Get all Drivers
+     */
     List<DriverResponseDTO> getAllDrivers();
 
-    Page<DriverResponseDTO> getDriverPage(int page, int size);
+    /*
+     * Get paginated Drivers
+     */
+    Page<DriverResponseDTO> getDriverPage(
+            int page,
+            int size
+    );
 
+    /*
+     * Get Driver by ID
+     */
     DriverResponseDTO getDriverById(Integer id);
 
+    /*
+     * Get Drivers by Office
+     */
     List<DriverResponseDTO> getDriversByOffice(Integer officeId);
 
-    DriverResponseDTO updateDriver(Integer driverId, DriverRequestDTO dto);
+    /*
+     * Update Driver
+     */
+    DriverResponseDTO updateDriver(
+            Integer driverId,
+            DriverRequestDTO dto
+    );
 
+    /*
+     * Delete Driver
+     */
     String deleteDriver(Integer id);
 }

@@ -129,10 +129,21 @@ public class AgencyUiController {
             RedirectAttributes redirectAttributes
     ) {
         try {
-            agencyService.deleteAgency(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Agency deleted successfully.");
+
+            String successMessage =
+                    agencyService.deleteAgency(id);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    successMessage
+            );
+
         } catch (ResourceNotFoundException ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    ex.getMessage()
+            );
         }
 
         return "redirect:/ui/agencies";

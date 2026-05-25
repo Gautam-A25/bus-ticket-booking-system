@@ -1251,6 +1251,7 @@ body::before {
     border-radius: 16px;
     backdrop-filter: blur(10px);
     animation: fadeSlideDown 0.4s ease;
+    white-space: pre-line;
 }
 
 .success-alert {
