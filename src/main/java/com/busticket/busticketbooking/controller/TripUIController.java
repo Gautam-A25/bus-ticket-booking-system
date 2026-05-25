@@ -267,7 +267,7 @@ public String createTrip(
      */
    @PostMapping("/{id}")
 public String updateTrip(
-        
+
         @PathVariable Integer id,
 
         @RequestParam Integer routeId,
