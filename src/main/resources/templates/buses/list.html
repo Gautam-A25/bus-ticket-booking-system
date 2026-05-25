@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bus Management</title>
+
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header id="main-header">
+
+        <div class="logo-section">
+
+            <div class="logo-icon-wrap">
+                🚌
+            </div>
+
+            <div>
+
+                <div class="logo-text">
+                    Bus Ticket Booking
+                </div>
+
+                <div class="logo-sub">
+                    BUS MANAGEMENT
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <!-- DASHBOARD BUTTON -->
+            <a class="back-btn"
+               th:href="@{/}">
+                ← Dashboard
+            </a>
+
+        </div>
+
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="detail-hero">
+
+        <div class="detail-icon-box">
+            🚌
+        </div>
+
+        <div class="detail-title-block">
+
+            <div class="detail-eyebrow">
+                BUS MODULE MANAGER
+            </div>
+
+            <h1 class="detail-title">
+                Bus Records
+            </h1>
+
+            <p class="detail-desc">
+                Register buses, update transport details,
+                manage seating capacity and office allocations.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- SUCCESS MESSAGE -->
+
+    <div th:if="${successMessage}"
+         class="alert success-alert"
+         th:text="${successMessage}">
+    </div>
+
+    <!-- ERROR MESSAGE -->
+
+    <div th:if="${errorMessage}"
+         class="alert error-alert"
+         th:text="${errorMessage}">
+    </div>
+
+    <!-- TABLE HEADER -->
+    <section style="margin-top:40px;">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:25px;
+        ">
+
+            <div>
+
+                <h2 style="
+                    font-size:38px;
+                    margin-bottom:10px;
+                ">
+                    Active Fleet
+                </h2>
+
+                <p class="detail-desc">
+                    Configure buses, transport types,
+                    and office allocations.
+                </p>
+
+            </div>
+
+            <div style="
+                display:flex;
+                gap:18px;
+                align-items:center;
+            ">
+
+                <!-- VIEW MODULE BUTTON -->
+                <a class="secondary-button"
+                   th:href="@{/swagger-ui/index.html}">
+
+                    View Module Endpoints
+
+                </a>
+
+                <!-- ADD BUS BUTTON -->
+                <a class="card-cta"
+                   th:href="@{/ui/buses/new}">
+
+                    <span>Add Bus</span>
+
+                    <span class="card-cta-arrow">
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- TABLE -->
+    <section class="crud-panel">
+
+        <table class="crud-table">
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>REGISTRATION NUMBER</th>
+                <th>CAPACITY</th>
+                <th>TYPE</th>
+                <th>OFFICE ID</th>
+                <th>ACTIONS</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="bus : ${buses}">
+
+                <td th:text="${bus.id}"></td>
+
+                <td th:text="${bus.registrationNumber}"></td>
+
+                <td th:text="${bus.capacity}"></td>
+
+                <td th:text="${bus.type}"></td>
+
+                <!-- OFFICE BADGE -->
+                <td>
+
+                    <span class="badge method-get">
+
+                        Office #<span th:text="${bus.officeId}"></span>
+
+                    </span>
+
+                </td>
+
+                <!-- ACTION BUTTONS -->
+                <td>
+
+                    <div style="
+                        display:flex;
+                        flex-direction:column;
+                        gap:10px;
+                        width:90px;
+                    ">
+
+                        <!-- EDIT -->
+                        <a class="crud-action edit-action"
+                           th:href="@{/ui/buses/{id}/edit(id=${bus.id})}">
+
+                            Edit
+
+                        </a>
+
+                        <!-- DELETE -->
+                        <a class="crud-action delete-action"
+                           th:href="@{/ui/buses/{id}/delete(id=${bus.id})}"
+                           onclick="return confirm('Delete this bus?')">
+
+                            Delete
+
+                        </a>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</div>
+
+</body>
+</html>

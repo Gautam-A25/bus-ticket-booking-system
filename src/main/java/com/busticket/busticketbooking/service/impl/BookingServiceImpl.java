@@ -20,22 +20,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Service layer handles booking business logic
 import org.springframework.transaction.annotation.Transactional;
 
 // Marks this class as Service layer component
 @Service
 public class BookingServiceImpl implements BookingService {
 
-    // Repository dependency for Booking table
+    // Repository object for booking database operations
     private final BookingRepo bookingRepo;
 
-    // Repository dependency for Trip table
+    // Repository object for trip database operations
     private final TripRepo tripRepo;
 
-    // Repository dependency for Payment table
+    // Repository object for payment database operations
     private final PaymentRepo paymentRepo;
 
-    // Constructor Injection
+    // Constructor injection for dependency injection
     public BookingServiceImpl(
             BookingRepo bookingRepo,
             TripRepo tripRepo,
@@ -46,21 +47,21 @@ public class BookingServiceImpl implements BookingService {
         this.paymentRepo = paymentRepo;
     }
 
-    // Method to create booking
+    // Creates a new booking for a trip
     @Override
     public BookingResponseDTO createBooking(
             Integer tripId,
             BookingRequestDTO bookingRequestDTO
     ) {
 
-        // Fetch trip by ID
+        // Fetches trip using trip ID
         Trip trip = tripRepo.findById(tripId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Trip with ID " + tripId + " not found"
                         ) );
 
-// Validate seat number against bus capacity
+        // Validates seat number against bus capacity
         if (
                 trip.getBus() != null &&
                         trip.getBus().getCapacity() != null &&
@@ -73,7 +74,7 @@ public class BookingServiceImpl implements BookingService {
             );
         }
 
-// Check duplicate seat
+        // Checks whether seat is already booked
         if (
                 bookingRepo.existsByTripIdAndSeatNumber(
                         tripId,
@@ -89,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
             );
         }
 
-// Check available seats
+        // Checks whether seats are available in trip
         if (
                 trip.getAvailableSeats() != null &&
                         trip.getAvailableSeats() <= 0
@@ -101,30 +102,34 @@ public class BookingServiceImpl implements BookingService {
             );
         }
 
-        // Convert DTO to Entity
+        // Converts DTO object into entity object
         Booking booking = BookingMapper.mapToEntity(
                 bookingRequestDTO,
                 trip
         );
 
-        // Save booking into database
+        // Saves booking into database
         Booking savedBooking = bookingRepo.save(booking);
 
-        // Convert Entity to Response DTO
+        // Converts entity into response DTO
         return BookingMapper.mapToResponseDTO(savedBooking);
     }
 
+    // Fetches booking records using pagination
     @Override
     public Page<BookingResponseDTO> getBookingPage(int page, int size) {
 
+        // Creates pageable object using page number and size
         Pageable pageable = PageRequest.of(page, size);
 
         return bookingRepo
                 .findAll(pageable)
+
+                // Converts entity objects into response DTOs
                 .map(BookingMapper::mapToResponseDTO);
     }
 
-    // Method to get all bookings of a customer
+    // Fetches all bookings of a customer
     @Override
     public List<BookingResponseDTO> getBookingsByCustomer(
             Integer customerId
@@ -133,43 +138,43 @@ public class BookingServiceImpl implements BookingService {
         return paymentRepo.findByCustomerId(customerId)
                 .stream()
 
-                // Get booking from payment
+                // Fetches booking object from payment
                 .map(Payment::getBooking)
 
-                // Convert Entity to Response DTO
+                // Converts entity into response DTO
                 .map(BookingMapper::mapToResponseDTO)
 
                 .toList();
     }
 
-    // Method to get booking by booking ID
+    // Fetches booking details using booking ID
     @Override
     public BookingResponseDTO getBookingById(
             Integer bookingId
     ) {
 
-        // Fetch booking by ID
+        // Fetches booking using booking ID
         Booking booking = bookingRepo.findById(bookingId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Booking with ID " + bookingId + " not found"));
 
-        // Convert Entity to Response DTO
+        // Converts entity into response DTO
         return BookingMapper.mapToResponseDTO(booking);
     }
 
-    // Method to cancel booking
+    // Cancels existing booking
     @Override
     @Transactional
     public String cancelBooking(
             Integer bookingId
     ) {
 
-        // Fetch booking by ID
+        // Fetches booking using booking ID
         Booking booking = bookingRepo.findById(bookingId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Booking with ID " + bookingId + " not found"));
 
-        // Booking cancel message
+        // Creates booking cancellation message
         String bookingDetails =
                 "Booking Cancelled Successfully : \n" +
                         "ID = " + booking.getId() + "\n" +

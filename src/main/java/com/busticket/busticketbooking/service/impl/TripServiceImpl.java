@@ -1,30 +1,38 @@
 package com.busticket.busticketbooking.service.impl;
 
+import com.busticket.busticketbooking.dto.TripDTO.SeatAvailabilityDTO;
 import com.busticket.busticketbooking.dto.TripDTO.TripRequestDTO;
 import com.busticket.busticketbooking.dto.TripDTO.TripResponseDTO;
-import com.busticket.busticketbooking.dto.TripDTO.SeatAvailabilityDTO;
+
 import com.busticket.busticketbooking.entity.Address;
+import com.busticket.busticketbooking.entity.Booking;
 import com.busticket.busticketbooking.entity.Bus;
 import com.busticket.busticketbooking.entity.Driver;
 import com.busticket.busticketbooking.entity.Route;
 import com.busticket.busticketbooking.entity.Trip;
-import com.busticket.busticketbooking.entity.Booking;
-import com.busticket.busticketbooking.repo.TripRepo;
-import com.busticket.busticketbooking.repo.BookingRepo;
-import com.busticket.busticketbooking.service.TripService;
+
 import com.busticket.busticketbooking.exception.ResourceNotFoundException;
 
+import com.busticket.busticketbooking.repo.BookingRepo;
+import com.busticket.busticketbooking.repo.TripRepo;
+
+import com.busticket.busticketbooking.service.TripService;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 @Service
-public class TripServiceImpl implements TripService {
+public class TripServiceImpl
+        implements TripService {
 
     @Autowired
     private TripRepo tripRepo;
@@ -32,57 +40,91 @@ public class TripServiceImpl implements TripService {
     @Autowired
     private BookingRepo bookingRepo;
 
+    /*
+     * Get all trips
+     */
     @Override
     public List<TripResponseDTO> getAllTrips() {
 
-        List<Trip> trips = tripRepo.findAll();
+        List<Trip> trips =
+                tripRepo.findAll();
 
         return trips.stream()
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
+    /*
+     * Get trip by ID
+     */
     @Override
-    public TripResponseDTO getTripById(Integer id) {
+    public TripResponseDTO getTripById(
+            Integer id) {
 
-        Trip trip = tripRepo.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Trip not found with id: " + id));
+        Trip trip =
+                tripRepo.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Trip not found with id: " + id));
 
         return mapToResponseDto(trip);
     }
 
+    /*
+     * Add trip
+     */
     @Override
-    public TripResponseDTO addTrip(TripRequestDTO tripRequestDto) {
+    public TripResponseDTO addTrip(
+            TripRequestDTO tripRequestDto) {
 
-        Trip trip = mapToEntity(tripRequestDto);
+        Trip trip =
+                mapToEntity(tripRequestDto);
 
-        Trip savedTrip = tripRepo.save(trip);
+        Trip savedTrip =
+                tripRepo.save(trip);
 
         return mapToResponseDto(savedTrip);
     }
 
+    /*
+     * Update trip
+     */
     @Override
-    public TripResponseDTO updateTrip(Integer id,
-                                      TripRequestDTO tripRequestDto) {
+    public TripResponseDTO updateTrip(
 
-        Trip existingTrip = tripRepo.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Trip not found with id: " + id));
+            Integer id,
 
-        existingTrip.setRoute(createRoute(tripRequestDto.getRouteId()));
-        existingTrip.setBus(createBus(tripRequestDto.getBusId()));
+            TripRequestDTO tripRequestDto) {
+
+        Trip existingTrip =
+                tripRepo.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Trip not found with id: " + id));
+
+        existingTrip.setRoute(
+                createRoute(
+                        tripRequestDto.getRouteId()));
+
+        existingTrip.setBus(
+                createBus(
+                        tripRequestDto.getBusId()));
+
         existingTrip.setBoardingAddress(
-                createAddress(tripRequestDto.getBoardingAddressId()));
+                createAddress(
+                        tripRequestDto.getBoardingAddressId()));
 
         existingTrip.setDroppingAddress(
-                createAddress(tripRequestDto.getDroppingAddressId()));
+                createAddress(
+                        tripRequestDto.getDroppingAddressId()));
 
         existingTrip.setDriver1(
-                createDriver(tripRequestDto.getDriver1Id()));
+                createDriver(
+                        tripRequestDto.getDriver1Id()));
 
         existingTrip.setDriver2(
-                createDriver(tripRequestDto.getDriver2Id()));
+                createDriver(
+                        tripRequestDto.getDriver2Id()));
 
         existingTrip.setDepartureTime(
                 tripRequestDto.getDepartureTime());
@@ -99,11 +141,15 @@ public class TripServiceImpl implements TripService {
         existingTrip.setTripDate(
                 tripRequestDto.getTripDate());
 
-        Trip updatedTrip = tripRepo.save(existingTrip);
+        Trip updatedTrip =
+                tripRepo.save(existingTrip);
 
         return mapToResponseDto(updatedTrip);
     }
 
+    /*
+     * Close trip
+     */
     @Override
     public String closeTrip(Integer id) {
 
@@ -132,9 +178,15 @@ public class TripServiceImpl implements TripService {
                 "Trip Date = " + trip.getTripDate();
     }
 
+    /*
+     * Search trips without date
+     */
     @Override
-    public List<TripResponseDTO> searchTrips(String fromCity,
-                                             String toCity) {
+    public List<TripResponseDTO> searchTrips(
+
+            String fromCity,
+
+            String toCity) {
 
         List<Trip> trips =
                 tripRepo.findByRoute_FromCityAndRoute_ToCity(
@@ -146,86 +198,171 @@ public class TripServiceImpl implements TripService {
                 .collect(Collectors.toList());
     }
 
+    /*
+     * Search trips with date
+     */
     @Override
-    public List<TripResponseDTO> searchTrips(String fromCity,
-                                             String toCity,
-                                             LocalDate date) {
+    public List<TripResponseDTO> searchTrips(
+
+            String fromCity,
+
+            String toCity,
+
+            LocalDate date) {
 
         List<Trip> trips =
-                tripRepo.findByRoute_FromCityAndRoute_ToCityAndTripDate(
-                        fromCity,
-                        toCity,
-                        date);
+                tripRepo
+                        .findByRoute_FromCityAndRoute_ToCityAndTripDate(
+                                fromCity,
+                                toCity,
+                                date.atStartOfDay());
 
         return trips.stream()
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
+    /*
+     * Seat availability
+     */
     @Override
-    public List<SeatAvailabilityDTO> getSeatAvailability(Integer tripId) {
-        Trip trip = tripRepo.findById(tripId)
-                .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id: " + tripId));
-        
-        Integer capacity = trip.getBus().getCapacity();
-        List<Booking> bookings = bookingRepo.findByTripId(tripId);
-        
-        List<Integer> bookedSeats = bookings.stream()
-                .filter(b -> b.getStatus() == Booking.BookingStatus.Booked)
-                .map(Booking::getSeatNumber)
-                .toList();
+    public List<SeatAvailabilityDTO> getSeatAvailability(
+            Integer tripId) {
 
-        List<SeatAvailabilityDTO> availability = new ArrayList<>();
+        Trip trip =
+                tripRepo.findById(tripId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Trip not found with id: " + tripId));
+
+        Integer capacity =
+                trip.getBus().getCapacity();
+
+        List<Booking> bookings =
+                bookingRepo.findByTripId(tripId);
+
+        List<Integer> bookedSeats =
+                bookings.stream()
+                        .filter(b ->
+                                b.getStatus()
+                                        == Booking.BookingStatus.Booked)
+                        .map(Booking::getSeatNumber)
+                        .toList();
+
+        List<SeatAvailabilityDTO> availability =
+                new ArrayList<>();
+
         for (int i = 1; i <= capacity; i++) {
-            String status = bookedSeats.contains(i) ? "Booked" : "Available";
-            availability.add(new SeatAvailabilityDTO(i, status));
+
+            String status =
+                    bookedSeats.contains(i)
+                            ? "Booked"
+                            : "Available";
+
+            availability.add(
+                    new SeatAvailabilityDTO(
+                            i,
+                            status));
         }
+
         return availability;
     }
+        /*
+ * Delete trip
+ */
+@Override
+public void deleteTrip(Integer id) {
 
+    Trip trip =
+            tripRepo.findById(id)
+                    .orElseThrow(() ->
+                            new RuntimeException(
+                                    "Trip not found"));
+
+    tripRepo.delete(trip);
+}
+    /*
+     * Get booked seats
+     */
     @Override
-    public List<Integer> getBookedSeats(Integer tripId) {
-        Trip trip = tripRepo.findById(tripId)
-                .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id: " + tripId));
-        
-        List<Booking> bookings = bookingRepo.findByTripId(tripId);
+    public List<Integer> getBookedSeats(
+            Integer tripId) {
+
+        Trip trip =
+                tripRepo.findById(tripId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Trip not found with id: " + tripId));
+
+        List<Booking> bookings =
+                bookingRepo.findByTripId(tripId);
+
         return bookings.stream()
-                .filter(b -> b.getStatus() == Booking.BookingStatus.Booked)
+                .filter(b ->
+                        b.getStatus()
+                                == Booking.BookingStatus.Booked)
                 .map(Booking::getSeatNumber)
                 .sorted()
                 .toList();
     }
 
+    /*
+     * Get available seat list
+     */
     @Override
-    public List<Integer> getAvailableSeatList(Integer tripId) {
-        Trip trip = tripRepo.findById(tripId)
-                .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id: " + tripId));
-        
-        Integer capacity = trip.getBus().getCapacity();
-        List<Booking> bookings = bookingRepo.findByTripId(tripId);
-        List<Integer> bookedSeats = bookings.stream()
-                .filter(b -> b.getStatus() == Booking.BookingStatus.Booked)
-                .map(Booking::getSeatNumber)
-                .toList();
+    public List<Integer> getAvailableSeatList(
+            Integer tripId) {
 
-        List<Integer> availableSeats = new ArrayList<>();
+        Trip trip =
+                tripRepo.findById(tripId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Trip not found with id: " + tripId));
+
+        Integer capacity =
+                trip.getBus().getCapacity();
+
+        List<Booking> bookings =
+                bookingRepo.findByTripId(tripId);
+
+        List<Integer> bookedSeats =
+                bookings.stream()
+                        .filter(b ->
+                                b.getStatus()
+                                        == Booking.BookingStatus.Booked)
+                        .map(Booking::getSeatNumber)
+                        .toList();
+
+        List<Integer> availableSeats =
+                new ArrayList<>();
+
         for (int i = 1; i <= capacity; i++) {
+
             if (!bookedSeats.contains(i)) {
+
                 availableSeats.add(i);
             }
         }
+
         return availableSeats;
     }
 
-    private TripResponseDTO mapToResponseDto(Trip trip) {
+    /*
+     * Map entity to response DTO
+     */
+    private TripResponseDTO mapToResponseDto(
+            Trip trip) {
 
-        TripResponseDTO dto = new TripResponseDTO();
+        TripResponseDTO dto =
+                new TripResponseDTO();
 
         dto.setId(trip.getId());
 
-        dto.setRouteId(trip.getRoute().getId());
+        dto.setRouteId(
+                trip.getRoute().getId());
 
-        dto.setBusId(trip.getBus().getId());
+        dto.setBusId(
+                trip.getBus().getId());
 
         dto.setBoardingAddressId(
                 trip.getBoardingAddress().getId());
@@ -257,19 +394,28 @@ public class TripServiceImpl implements TripService {
         return dto;
     }
 
-    private Trip mapToEntity(TripRequestDTO dto) {
+    /*
+     * Map DTO to entity
+     */
+    private Trip mapToEntity(
+            TripRequestDTO dto) {
 
-        Trip trip = new Trip();
+        Trip trip =
+                new Trip();
 
-        trip.setRoute(createRoute(dto.getRouteId()));
+        trip.setRoute(
+                createRoute(dto.getRouteId()));
 
-        trip.setBus(createBus(dto.getBusId()));
+        trip.setBus(
+                createBus(dto.getBusId()));
 
         trip.setBoardingAddress(
-                createAddress(dto.getBoardingAddressId()));
+                createAddress(
+                        dto.getBoardingAddressId()));
 
         trip.setDroppingAddress(
-                createAddress(dto.getDroppingAddressId()));
+                createAddress(
+                        dto.getDroppingAddressId()));
 
         trip.setDriver1(
                 createDriver(dto.getDriver1Id()));
@@ -277,49 +423,74 @@ public class TripServiceImpl implements TripService {
         trip.setDriver2(
                 createDriver(dto.getDriver2Id()));
 
-        trip.setDepartureTime(dto.getDepartureTime());
+        trip.setDepartureTime(
+                dto.getDepartureTime());
 
-        trip.setArrivalTime(dto.getArrivalTime());
+        trip.setArrivalTime(
+                dto.getArrivalTime());
 
-        trip.setAvailableSeats(dto.getAvailableSeats());
+        trip.setAvailableSeats(
+                dto.getAvailableSeats());
 
-        trip.setFare(dto.getFare());
+        trip.setFare(
+                dto.getFare());
 
-        trip.setTripDate(dto.getTripDate());
+        trip.setTripDate(
+                dto.getTripDate());
 
         return trip;
     }
 
-    private Route createRoute(Integer id) {
+    /*
+     * Create route object
+     */
+    private Route createRoute(
+            Integer id) {
 
-        Route route = new Route();
+        Route route =
+                new Route();
 
         route.setId(id);
 
         return route;
     }
 
-    private Bus createBus(Integer id) {
+    /*
+     * Create bus object
+     */
+    private Bus createBus(
+            Integer id) {
 
-        Bus bus = new Bus();
+        Bus bus =
+                new Bus();
 
         bus.setId(id);
 
         return bus;
     }
 
-    private Address createAddress(Integer id) {
+    /*
+     * Create address object
+     */
+    private Address createAddress(
+            Integer id) {
 
-        Address address = new Address();
+        Address address =
+                new Address();
 
         address.setId(id);
 
         return address;
     }
 
-    private Driver createDriver(Integer id) {
+    /*
+     * Create driver object
+     */
+    private Driver createDriver(
+            Integer id) {
 
-        Driver driver = new Driver();
+        Driver driver =
+                new Driver();
 
         driver.setId(id);
 

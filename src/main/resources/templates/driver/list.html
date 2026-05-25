@@ -18,7 +18,7 @@
             <div class="logo-icon-wrap">👨‍✈️</div>
             <div>
                 <div class="logo-text">Bus Ticket Booking</div>
-                <div class="logo-sub">Driver CRUD</div>
+                <div class="logo-sub">Driver Management</div>
             </div>
         </div>
 
@@ -45,13 +45,13 @@
         <h1 class="hero-title">Driver Records</h1>
 
         <p class="hero-desc">
-            Create, update, delete, and browse driver records with pagination and validation.
+            Register commercial transport drivers, update rosters, check contact status, and manage regional office assignments.
         </p>
 
         <div class="hero-stats">
             <div class="stat-item">
                 <span class="stat-val" th:text="${driverPage.totalElements}">0</span>
-                <span class="stat-label">Total Records</span>
+                <span class="stat-label">Total Drivers</span>
             </div>
             <div class="stat-item">
                 <span class="stat-val" th:text="${driverPage.totalPages}">0</span>
@@ -60,21 +60,19 @@
         </div>
     </section>
 
-    <div th:if="${successMessage}" class="alert success-alert">
-        <pre th:text="${successMessage}"></pre>
-    </div>
+    <div th:if="${successMessage}" class="alert success-alert" th:text="${successMessage}"></div>
     <div th:if="${errorMessage}" class="alert error-alert" th:text="${errorMessage}"></div>
 
     <section class="crud-toolbar">
         <div>
-            <h2 class="section-title">Driver List</h2>
-            <p class="crud-note">This page is part of the module-specific UI flow.</p>
+            <h2 class="section-title">Active Roster</h2>
+            <p class="crud-note">Configure commercial drivers, license credentials, and local branches.</p>
         </div>
 
         <div class="crud-toolbar-actions">
             <a class="back-btn" th:href="@{/modules/driver}">View Module Endpoints</a>
             <a class="card-cta" th:href="@{/ui/drivers/new}">
-                Create Driver
+                Register Driver
                 <span class="card-cta-arrow">→</span>
             </a>
         </div>
@@ -86,8 +84,8 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Phone</th>
+                    <th>Driver Name</th>
+                    <th>Phone Number</th>
                     <th>License Number</th>
                     <th>Office ID</th>
                     <th>Address ID</th>
@@ -98,17 +96,24 @@
                 <tbody>
                 <tr th:if="${driverPage.totalElements == 0}">
                     <td colspan="7" class="empty-state">
-                        No drivers found yet.
+                        No commercial drivers registered in the system.
                     </td>
                 </tr>
 
                 <tr th:each="driver : ${driverPage.content}">
                     <td th:text="${driver.id}">1</td>
-                    <td th:text="${driver.name}">Driver Name</td>
-                    <td th:text="${driver.phone}">1234567890</td>
-                    <td th:text="${driver.licenseNumber}">DL-12345</td>
-                    <td th:text="${driver.officeId}">Office ID</td>
-                    <td th:text="${driver.addressId != null ? driver.addressId : 'N/A'}">Address ID</td>
+                    <td th:text="${driver.name}">John Doe</td>
+                    <td th:text="${driver.phone}">+1234567890</td>
+                    <td>
+                        <code class="param-name" th:text="${driver.licenseNumber}">DL-12345</code>
+                    </td>
+                    <td>
+                        <span class="badge method-get" th:text="'Office #' + ${driver.officeId}">Office #1</span>
+                    </td>
+                    <td>
+                        <span th:if="${driver.addressId != null}" class="badge method-put" th:text="'Address #' + ${driver.addressId}">Address #1</span>
+                        <span th:if="${driver.addressId == null}" style="opacity: 0.5;">Unassigned</span>
+                    </td>
                     <td>
                         <div class="row-actions">
                             <a class="crud-action edit-action"
@@ -122,7 +127,7 @@
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit"
                                         class="crud-action delete-action"
-                                        onclick="return confirm('Delete this driver?')">
+                                        onclick="return confirm('Are you sure you want to delete this driver profile?')">
                                     Delete
                                 </button>
                             </form>
@@ -138,7 +143,7 @@
         <a class="page-link nav-link"
            th:href="@{/ui/drivers(page=${currentPage - 1}, size=${pageSize})}"
            th:classappend="${driverPage.first} ? ' disabled' : ''">
-            ‹ Previous
+           ‹ Previous
         </a>
 
         <div class="pagination-pages">

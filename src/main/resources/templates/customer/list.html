@@ -121,10 +121,8 @@
     </section>
 
     <div th:if="${successMessage}"
-         class="alert success-alert">
-
-        <pre th:text="${successMessage}"></pre>
-
+         class="alert success-alert"
+         th:text="${successMessage}">
     </div>
 
     <div th:if="${errorMessage}"

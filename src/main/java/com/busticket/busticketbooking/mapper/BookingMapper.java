@@ -5,31 +5,31 @@ import com.busticket.busticketbooking.dto.BookingDTO.BookingResponseDTO;
 import com.busticket.busticketbooking.entity.Booking;
 import com.busticket.busticketbooking.entity.Trip;
 
-// Mapper class for Booking entity and DTO conversion
+// Mapper class used for Booking entity and DTO conversion
 public class BookingMapper {
 
-    // Converts BookingRequestDTO to Booking Entity
+    // Converts BookingRequestDTO into Booking entity object
     public static Booking mapToEntity(
             BookingRequestDTO bookingRequestDTO,
             Trip trip
     ) {
 
-        // Create new Booking entity object
+        // Creates new Booking entity object
         Booking booking = new Booking();
 
-        // Set trip details
+        // Sets associated trip details
         booking.setTrip(trip);
 
-        // Set seat number
+        // Sets selected seat number
         booking.setSeatNumber(bookingRequestDTO.getSeatNumber());
 
-        // Set booking status
+        // Sets booking status
         booking.setStatus(bookingRequestDTO.getStatus());
 
         return booking;
     }
 
-    // Converts Booking Entity to BookingResponseDTO
+    // Converts Booking entity into BookingResponseDTO
     public static BookingResponseDTO mapToResponseDTO(
             Booking booking
     ) {

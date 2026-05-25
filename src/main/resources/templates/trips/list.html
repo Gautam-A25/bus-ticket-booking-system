@@ -8,9 +8,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>
-        Route Management
-    </title>
+    <title>Trip Management</title>
 
     <link rel="stylesheet"
           th:href="@{/css/index.css}">
@@ -30,7 +28,7 @@
         <div class="logo-section">
 
             <div class="logo-icon-wrap">
-                🛣️
+                🚌
             </div>
 
             <div>
@@ -40,9 +38,9 @@
                 </div>
 
                 <div class="logo-sub">
-                    Route CRUD
+                    Trip CRUD
                 </div>
-                
+
             </div>
 
         </div>
@@ -66,7 +64,7 @@
         <div>
 
             <h2 class="section-title">
-                Route List
+                Trip List
             </h2>
 
         </div>
@@ -74,9 +72,9 @@
         <div class="crud-toolbar-actions">
 
             <a class="card-cta"
-               th:href="@{/ui/routes/new}">
+               th:href="@{/ui/trips/new}">
 
-                Create Route
+                Create Trip
 
                 <span class="card-cta-arrow">
                     →
@@ -87,7 +85,78 @@
         </div>
 
     </section>
+        <!-- Search Form -->
 
+<section class="crud-panel">
+
+    <form th:action="@{/ui/trips/search}"
+
+          method="get"
+
+          class="crud-form">
+
+        <div class="field-grid">
+
+            <label>
+                From City
+            </label>
+
+            <input type="text"
+
+                   name="fromCity"
+
+                   placeholder="Enter source city"
+
+                   required>
+
+        </div>
+
+        <div class="field-grid">
+
+            <label>
+                To City
+            </label>
+
+            <input type="text"
+
+                   name="toCity"
+
+                   placeholder="Enter destination city"
+
+                   required>
+
+        </div>
+
+        <div class="field-grid">
+
+            <label>
+                Date
+            </label>
+
+            <input type="date"
+
+                   name="date">
+
+        </div>
+
+        <div class="form-actions">
+
+            <button type="submit"
+                    class="card-cta crud-submit">
+
+                Search Trips
+
+                <span class="card-cta-arrow">
+                    →
+                </span>
+
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
     <section class="crud-panel">
 
         <div class="table-wrapper">
@@ -100,13 +169,17 @@
 
                     <th>ID</th>
 
-                    <th>From City</th>
+                    <th>Route</th>
 
-                    <th>To City</th>
+                    <th>Bus</th>
 
-                    <th>Break Points</th>
+                    <th>Seats</th>
 
-                    <th>Duration</th>
+                    <th>Fare</th>
+
+                    <th>Departure</th>
+
+                    <th>Arrival</th>
 
                     <th>Actions</th>
 
@@ -116,17 +189,21 @@
 
                 <tbody>
 
-                <tr th:each="route : ${routePage.content}">
+                <tr th:each="trip : ${tripPage.content}">
 
-                    <td th:text="${route.id}"></td>
+                    <td th:text="${trip.id}"></td>
 
-                    <td th:text="${route.fromCity}"></td>
+                    <td th:text="${trip.route.id}"></td>
 
-                    <td th:text="${route.toCity}"></td>
+                    <td th:text="${trip.bus.id}"></td>
 
-                    <td th:text="${route.breakPoints}"></td>
+                    <td th:text="${trip.availableSeats}"></td>
 
-                    <td th:text="${route.duration}"></td>
+                    <td th:text="${trip.fare}"></td>
+
+                    <td th:text="${trip.departureTime}"></td>
+
+                    <td th:text="${trip.arrivalTime}"></td>
 
                     <td>
 
@@ -136,7 +213,7 @@
 
                             <a class="crud-action edit-action"
 
-                               th:href="@{/ui/routes/{id}/edit(id=${route.id})}">
+                               th:href="@{/ui/trips/{id}/edit(id=${trip.id})}">
 
                                 Edit
 
@@ -144,7 +221,7 @@
 
                             <!-- Delete -->
 
-                            <form th:action="@{/ui/routes/{id}/delete(id=${route.id})}"
+                            <form th:action="@{/ui/trips/{id}/delete(id=${trip.id})}"
 
                                   method="post"
 
@@ -154,7 +231,7 @@
 
                                         class="crud-action delete-action"
 
-                                        onclick="return confirm('Delete this route?')">
+                                        onclick="return confirm('Delete this trip?')">
 
                                     Delete
 
