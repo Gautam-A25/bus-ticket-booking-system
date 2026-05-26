@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.dto.RouteDTO;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 /*
  * DTO used for creating and updating routes.
@@ -13,12 +14,20 @@ public class RouteRequestDTO {
      * Cannot be empty.
      */
     @NotBlank(message = "From city is required")
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters"
+    )
     private String fromCity;
      /*
      * Destination city name.
      * Cannot be empty.
      */
     @NotBlank(message = "To city is required")
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters"
+    )
     private String toCity;
      /*
      * Number of break points in route.

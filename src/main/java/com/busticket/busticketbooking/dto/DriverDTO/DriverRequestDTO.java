@@ -66,6 +66,10 @@ public class DriverRequestDTO {
             max = 255,
             message = "Driver name must not exceed 255 characters"
     )
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Driver name must contain only letters"
+    )
     private String name;
 
     /*

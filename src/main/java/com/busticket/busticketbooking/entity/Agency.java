@@ -23,6 +23,10 @@ public class Agency {
     @NotBlank(message = "Contact person name is required")
     @Size(max = 30, message = "Contact person name must not exceed 30 characters")
     @Column(name = "contact_person_name", nullable = false, length = 30)
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters and valid name characters"
+    )
     private String contactPersonName;
 
     @NotBlank(message = "Email is required")

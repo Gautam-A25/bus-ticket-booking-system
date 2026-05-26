@@ -27,6 +27,10 @@ public class Customer {
     // Restricts maximum name length
     @Size(max = 255, message = "Customer name must not exceed 255 characters")
     @Column(nullable = false, length = 255)
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters and valid name characters"
+    )
     private String name;
 
     // Stores customer email address

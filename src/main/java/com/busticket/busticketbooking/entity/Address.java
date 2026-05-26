@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -21,16 +22,25 @@ public class Address {
     @NotBlank(message = "City is required")
     @Size(max = 255, message = "City must not exceed 255 characters")
     @Column(nullable = false, length = 255)
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters and valid name characters"
+    )
     private String city;
 
     @NotBlank(message = "State is required")
     @Size(max = 255, message = "State must not exceed 255 characters")
     @Column(nullable = false, length = 255)
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters and valid name characters"
+    )
     private String state;
 
     @NotBlank(message = "Zip code is required")
-    @Size(max = 10, message = "Zip code must not exceed 10 characters")
-    @Column(name = "zip_code", nullable = false, length = 10)
+    @Pattern(regexp = "^[0-9]{6}$", message = "Zip code must contain exactly 6 digits")
+    @Size(max = 6, message = "Zip code must not exceed 6 characters")
+    @Column(name = "zip_code", nullable = false, length = 6)
     private String zipCode;
 
     public Address() {
