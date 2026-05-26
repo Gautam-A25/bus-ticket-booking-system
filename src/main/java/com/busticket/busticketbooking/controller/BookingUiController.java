@@ -17,13 +17,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.PageImpl;
+import java.util.List;
 
+/**
+ * Web UI Controller that handles web-based front-end requests for Bookings.
+ *
+ * <p>Uses Thymeleaf templates to list ticket reservations, book new seats for scheduled trips,
+ * and cancel active reservations from the dashboard view.</p>
+ */
 @Controller
 @RequestMapping("/ui/bookings")
 public class BookingUiController {
 
+    /** Service layer for booking operations. */
     private final BookingService bookingService;
 
+    /**
+     * Constructor injection for BookingService dependency.
+     *
+     * @param bookingService the booking service layer bean
+     */
     public BookingUiController(BookingService bookingService) {
         this.bookingService = bookingService;
     }
@@ -32,11 +46,26 @@ public class BookingUiController {
     public String listBookings(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "6") int size,
+            @RequestParam(name = "searchId", required = false) Integer searchId,
             Model model
     ) {
 
         int requestedPage = Math.max(page, 1);
         int safePageIndex = requestedPage - 1;
+
+        if (searchId != null) {
+            try {
+                BookingResponseDTO existing = bookingService.getBookingById(searchId);
+                Page<BookingResponseDTO> bookingPage = new PageImpl<>(List.of(existing), org.springframework.data.domain.PageRequest.of(0, 1), 1);
+                model.addAttribute("bookingPage", bookingPage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "booking/list";
+            } catch (ResourceNotFoundException ex) {
+                model.addAttribute("errorMessage", ex.getMessage());
+            }
+        }
 
         Page<BookingResponseDTO> bookingPage =
                 bookingService.getBookingPage(safePageIndex, size);

@@ -8,11 +8,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Web UI Controller that serves login and registration web forms.
+ *
+ * <p>Validates registration requests submitted from the registration page, routing users
+ * back to login once their account is successfully created.</p>
+ */
 @Controller
 public class AuthPageController {
 
+    /** Service layer for register/login business logic operations. */
     private final AuthService authService;
 
+    /**
+     * Constructor injection for AuthService dependency.
+     *
+     * @param authService the authentication service layer bean
+     */
     public AuthPageController(AuthService authService) {
         this.authService = authService;
     }

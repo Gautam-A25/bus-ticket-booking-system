@@ -18,13 +18,27 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.PageImpl;
+import java.util.List;
 
+/**
+ * Web UI Controller that handles web-based front-end requests for Address profiles.
+ *
+ * <p>Uses Thymeleaf templates (e.g. {@code address/list}, {@code address/form}) to display,
+ * create, update, and delete address profiles from an active session.</p>
+ */
 @Controller
 @RequestMapping("/ui/addresses")
 public class AddressUiController {
 
+    /** Service layer for address operations. */
     private final AddressService addressService;
 
+    /**
+     * Constructor injection for AddressService dependency.
+     *
+     * @param addressService the address service layer bean
+     */
     public AddressUiController(AddressService addressService) {
         this.addressService = addressService;
     }
@@ -33,10 +47,25 @@ public class AddressUiController {
     public String listAddresses(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "6") int size,
+            @RequestParam(name = "searchId", required = false) Integer searchId,
             Model model
     ) {
         int requestedPage = Math.max(page, 1);
         int safePageIndex = requestedPage - 1;
+
+        if (searchId != null) {
+            try {
+                AddressResponseDTO existing = addressService.getAddressById(searchId);
+                Page<AddressResponseDTO> addressPage = new PageImpl<>(List.of(existing), org.springframework.data.domain.PageRequest.of(0, 1), 1);
+                model.addAttribute("addressPage", addressPage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "address/list";
+            } catch (ResourceNotFoundException ex) {
+                model.addAttribute("errorMessage", ex.getMessage());
+            }
+        }
 
         Page<AddressResponseDTO> addressPage = addressService.getAddressPage(safePageIndex, size);
 

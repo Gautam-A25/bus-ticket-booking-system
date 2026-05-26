@@ -8,21 +8,42 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// Service interface defines report-related business operations
+/**
+ * Service interface defining all report-related business operations.
+ *
+ * <p>Provides custom reports such as Trip Occupancy metrics, Revenue by Agency office,
+ * and Top Frequent Customers to aid business analysis and management decision-making.</p>
+ */
 public interface ReportService {
 
-    // Fetches trip occupancy report for a specific date
+    /**
+     * Generates a trip occupancy report for a specific date.
+     *
+     * @param tripDate the date of the trips to generate the occupancy report for
+     * @return a list of {@link TripOccupancyReportResponseDTO} containing trip capacity and booked seat details
+     */
     List<TripOccupancyReportResponseDTO> getTripOccupancyReport(
             LocalDate tripDate
     );
 
-    // Fetches agency-wise revenue report within date range
+    /**
+     * Generates a revenue report for agencies within a specific date range.
+     *
+     * @param fromDate the start date-time of the report range
+     * @param toDate   the end date-time of the report range
+     * @return a list of {@link RevenueByAgencyResponseDTO} containing total revenue collected by each agency
+     */
     List<RevenueByAgencyResponseDTO> getRevenueByAgency(
             LocalDateTime fromDate,
             LocalDateTime toDate
     );
 
-    // Fetches top frequent customers based on limit value
+    /**
+     * Retrieves a list of the top frequent customers.
+     *
+     * @param limit the maximum number of records to retrieve
+     * @return a list of {@link FrequentCustomerResponseDTO} representing customers with high booking frequencies
+     */
     List<FrequentCustomerResponseDTO> getFrequentCustomers(
             Integer limit
     );

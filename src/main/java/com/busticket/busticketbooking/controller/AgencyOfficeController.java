@@ -10,13 +10,28 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for managing regional agency branch offices.
+ *
+ * <p>Handles branch registration nested under parent agencies, along with branch detail updates,
+ * deactivation, and vehicle allocation lookups.</p>
+ */
 @RestController
 @RequestMapping("/api/v1")
 public class AgencyOfficeController {
 
+    /** Service layer for agency office business logic operations. */
     private final AgencyOfficeService agencyOfficeService;
+
+    /** Service layer for bus asset allocation operations. */
     private final BusService busService;
 
+    /**
+     * Constructor injection for AgencyOfficeController dependencies.
+     *
+     * @param agencyOfficeService the agency office service layer bean
+     * @param busService          the bus service layer bean
+     */
     public AgencyOfficeController(AgencyOfficeService agencyOfficeService, BusService busService) {
         this.agencyOfficeService = agencyOfficeService;
         this.busService = busService;

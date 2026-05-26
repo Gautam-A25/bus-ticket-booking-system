@@ -22,15 +22,32 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// Concrete implementation of ReviewService; handles all review business logic
+/**
+ * Concrete implementation of {@link ReviewService}.
+ *
+ * <p>Handles submission, retrieval, and deletion of customer feedback reviews
+ * for trips. Enforces rules regarding rating limits and ensures that reviews
+ * can only be made on trips that have already departed.</p>
+ */
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
+    /** Repository for performing review database operations. */
     private final ReviewRepo reviewRepo;
+
+    /** Repository for performing trip database operations. */
     private final TripRepo tripRepo;
+
+    /** Repository for performing customer database operations. */
     private final CustomerRepo customerRepo;
 
-    // Constructor injection — Spring injects all three repositories automatically
+    /**
+     * Constructs a ReviewServiceImpl with required repository dependencies.
+     *
+     * @param reviewRepo  repository for review data access
+     * @param tripRepo    repository for trip data access
+     * @param customerRepo repository for customer data access
+     */
     public ReviewServiceImpl(ReviewRepo reviewRepo, TripRepo tripRepo, CustomerRepo customerRepo) {
         this.reviewRepo = reviewRepo;
         this.tripRepo = tripRepo;
@@ -87,41 +104,52 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
    @Override
-public String removeReview(
-        Integer reviewId) {
+   /** Deletes a review by ID and returns a formatted summary of the deleted record. */
+   public String removeReview(
+           Integer reviewId) {
 
-    Review review =
-            reviewRepo.findById(reviewId)
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException(
-                                    "Review with ID "
-                                            + reviewId
-                                            + " not found"));
+       // Fetch the review; throw 404 if not found
+       Review review =
+               reviewRepo.findById(reviewId)
+                       .orElseThrow(() ->
+                               new ResourceNotFoundException(
+                                       "Review with ID "
+                                               + reviewId
+                                               + " not found"));
 
-    String reviewDetails =
-            "Review Deleted Successfully : \n" +
-                    "ID = " + review.getId() + "\n" +
-                    "Customer ID = " +
-                    (review.getCustomer() != null
-                            ? review.getCustomer().getId()
-                            : null) + "\n" +
-                    "Trip ID = " +
-                    (review.getTrip() != null
-                            ? review.getTrip().getId()
-                            : null) + "\n" +
-                    "Rating = " + review.getRating() + "\n" +
-                    "Comment = " + review.getComment() + "\n" +
-                    "Review Date = " + review.getReviewDate();
+       // Build a human-readable summary before deleting the record
+       String reviewDetails =
+               "Review Deleted Successfully : \n" +
+                       "ID = " + review.getId() + "\n" +
+                       "Customer ID = " +
+                       (review.getCustomer() != null
+                               ? review.getCustomer().getId()
+                               : null) + "\n" +
+                       "Trip ID = " +
+                       (review.getTrip() != null
+                               ? review.getTrip().getId()
+                               : null) + "\n" +
+                       "Rating = " + review.getRating() + "\n" +
+                       "Comment = " + review.getComment() + "\n" +
+                       "Review Date = " + review.getReviewDate();
 
-    reviewRepo.delete(review);
+       reviewRepo.delete(review);
 
-    return reviewDetails;
-}
+       return reviewDetails;
+   }
 
+    /** Returns a paginated, newest-first page of all reviews. */
     @Override
     public Page<ReviewResponseDTO> getReviewPage(int page, int size) {
         return reviewRepo.findAll(
                 PageRequest.of(page, size, Sort.by("id").descending())
         ).map(ReviewMapper::mapToResponseDTO);
+    }
+
+    @Override
+    public ReviewResponseDTO getReviewById(Integer id) {
+        Review review = reviewRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Review with ID " + id + " not found"));
+        return ReviewMapper.mapToResponseDTO(review);
     }
 }

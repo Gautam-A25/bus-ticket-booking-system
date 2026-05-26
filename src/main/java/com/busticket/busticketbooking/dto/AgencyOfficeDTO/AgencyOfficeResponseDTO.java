@@ -1,17 +1,45 @@
 package com.busticket.busticketbooking.dto.AgencyOfficeDTO;
 
+/**
+ * Data Transfer Object representing a response for an Agency Office.
+ * Used to send detailed branch office information back to the client.
+ */
 public class AgencyOfficeResponseDTO {
 
+    /** The unique identifier of the agency office. */
     private Integer officeId;
+
+    /** The identifier of the parent agency. */
     private Integer agencyId;
+
+    /** The contact email address of the branch office. */
     private String officeMail;
+
+    /** The contact person's name for this branch. */
     private String officeContactPersonName;
+
+    /** The contact phone number of the branch office. */
     private String officeContactNumber;
+
+    /** The identifier of the associated physical address. */
     private Integer addressId;
 
+    /**
+     * Default no-argument constructor.
+     */
     public AgencyOfficeResponseDTO() {
     }
 
+    /**
+     * Parameterized constructor to fully initialize the response DTO.
+     *
+     * @param officeId                the unique ID of the agency office
+     * @param agencyId                the parent agency ID
+     * @param officeMail              the office contact email
+     * @param officeContactPersonName the contact person's name
+     * @param officeContactNumber    the office contact number
+     * @param addressId               the associated address ID
+     */
     public AgencyOfficeResponseDTO(Integer officeId, Integer agencyId, String officeMail,
                                    String officeContactPersonName, String officeContactNumber, Integer addressId) {
         this.officeId = officeId;

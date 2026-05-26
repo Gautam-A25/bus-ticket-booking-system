@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.PageImpl;
+import java.util.List;
 
 @Controller
 @RequestMapping("/ui/reviews")
@@ -33,10 +35,25 @@ public class ReviewUiController {
     public String listReviews(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "8") int size,
+            @RequestParam(name = "searchId", required = false) Integer searchId,
             Model model
     ) {
         int requestedPage = Math.max(page, 1);
         int safePageIndex = requestedPage - 1;
+
+        if (searchId != null) {
+            try {
+                ReviewResponseDTO existing = reviewService.getReviewById(searchId);
+                Page<ReviewResponseDTO> reviewPage = new PageImpl<>(List.of(existing), org.springframework.data.domain.PageRequest.of(0, 1), 1);
+                model.addAttribute("reviewPage", reviewPage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "review/list";
+            } catch (ResourceNotFoundException ex) {
+                model.addAttribute("errorMessage", ex.getMessage());
+            }
+        }
 
         Page<ReviewResponseDTO> reviewPage = reviewService.getReviewPage(safePageIndex, size);
 

@@ -4,20 +4,28 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * Data Transfer Object representing a request to create or update an Address.
+ * Contains validation rules for incoming address data.
+ */
 public class AddressRequestDTO {
 
+    /** The street address details; required, max 255 characters. */
     @NotBlank(message = "Address is required")
     @Size(max = 255, message = "Address must not exceed 255 characters")
     private String address;
 
+    /** The city name; required, max 255 characters. */
     @NotBlank(message = "City is required")
     @Size(max = 255, message = "City must not exceed 255 characters")
     private String city;
 
+    /** The state name; required, max 255 characters. */
     @NotBlank(message = "State is required")
     @Size(max = 255, message = "State must not exceed 255 characters")
     private String state;
 
+    /** The postal zip code; required, must match alphanumeric/space/hyphen pattern, length 3 to 10. */
     @NotBlank(message = "Zip code is required")
     @Size(max = 10, message = "Zip code must not exceed 10 characters")
     @Pattern(
@@ -26,9 +34,20 @@ public class AddressRequestDTO {
     )
     private String zipCode;
 
+    /**
+     * Default no-argument constructor.
+     */
     public AddressRequestDTO() {
     }
 
+    /**
+     * Parameterized constructor to fully initialize the request DTO.
+     *
+     * @param address the street address details
+     * @param city    the city name
+     * @param state   the state name
+     * @param zipCode the postal zip code
+     */
     public AddressRequestDTO(String address, String city, String state, String zipCode) {
         this.address = address;
         this.city = city;

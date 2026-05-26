@@ -57,6 +57,7 @@ public class Trip {
     @Column(name = "departure_time", nullable = false)
     private LocalDateTime departureTime;
 
+    /** Trip arrival date and time; must be after departureTime (enforced by @AssertTrue). */
     @NotNull(message = "Arrival time is required")
     @Column(name = "arrival_time", nullable = false)
     private LocalDateTime arrivalTime;
@@ -75,11 +76,13 @@ public class Trip {
     @JoinColumn(name = "driver2_driver_id", nullable = false)
     private Driver driver2;
 
+    /** Number of seats still available for booking; decremented when bookings are confirmed. */
     @NotNull(message = "Available seats is required")
     @PositiveOrZero(message = "Available seats cannot be negative")
     @Column(name = "available_seats", nullable = false)
     private Integer availableSeats;
 
+    /** Ticket price for this trip; must be positive with up to 8 integer and 2 decimal places. */
     @NotNull(message = "Fare is required")
     @Positive(message = "Fare must be greater than 0")
     @Digits(integer = 8, fraction = 2,
@@ -87,6 +90,7 @@ public class Trip {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal fare;
 
+    /** Calendar date on which the trip runs (stored as a LocalDateTime at midnight). */
     @NotNull(message = "Trip date is required")
     @Column(name = "trip_date", nullable = false)
     private LocalDateTime tripDate;
@@ -217,6 +221,11 @@ public class Trip {
         this.tripDate = tripDate;
     }
 
+    /**
+     * Bean-validation cross-field check: arrival time must be strictly after departure time.
+     * Returns {@code true} (valid) when either timestamp is null, so individual @NotNull
+     * constraints handle the null cases separately.
+     */
     @AssertTrue(message = "Arrival time must be after departure time")
     public boolean isArrivalAfterDeparture() {
         return departureTime == null
@@ -224,6 +233,7 @@ public class Trip {
                 || arrivalTime.isAfter(departureTime);
     }
 
+    /** Compares two Trip instances by ID only — safe for JPA-managed proxies. */
     @Override
     public boolean equals(Object o) {
         if (this == o) {

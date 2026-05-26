@@ -3,63 +3,51 @@ package com.busticket.busticketbooking.repo;
 import com.busticket.busticketbooking.entity.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
-/*
- * Repository layer is responsible for
- * interacting with the database.
+/**
+ * Repository interface for {@link Driver} database operations.
  *
- * JpaRepository provides built-in CRUD methods like:
- *
- * save()
- * findById()
- * findAll()
- * deleteById()
- * existsById()
- *
- * So we do not need to write SQL queries manually.
+ * <p>
+ * Handles data operations for bus drivers, including office assignment lookups
+ * and
+ * license number uniqueness validation checks.
+ * </p>
  */
-
-/*
- * DriverRepo manages Driver entity operations.
- *
- * <Driver, Integer>
- *
- * Driver   -> Entity class
- * Integer  -> Primary key datatype
- */
+@Repository
 public interface DriverRepo extends JpaRepository<Driver, Integer> {
 
-    /*
-     * Custom finder method.
+    /**
+     * Finds all drivers belonging to a specific agency office.
      *
-     * Spring Data JPA automatically creates query
-     * from method name.
+     * <p>
+     * Equivalent SQL: {@code SELECT * FROM drivers WHERE office_id = ?}
+     * </p>
      *
-     * This method fetches all drivers
-     * belonging to a specific office.
-     *
-     * Equivalent SQL:
-     *
-     * SELECT * FROM drivers WHERE office_id = ?
+     * @param officeId ID of the agency office
+     * @return a list of drivers assigned to the office
      */
     List<Driver> findByOffice_Id(Integer officeId);
 
-    /*
-     * Checks whether a driver already exists
-     * with the given license number.
+    /**
+     * Checks whether a driver already exists with the given license number.
      *
-     * Returns:
-     * true  -> if license number already exists
-     * false -> if not exists
-     *
+     * <p>
      * Equivalent SQL:
+     * {@code SELECT COUNT(*) > 0 FROM drivers WHERE license_number = ?}
+     * </p>
      *
-     * SELECT COUNT(*) > 0
-     * FROM drivers
-     * WHERE license_number = ?
+     * @param licenseNumber the driver's license number
+     * @return true if the license number exists in the system, false otherwise
      */
     boolean existsByLicenseNumber(String licenseNumber);
 
+    /**
+     * Finds all drivers associated with a specific address ID.
+     *
+     * @param addressId ID of the address record
+     * @return a list of drivers living at this address
+     */
     List<Driver> findByAddressId(Integer addressId);
 }

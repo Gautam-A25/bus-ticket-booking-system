@@ -89,295 +89,276 @@ import java.util.stream.Collectors;
 @Service
 public class DriverServiceImpl implements DriverService {
 
-    /*
-     * Repository object for Driver Entity
-     */
-    private final DriverRepo driverRepo;
-
-    /*
-     * Repository object for AgencyOffice Entity
-     */
-    private final AgencyOfficeRepo officeRepo;
-
-    /*
-     * Repository object for Address Entity
-     */
-    private final AddressRepo addressRepo;
-
-    @Autowired
-    private TripRepo tripRepo;
-    @Autowired
-    private BookingRepo bookingRepo;
-    @Autowired
-    private PaymentRepo paymentRepo;
-    @Autowired
-    private ReviewRepo reviewRepo;
-
-    public DriverServiceImpl(
-            DriverRepo driverRepo,
-            AgencyOfficeRepo officeRepo,
-            AddressRepo addressRepo
-    ) {
-        this.driverRepo = driverRepo;
-        this.officeRepo = officeRepo;
-        this.addressRepo = addressRepo;
-    }
-
-    /*
-     * Create Driver Method
-     *
-     * Saves new driver into database
-     */
-    @Override
-    public DriverResponseDTO createDriver(DriverRequestDTO dto) {
+        /*
+         * Repository object for Driver Entity
+         */
+        private final DriverRepo driverRepo;
 
         /*
-         * Check if driver with same license number already exists
+         * Repository object for AgencyOffice Entity
          */
-        if (driverRepo.existsByLicenseNumber(dto.getLicenseNumber())) {
+        private final AgencyOfficeRepo officeRepo;
 
-            throw new DuplicateResourceException(
-                    "Driver with license number "
-                            + dto.getLicenseNumber()
-                            + " already exists"
-            );
+        /*
+         * Repository object for Address Entity
+         */
+        private final AddressRepo addressRepo;
+
+        @Autowired
+        private TripRepo tripRepo;
+        @Autowired
+        private BookingRepo bookingRepo;
+        @Autowired
+        private PaymentRepo paymentRepo;
+        @Autowired
+        private ReviewRepo reviewRepo;
+
+        public DriverServiceImpl(
+                        DriverRepo driverRepo,
+                        AgencyOfficeRepo officeRepo,
+                        AddressRepo addressRepo) {
+                this.driverRepo = driverRepo;
+                this.officeRepo = officeRepo;
+                this.addressRepo = addressRepo;
         }
 
         /*
-         * Fetch Office using office ID
+         * Create Driver Method
+         *
+         * Saves new driver into database
          */
-        AgencyOffice office = officeRepo.findById(dto.getOfficeId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Office not found"
-                        ));
+        @Override
+        public DriverResponseDTO createDriver(DriverRequestDTO dto) {
 
-        /*
-         * Initially address is null
-         */
-        Address address = null;
+                /*
+                 * Check if driver with same license number already exists
+                 */
+                if (driverRepo.existsByLicenseNumber(dto.getLicenseNumber())) {
 
-        /*
-         * If Address ID is provided
-         * then fetch address from database
-         */
-        if (dto.getAddressId() != null) {
+                        throw new DuplicateResourceException(
+                                        "Driver with license number "
+                                                        + dto.getLicenseNumber()
+                                                        + " already exists");
+                }
 
-            address = addressRepo.findById(dto.getAddressId())
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException(
-                                    "Address not found"
-                            ));
+                /*
+                 * Fetch Office using office ID
+                 */
+                AgencyOffice office = officeRepo.findById(dto.getOfficeId())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Office not found"));
+
+                /*
+                 * Initially address is null
+                 */
+                Address address = null;
+
+                /*
+                 * If Address ID is provided
+                 * then fetch address from database
+                 */
+                if (dto.getAddressId() != null) {
+
+                        address = addressRepo.findById(dto.getAddressId())
+                                        .orElseThrow(() -> new ResourceNotFoundException(
+                                                        "Address not found"));
+                }
+
+                /*
+                 * Create Driver Entity object
+                 */
+                Driver driver = new Driver();
+
+                /*
+                 * Set driver details
+                 */
+                driver.setLicenseNumber(dto.getLicenseNumber());
+                driver.setName(dto.getName());
+                driver.setPhone(dto.getPhone());
+                driver.setOffice(office);
+                driver.setAddress(address);
+
+                /*
+                 * Save Driver into database
+                 */
+                Driver savedDriver = driverRepo.save(driver);
+
+                /*
+                 * Convert Entity -> DTO
+                 */
+                return DriverMapper.mapToResponseDto(savedDriver);
         }
-
-        /*
-         * Create Driver Entity object
-         */
-        Driver driver = new Driver();
-
-        /*
-         * Set driver details
-         */
-        driver.setLicenseNumber(dto.getLicenseNumber());
-        driver.setName(dto.getName());
-        driver.setPhone(dto.getPhone());
-        driver.setOffice(office);
-        driver.setAddress(address);
-
-        /*
-         * Save Driver into database
-         */
-        Driver savedDriver = driverRepo.save(driver);
-
-        /*
-         * Convert Entity -> DTO
-         */
-        return DriverMapper.mapToResponseDto(savedDriver);
-    }
-
-    /*
-     * Fetch all Drivers
-     */
-    @Override
-    public List<DriverResponseDTO> getAllDrivers() {
 
         /*
          * Fetch all Drivers
-         * Convert Entity List -> DTO List
          */
-        return driverRepo.findAll()
-                .stream()
-                .map(DriverMapper::mapToResponseDto)
-                .collect(Collectors.toList());
-    }
+        @Override
+        public List<DriverResponseDTO> getAllDrivers() {
 
-    /*
-     * Fetch paginated Driver data
-     */
-    @Override
-    public Page<DriverResponseDTO> getDriverPage(
-            int page,
-            int size
-    ) {
-
-        /*
-         * Create Pageable object
-         */
-        Pageable pageable = PageRequest.of(page, size);
-
-        /*
-         * Fetch paginated Drivers
-         */
-        return driverRepo.findAll(pageable)
-                .map(DriverMapper::mapToResponseDto);
-    }
-    @Override
-    public DriverResponseDTO getDriverById(Integer id) {
-
-        /*
-         * Find Driver by ID
-         */
-        Driver driver = driverRepo.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Driver with ID "
-                                        + id
-                                        + " not found"
-                        ));
-
-        /*
-         * Convert Entity -> DTO
-         */
-        return DriverMapper.mapToResponseDto(driver);
-    }
-
-    /*
-     * Fetch all Drivers belonging to a specific Office
-     */
-    @Override
-    public List<DriverResponseDTO> getDriversByOffice(Integer officeId) {
-
-        /*
-         * Fetch all drivers
-         * Filter by office ID
-         */
-        List<Driver> drivers = driverRepo.findAll()
-                .stream()
-                .filter(driver ->
-                        driver.getOffice() != null &&
-                                driver.getOffice()
-                                        .getId()
-                                        .equals(officeId)
-                )
-                .collect(Collectors.toList());
-
-        /*
-         * Convert Entity List -> DTO List
-         */
-        return drivers.stream()
-                .map(DriverMapper::mapToResponseDto)
-                .collect(Collectors.toList());
-    }
-
-    /*
-     * Update existing Driver
-     */
-    @Override
-    public DriverResponseDTO updateDriver(
-            Integer driverId,
-            DriverRequestDTO dto
-    ) {
-
-        /*
-         * Fetch existing Driver
-         */
-        Driver driver = driverRepo.findById(driverId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Driver with ID "
-                                        + driverId
-                                        + " not found"
-                        ));
-
-        /*
-         * Fetch Office using Office ID
-         */
-        AgencyOffice office = officeRepo.findById(dto.getOfficeId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Office not found"
-                        ));
-
-        /*
-         * Initially address is null
-         */
-        Address address = null;
-
-        /*
-         * Fetch Address if address ID exists
-         */
-        if (dto.getAddressId() != null) {
-
-            address = addressRepo.findById(dto.getAddressId())
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException(
-                                    "Address not found"
-                            ));
+                /*
+                 * Fetch all Drivers
+                 * Convert Entity List -> DTO List
+                 */
+                return driverRepo.findAll()
+                                .stream()
+                                .map(DriverMapper::mapToResponseDto)
+                                .collect(Collectors.toList());
         }
 
         /*
-         * Update driver details
+         * Fetch paginated Driver data
          */
-        driver.setLicenseNumber(dto.getLicenseNumber());
-        driver.setName(dto.getName());
-        driver.setPhone(dto.getPhone());
-        driver.setOffice(office);
-        driver.setAddress(address);
+        @Override
+        public Page<DriverResponseDTO> getDriverPage(
+                        int page,
+                        int size) {
 
-        /*
-         * Save updated Driver
-         */
-        Driver updatedDriver = driverRepo.save(driver);
+                /*
+                 * Create Pageable object
+                 */
+                Pageable pageable = PageRequest.of(page, size);
 
-        /*
-         * Convert Entity -> DTO
-         */
-        return DriverMapper.mapToResponseDto(updatedDriver);
-    }
-
-       /*
-     * Delete Driver using Driver ID
-     */
-    @Override
-    @Transactional
-    public String deleteDriver(Integer id) {
-
-        Driver driver = driverRepo.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Driver with ID " + id + " not found"
-                        )
-                );
-
-        // Find and delete trips where this driver is driver1 or driver2
-        List<Trip> trips = tripRepo.findByDriver1IdOrDriver2Id(id, id);
-        for (Trip trip : trips) {
-            // Cascade delete payments first
-            List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
-            for (Booking booking : bookings) {
-                paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
-            }
-            bookingRepo.deleteAll(bookings);
-
-            // Cascade delete reviews
-            List<Review> reviews = reviewRepo.findByTripId(trip.getId());
-            reviewRepo.deleteAll(reviews);
-
-            // Delete trip
-            tripRepo.delete(trip);
+                /*
+                 * Fetch paginated Drivers
+                 */
+                return driverRepo.findAll(pageable)
+                                .map(DriverMapper::mapToResponseDto);
         }
 
-        driverRepo.delete(driver);
+        @Override
+        public DriverResponseDTO getDriverById(Integer id) {
 
-        return "Driver deleted successfully";
-        }}
+                /*
+                 * Find Driver by ID
+                 */
+                Driver driver = driverRepo.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Driver with ID "
+                                                                + id
+                                                                + " not found"));
+
+                /*
+                 * Convert Entity -> DTO
+                 */
+                return DriverMapper.mapToResponseDto(driver);
+        }
+
+        /*
+         * Fetch all Drivers belonging to a specific Office
+         */
+        @Override
+        public List<DriverResponseDTO> getDriversByOffice(Integer officeId) {
+
+                /*
+                 * Fetch all drivers
+                 * Filter by office ID
+                 */
+                List<Driver> drivers = driverRepo.findAll()
+                                .stream()
+                                .filter(driver -> driver.getOffice() != null &&
+                                                driver.getOffice()
+                                                                .getId()
+                                                                .equals(officeId))
+                                .collect(Collectors.toList());
+
+                /*
+                 * Convert Entity List -> DTO List
+                 */
+                return drivers.stream()
+                                .map(DriverMapper::mapToResponseDto)
+                                .collect(Collectors.toList());
+        }
+
+        /*
+         * Update existing Driver
+         */
+        @Override
+        public DriverResponseDTO updateDriver(
+                        Integer driverId,
+                        DriverRequestDTO dto) {
+
+                /*
+                 * Fetch existing Driver
+                 */
+                Driver driver = driverRepo.findById(driverId)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Driver with ID "
+                                                                + driverId
+                                                                + " not found"));
+
+                /*
+                 * Fetch Office using Office ID
+                 */
+                AgencyOffice office = officeRepo.findById(dto.getOfficeId())
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Office not found"));
+
+                /*
+                 * Initially address is null
+                 */
+                Address address = null;
+
+                /*
+                 * Fetch Address if address ID exists
+                 */
+                if (dto.getAddressId() != null) {
+
+                        address = addressRepo.findById(dto.getAddressId())
+                                        .orElseThrow(() -> new ResourceNotFoundException(
+                                                        "Address not found"));
+                }
+
+                /*
+                 * Update driver details
+                 */
+                driver.setLicenseNumber(dto.getLicenseNumber());
+                driver.setName(dto.getName());
+                driver.setPhone(dto.getPhone());
+                driver.setOffice(office);
+                driver.setAddress(address);
+
+                /*
+                 * Save updated Driver
+                 */
+                Driver updatedDriver = driverRepo.save(driver);
+
+                /*
+                 * Convert Entity -> DTO
+                 */
+                return DriverMapper.mapToResponseDto(updatedDriver);
+        }
+
+        /*
+         * Delete Driver using Driver ID
+         */
+        @Override
+        @Transactional
+        public String deleteDriver(Integer id) {
+
+                Driver driver = driverRepo.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                "Driver with ID " + id + " not found"));
+
+                // Find and delete trips where this driver is driver1 or driver2
+                List<Trip> trips = tripRepo.findByDriver1IdOrDriver2Id(id, id);
+                for (Trip trip : trips) {
+                        // Cascade delete payments first
+                        List<Booking> bookings = bookingRepo.findByTripId(trip.getId());
+                        for (Booking booking : bookings) {
+                                paymentRepo.findByBookingId(booking.getId()).ifPresent(paymentRepo::delete);
+                        }
+                        bookingRepo.deleteAll(bookings);
+
+                        // Cascade delete reviews
+                        List<Review> reviews = reviewRepo.findByTripId(trip.getId());
+                        reviewRepo.deleteAll(reviews);
+
+                        // Delete trip
+                        tripRepo.delete(trip);
+                }
+
+                driverRepo.delete(driver);
+
+                return "Driver deleted successfully";
+        }
+}

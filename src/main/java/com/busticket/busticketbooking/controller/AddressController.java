@@ -8,12 +8,24 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for managing physical address profiles.
+ *
+ * <p>Provides standard CRUD operations for addresses, mapping incoming JSON payloads
+ * to validated DTOs and returning responses back to the client.</p>
+ */
 @RestController
 @RequestMapping("/api/v1/addresses")
 public class AddressController {
 
+    /** Service layer for address business logic operations. */
     private final AddressService addressService;
 
+    /**
+     * Constructor injection for AddressService dependency.
+     *
+     * @param addressService the address service layer bean
+     */
     public AddressController(AddressService addressService) {
         this.addressService = addressService;
     }

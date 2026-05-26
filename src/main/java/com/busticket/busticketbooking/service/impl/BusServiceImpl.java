@@ -28,34 +28,28 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/*
- * @Service tells Spring Boot that this class
- * contains business logic.
+/**
+ * Concrete implementation of {@link BusService}.
  *
- * Spring automatically creates Bean object
- * for this service class.
+ * <p>A bus is always associated with an {@code AgencyOffice}.
+ * The {@code createBus} and {@code updateBus} methods look up the office by ID
+ * before persisting changes to ensure referential integrity.</p>
+ *
+ * <p><b>Cascade-delete strategy in {@code deleteBus}:</b> All trips using this bus
+ * are located first; their bookings and payments are deleted, then their reviews,
+ * then the trips themselves. Finally the bus record is deleted.
+ * The method is annotated {@code @Transactional} to run as a single atomic unit.</p>
  */
 @Service
 public class BusServiceImpl implements BusService {
 
-    /*
-     * Repository object used to perform
-     * database operations on Bus table.
-     */
+    /** Repository for Bus table — primary persistence target. */
     private final BusRepo busRepo;
 
-    /*
-     * Repository object used to access
-     * AgencyOffice table.
-     */
+    /** Repository for AgencyOffice table — required to validate the office FK. */
     private final AgencyOfficeRepo officeRepo;
 
-    /*
-     * Constructor Injection.
-     *
-     * Spring automatically injects required
-     * repository dependencies here.
-     */
+    // Additional repos used only for cascade deletion; field-injected via @Autowired
     @Autowired
     private TripRepo tripRepo;
     @Autowired
@@ -65,6 +59,7 @@ public class BusServiceImpl implements BusService {
     @Autowired
     private ReviewRepo reviewRepo;
 
+    /** Constructor injection for the two primary repositories. */
     public BusServiceImpl(BusRepo busRepo,
                           AgencyOfficeRepo officeRepo) {
 
@@ -72,178 +67,84 @@ public class BusServiceImpl implements BusService {
         this.officeRepo = officeRepo;
     }
 
-    /*
-     * Creates and saves new Bus data.
-     */
+    /** Creates and saves a new bus entity from the request DTO, linking it to the resolved office. */
     @Override
     public BusResponseDTO createBus(BusRequestDTO dto) {
 
-        /*
-         * Fetch office from database using office ID.
-         *
-         * If office not found,
-         * throw custom exception.
-         */
+        // Resolve the office — throws 404 if the officeId doesn't match any record
         AgencyOffice office = officeRepo.findById(dto.getOfficeId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Office not found"));
 
-        /*
-         * Creating new Bus entity object.
-         */
+        // Build the Bus entity and set all required fields
         Bus bus = new Bus();
 
-        /*
-         * Setting office relationship.
-         */
         bus.setOffice(office);
-
-        /*
-         * Setting registration number.
-         */
         bus.setRegistrationNumber(dto.getRegistrationNumber());
-
-        /*
-         * Setting seating capacity.
-         */
         bus.setCapacity(dto.getCapacity());
-
-        /*
-         * Setting bus type.
-         */
         bus.setType(dto.getType());
 
-        /*
-         * Saving bus object into database.
-         */
+        // Persist and convert entity → response DTO
         Bus savedBus = busRepo.save(bus);
-
-        /*
-         * Convert Entity -> Response DTO
-         * and return response.
-         */
         return BusMapper.mapToResponseDto(savedBus);
     }
 
-    /*
-     * Fetches all buses from database.
-     */
+    /** Returns all buses in the system, mapping each entity to a response DTO. */
     @Override
     public List<BusResponseDTO> getAllBuses() {
-
-        /*
-         * findAll() fetches all bus records.
-         *
-         * stream() processes list data.
-         *
-         * map() converts each Bus entity
-         * into BusResponseDTO.
-         *
-         * collect() converts stream back to list.
-         */
         return busRepo.findAll()
                 .stream()
                 .map(BusMapper::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
-    /*
-     * Fetches single bus using ID.
-     */
+    /** Fetches a single bus by ID; throws {@link ResourceNotFoundException} if not found. */
     @Override
     public BusResponseDTO getBusById(Integer id) {
-
-        /*
-         * Find bus using ID.
-         *
-         * If bus not found,
-         * throw ResourceNotFoundException.
-         */
         Bus bus = busRepo.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Bus with ID " + id + " not found"
                         ));
-
-        /*
-         * Convert entity into response DTO.
-         */
         return BusMapper.mapToResponseDto(bus);
     }
 
-    /*
-     * Fetches all buses belonging to specific office.
-     */
+    /** Returns all buses for a given office by filtering the full bus list by officeId. */
     @Override
     public List<BusResponseDTO> getBusesByOffice(Integer officeId) {
-
-        /*
-         * Fetch all buses.
-         *
-         * Filter buses based on office ID.
-         */
         List<Bus> buses = busRepo.findAll()
                 .stream()
-
-                /*
-                 * Keep only buses whose office ID matches.
-                 */
+                // Keep only buses whose office matches the requested ID
                 .filter(bus ->
                         bus.getOffice() != null &&
                         bus.getOffice().getId().equals(officeId))
-
-                /*
-                 * Convert filtered stream back into list.
-                 */
                 .collect(Collectors.toList());
 
-        /*
-         * Convert Bus entities into DTOs.
-         */
         return buses.stream()
                 .map(BusMapper::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
-    /*
-     * Updates existing bus details.
-     */
+    /** Updates office, registration number, capacity, and type of an existing bus. */
     @Override
     public BusResponseDTO updateBus(Integer busId,
                                     BusRequestDTO dto) {
-
-        /*
-         * Find existing bus from database.
-         */
         Bus bus = busRepo.findById(busId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Bus with ID " + busId + " not found"
                         ));
 
-        /*
-         * Fetch office using office ID.
-         */
         AgencyOffice office = officeRepo.findById(dto.getOfficeId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Office not found"));
 
-        /*
-         * Updating bus details.
-         */
         bus.setOffice(office);
         bus.setRegistrationNumber(dto.getRegistrationNumber());
         bus.setCapacity(dto.getCapacity());
         bus.setType(dto.getType());
 
-        /*
-         * Save updated data into database.
-         */
         Bus updatedBus = busRepo.save(bus);
-
-        /*
-         * Convert updated entity into DTO.
-         */
         return BusMapper.mapToResponseDto(updatedBus);
     }
 
@@ -297,15 +198,11 @@ public class BusServiceImpl implements BusService {
         return busDetails;
     }
 
+    /** Returns a paginated slice of all buses (default sort order). */
     @Override
     public Page<BusResponseDTO> getBusPage(int page, int size) {
-
-        Pageable pageable =
-                PageRequest.of(page, size);
-
-        Page<Bus> busPage =
-                busRepo.findAll(pageable);
-
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Bus> busPage = busRepo.findAll(pageable);
         return busPage.map(BusMapper::mapToResponseDto);
     }
 }

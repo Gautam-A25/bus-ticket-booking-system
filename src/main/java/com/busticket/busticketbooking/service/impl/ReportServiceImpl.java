@@ -11,46 +11,55 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// Service layer handles report business logic
+/**
+ * Concrete implementation of {@link ReportService}.
+ *
+ * <p>Handles execution of analytical queries to compile system-wide occupancy,
+ * revenue, and frequent customer reports.</p>
+ */
 @Service
 public class ReportServiceImpl implements ReportService {
 
-    // Repository object for custom report queries
+    /** Repository for custom database report queries. */
     private final ReportRepo reportRepo;
 
-    // Constructor injection for dependency injection
+    /**
+     * Constructs a ReportServiceImpl with the required report repository.
+     *
+     * @param reportRepo repository for database report queries
+     */
     public ReportServiceImpl(ReportRepo reportRepo) {
         this.reportRepo = reportRepo;
     }
 
-    // Fetches trip occupancy report for a specific date
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<TripOccupancyReportResponseDTO> getTripOccupancyReport(
             LocalDate tripDate) {
-
         return reportRepo.getTripOccupancyReport(tripDate);
     }
 
-    // Fetches agency-wise revenue report within date range
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<RevenueByAgencyResponseDTO> getRevenueByAgency(
             LocalDateTime fromDate,
             LocalDateTime toDate) {
-
         return reportRepo.getRevenueByAgency(fromDate, toDate);
     }
 
-    // Fetches top frequent customers based on limit value
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<FrequentCustomerResponseDTO> getFrequentCustomers(
             Integer limit) {
-
         return reportRepo.getFrequentCustomers()
                 .stream()
-
-                // Restricts result size based on limit parameter
                 .limit(limit)
-
                 .toList();
     }
 }

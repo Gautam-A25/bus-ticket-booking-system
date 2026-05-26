@@ -53,9 +53,11 @@ public class Route {
     @Column(name = "duration")
     private Integer duration;
 
+    /** Default constructor required by JPA/Hibernate. */
     public Route() {
     }
 
+    /** Parameterized constructor for building a Route from known values. */
     public Route(Integer id, String fromCity, String toCity, Integer breakPoints, Integer duration) {
         this.id = id;
         this.fromCity = fromCity;
@@ -104,6 +106,7 @@ public class Route {
         this.duration = duration;
     }
     
+    /** Compares two Route instances by ID only — safe for JPA-managed proxies. */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

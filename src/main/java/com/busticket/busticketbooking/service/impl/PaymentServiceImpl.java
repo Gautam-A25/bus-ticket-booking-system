@@ -28,17 +28,32 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// Concrete implementation of PaymentService; handles all payment business logic
+/**
+ * Concrete implementation of {@link PaymentService}.
+ *
+ * <p>Handles processing of payments for bookings, retrieving transaction histories,
+ * checking payment details, and updating status fields. Includes safety verification
+ * rules to trigger custom exceptions if payments fail or are declined.</p>
+ */
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
+    /** Repository for payment database operations. */
     private final PaymentRepo paymentRepo;
 
+    /** Repository for booking database operations. */
     private final BookingRepo bookingRepo;
 
+    /** Repository for customer database operations. */
     private final CustomerRepo customerRepo;
 
-    // Constructor injection — Spring injects all three repositories automatically
+    /**
+     * Constructs a PaymentServiceImpl with required repository dependencies.
+     *
+     * @param paymentRepo  repository for payment data access
+     * @param bookingRepo  repository for booking data access
+     * @param customerRepo repository for customer data access
+     */
     public PaymentServiceImpl(PaymentRepo paymentRepo,
                               BookingRepo bookingRepo,
                               CustomerRepo customerRepo) {
@@ -185,6 +200,7 @@ public class PaymentServiceImpl implements PaymentService {
         return Payment.PaymentStatus.Failed;
     }
 
+    /** Returns a paginated, newest-first page of all payment records. */
     @Override
     public Page<PaymentResponseDTO> getPaymentPage(int page, int size) {
         return paymentRepo.findAll(
@@ -192,6 +208,7 @@ public class PaymentServiceImpl implements PaymentService {
         ).map(PaymentMapper::mapToResponseDTO);
     }
 
+    /** Permanently deletes a payment by ID; throws {@link com.busticket.busticketbooking.exception.ResourceNotFoundException} if not found. */
     @Override
     public void deletePayment(Integer id) {
         Payment payment = paymentRepo.findById(id)

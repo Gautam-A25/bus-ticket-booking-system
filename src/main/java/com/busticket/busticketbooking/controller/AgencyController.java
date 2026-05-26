@@ -8,12 +8,24 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for managing transport agency profiles.
+ *
+ * <p>Exposes RESTful endpoints for registering, fetching, updating, and deactivating
+ * partner agencies in the passenger transport system.</p>
+ */
 @RestController
 @RequestMapping("/api/v1/agencies")
 public class AgencyController {
 
+    /** Service layer for agency business logic operations. */
     private final AgencyService agencyService;
 
+    /**
+     * Constructor injection for AgencyService dependency.
+     *
+     * @param agencyService the agency service layer bean
+     */
     public AgencyController(AgencyService agencyService) {
         this.agencyService = agencyService;
     }

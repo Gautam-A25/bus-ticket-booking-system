@@ -32,6 +32,22 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Concrete implementation of {@link AgencyOfficeService}.
+ *
+ * <p>Uses constructor injection for the three primary repos ({@code agencyOfficeRepo},
+ * {@code agencyRepo}, {@code addressRepo}). The cascade-delete repos (driver, bus,
+ * trip, booking, payment, review) are field-injected via {@code @Autowired}.</p>
+ *
+ * <p><b>Cascade-delete strategy in {@code deleteAgencyOffice}:</b></p>
+ * <ol>
+ *   <li>Delete all drivers in this office (cascading through their trips, bookings,
+ *       payments, and reviews).</li>
+ *   <li>Delete all buses in this office (cascading through their trips, bookings,
+ *       payments, and reviews).</li>
+ *   <li>Delete the office itself.</li>
+ * </ol>
+ */
 @Service
 public class AgencyOfficeServiceImpl implements AgencyOfficeService {
 
@@ -52,6 +68,7 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
     @Autowired
     private ReviewRepo reviewRepo;
 
+    /** Constructor injection for the three primary repositories. */
     public AgencyOfficeServiceImpl(AgencyOfficeRepo agencyOfficeRepo,
             AgencyRepo agencyRepo,
             AddressRepo addressRepo) {
@@ -60,8 +77,13 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
         this.addressRepo = addressRepo;
     }
 
+    /**
+     * Creates a new office linked to the given agency and address.
+     * The {@code agencyId} path variable takes precedence over {@code agencyOfficeRequestDTO.agencyId}.
+     */
     @Override
     public AgencyOfficeResponseDTO addAgencyOffice(Integer agencyId, AgencyOfficeRequestDTO agencyOfficeRequestDTO) {
+        // Use the path variable if provided, else fall back to the request body
         Integer agencyIdToUse = agencyId != null ? agencyId : agencyOfficeRequestDTO.getAgencyId();
         if (agencyIdToUse == null) {
             throw new ResourceNotFoundException("Agency ID is required");
@@ -80,6 +102,7 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
         return AgencyOfficeMapper.toResponseDTO(savedAgencyOffice);
     }
 
+    /** Fetches an agency office by ID; throws {@link ResourceNotFoundException} if not found. */
     @Override
     public AgencyOfficeResponseDTO getAgencyOfficeById(Integer id) {
         AgencyOffice agencyOffice = agencyOfficeRepo.findById(id)
@@ -87,6 +110,7 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
         return AgencyOfficeMapper.toResponseDTO(agencyOffice);
     }
 
+    /** Returns all offices under a given agency; validates the agency exists first. */
     @Override
     public List<AgencyOfficeResponseDTO> getAgencyOfficesByAgencyId(Integer agencyId) {
         if (!agencyRepo.existsById(agencyId)) {
@@ -99,6 +123,7 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
                 .collect(Collectors.toList());
     }
 
+    /** Returns a paginated, ID-ascending page of all agency offices. */
     @Override
     public Page<AgencyOfficeResponseDTO> getAgencyOfficePage(int page, int size) {
         return agencyOfficeRepo.findAll(
@@ -106,11 +131,13 @@ public class AgencyOfficeServiceImpl implements AgencyOfficeService {
                 .map(AgencyOfficeMapper::toResponseDTO);
     }
 
+    /** Updates all fields of an office; resolves new agency and address from the request DTO. */
     @Override
     public AgencyOfficeResponseDTO updateAgencyOffice(Integer id, AgencyOfficeRequestDTO agencyOfficeRequestDTO) {
         AgencyOffice existingAgencyOffice = agencyOfficeRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Agency Office with ID " + id + " not found"));
 
+        // Use the DTO's agencyId if provided; otherwise keep the current agency
         Integer agencyIdToUse = agencyOfficeRequestDTO.getAgencyId() != null
                 ? agencyOfficeRequestDTO.getAgencyId()
                 : existingAgencyOffice.getAgency().getId();

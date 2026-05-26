@@ -6,11 +6,25 @@ import com.busticket.busticketbooking.entity.Address;
 import com.busticket.busticketbooking.entity.Agency;
 import com.busticket.busticketbooking.entity.AgencyOffice;
 
+/**
+ * Mapper utility class to convert between {@link AgencyOffice} entity and its DTOs.
+ *
+ * <p>Separates internal persistent database office structures from client API payloads.</p>
+ */
 public class AgencyOfficeMapper {
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private AgencyOfficeMapper() {
     }
 
+    /**
+     * Converts an {@link AgencyOffice} entity into an {@link AgencyOfficeResponseDTO}.
+     *
+     * @param agencyOffice the AgencyOffice entity, can be null
+     * @return the mapped AgencyOfficeResponseDTO, or null if input is null
+     */
     public static AgencyOfficeResponseDTO toResponseDTO(AgencyOffice agencyOffice) {
 
         if (agencyOffice == null) {
@@ -31,6 +45,14 @@ public class AgencyOfficeMapper {
         );
     }
 
+    /**
+     * Converts an {@link AgencyOfficeRequestDTO} and its relations into an {@link AgencyOffice} entity.
+     *
+     * @param dto     the AgencyOfficeRequestDTO payload, can be null
+     * @param agency  the parent Agency entity
+     * @param address the physical Address entity
+     * @return the mapped AgencyOffice entity, or null if input dto is null
+     */
     public static AgencyOffice toEntity(
             AgencyOfficeRequestDTO dto,
             Agency agency,

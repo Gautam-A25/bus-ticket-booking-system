@@ -44,9 +44,11 @@ public class Review {
     @Column(name = "review_date")
     private LocalDateTime reviewDate;
 
+    /** Default constructor required by JPA/Hibernate. */
     public Review() {
     }
 
+    /** Parameterized constructor for building a Review with all fields set. */
     public Review(Integer id, Customer customer, Trip trip, Integer rating, String comment, LocalDateTime reviewDate) {
         this.id = id;
         this.customer = customer;
@@ -113,11 +115,13 @@ public class Review {
         return id != null && id.equals(review.id);
     }
 
+    /** Generates a stable hash code based on entity class — consistent with JPA proxy safety. */
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
 
+    /** Returns a human-readable string of the review; useful for logging and debugging. */
     @Override
     public String toString() {
         return "Review{" +

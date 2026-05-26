@@ -13,6 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import java.util.List;
 
 @Controller
 @RequestMapping("/ui/buses")
@@ -36,12 +38,29 @@ public class BusUIController {
             @RequestParam(name = "size", defaultValue = "6")
             int size,
 
+            @RequestParam(name = "searchId", required = false)
+            Integer searchId,
+
             Model model
     ) {
 
         int requestedPage = Math.max(page, 1);
 
         int safePageIndex = requestedPage - 1;
+
+        if (searchId != null) {
+            try {
+                BusResponseDTO existing = busService.getBusById(searchId);
+                Page<BusResponseDTO> busPage = new PageImpl<>(List.of(existing), org.springframework.data.domain.PageRequest.of(0, 1), 1);
+                model.addAttribute("busPage", busPage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "buses/list";
+            } catch (ResourceNotFoundException ex) {
+                model.addAttribute("errorMessage", ex.getMessage());
+            }
+        }
 
         Page<BusResponseDTO> busPage =
                 busService.getBusPage(
@@ -120,32 +139,37 @@ public class BusUIController {
     @GetMapping("/{id}/edit")
     public String showEditForm(
             @PathVariable Integer id,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
+        try {
+            BusResponseDTO bus = busService.getBusById(id);
 
-        BusResponseDTO bus = busService.getBusById(id);
+            BusRequestDTO dto = new BusRequestDTO();
 
-        BusRequestDTO dto = new BusRequestDTO();
+            if (bus.getOfficeId() != null) {
+                dto.setOfficeId(bus.getOfficeId());
+            }
 
-        if (bus.getOfficeId() != null) {
-            dto.setOfficeId(bus.getOfficeId());
+            dto.setRegistrationNumber(bus.getRegistrationNumber());
+            dto.setCapacity(bus.getCapacity());
+            dto.setType(bus.getType());
+
+            model.addAttribute("bus", dto);
+            model.addAttribute("busId", id);
+            model.addAttribute("isEdit", true);
+
+            return "buses/form";
+        } catch (ResourceNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/ui/buses";
         }
-
-        dto.setRegistrationNumber(bus.getRegistrationNumber());
-        dto.setCapacity(bus.getCapacity());
-        dto.setType(bus.getType());
-
-        model.addAttribute("bus", dto);
-        model.addAttribute("busId", id);
-        model.addAttribute("isEdit", true);
-
-        return "buses/form";
     }
 
     /*
      * Update bus
      */
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public String updateBus(
             @PathVariable Integer id,
             @Valid @ModelAttribute("bus") BusRequestDTO dto,
