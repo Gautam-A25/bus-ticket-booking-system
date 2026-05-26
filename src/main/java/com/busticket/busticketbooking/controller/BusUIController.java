@@ -145,7 +145,7 @@ public class BusUIController {
     /*
      * Update bus
      */
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public String updateBus(
             @PathVariable Integer id,
             @Valid @ModelAttribute("bus") BusRequestDTO dto,
