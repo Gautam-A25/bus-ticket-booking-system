@@ -1,53 +1,37 @@
-# docker-compose.yml — defines the two services that make up this application:
-#   mysql  : the MySQL 8 database
-#   app    : the Spring Boot application
-#
-# All sensitive values are loaded from the .env file (never commit that file to Git).
-# See .env.example for the required variables.
-
 services:
-  # ──────────────────────────────────────────────
-  # MySQL 8 database service
-  # ──────────────────────────────────────────────
   mysql:
     image: mysql:8.0
     container_name: busticketbooking-mysql
-    restart: unless-stopped            # Restart after crashes but not manual stops
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}   # Root password (from .env)
-      MYSQL_DATABASE: ${MYSQL_DATABASE}             # Database name created on first boot
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
-      - "3307:3306"   # Host 3307 → container 3306 (avoids conflicts with local MySQL)
+      - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql   # Persist database files across container restarts
+      - mysql_data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d
     healthcheck:
-      # Wait for the server AND the target database to be fully initialised before
-      # allowing the app container to start (prevents connection-refused race conditions)
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 10
 
-  # ──────────────────────────────────────────────
-  # Spring Boot application service
-  # ──────────────────────────────────────────────
   app:
-    build: .                           # Build image from the local Dockerfile
+    build: .
     container_name: busticketbooking-app
     restart: unless-stopped
     ports:
-      - "8080:8080"                    # Expose the API/UI on host port 8080
+      - "8080:8080"
     depends_on:
       mysql:
-        condition: service_healthy     # Don't start until MySQL passes its healthcheck
+        condition: service_healthy
     environment:
-      # All values come from .env — the app reads them via application.yaml placeholders
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
       JWT_SECRET: ${JWT_SECRET}
 
-# Named volume that Docker manages — data survives container removal
 volumes:
-  mysql_data:
+  mysql_data:

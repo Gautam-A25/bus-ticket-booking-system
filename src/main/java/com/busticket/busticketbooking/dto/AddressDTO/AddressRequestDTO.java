@@ -18,11 +18,19 @@ public class AddressRequestDTO {
     /** The city name; required, max 255 characters. */
     @NotBlank(message = "City is required")
     @Size(max = 255, message = "City must not exceed 255 characters")
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters"
+    )
     private String city;
 
     /** The state name; required, max 255 characters. */
     @NotBlank(message = "State is required")
     @Size(max = 255, message = "State must not exceed 255 characters")
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters"
+    )
     private String state;
 
     /** The postal zip code; required, must match alphanumeric/space/hyphen pattern, length 3 to 10. */

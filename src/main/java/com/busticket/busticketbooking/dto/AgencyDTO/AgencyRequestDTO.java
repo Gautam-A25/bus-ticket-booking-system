@@ -19,6 +19,10 @@ public class AgencyRequestDTO {
     /** The name of the primary contact person; required, max 30 characters. */
     @NotBlank(message = "Contact person name is required")
     @Size(max = 30, message = "Contact person name must not exceed 30 characters")
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Contact person name must contain only letters"
+    )
     private String contactPersonName;
 
     /** The contact email address; required, must be valid email format, max 255 characters. */

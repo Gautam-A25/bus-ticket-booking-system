@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 /*
@@ -29,6 +30,10 @@ public class Route {
     @NotBlank(message = "From city is required")
     @Size(max = 255, message = "From city must not exceed 255 characters")
     @Column(name = "from_city", nullable = false, length = 255)
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters and valid name characters"
+    )
     private String fromCity;
      /*
      * Destination city of route.
@@ -37,6 +42,10 @@ public class Route {
     @NotBlank(message = "To city is required")
     @Size(max = 255, message = "To city must not exceed 255 characters")
     @Column(name = "to_city", nullable = false, length = 255)
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters and valid name characters"
+    )
     private String toCity;
     /*
      * Number of break points in route.

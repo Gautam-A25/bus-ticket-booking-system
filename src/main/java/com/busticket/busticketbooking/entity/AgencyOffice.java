@@ -2,6 +2,7 @@ package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -26,6 +27,7 @@ public class AgencyOffice {
     private Agency agency;
 
     /** The contact email address of the branch office; required, must be valid syntax format. */
+    @NotBlank
     @Email(message = "Office email must be valid")
     @Size(max = 100, message = "Office email must not exceed 100 characters")
     @Column(name = "office_mail", length = 100)
@@ -34,6 +36,10 @@ public class AgencyOffice {
     /** The name of the primary contact person for this branch office. */
     @Size(max = 50, message = "Office contact person name must not exceed 50 characters")
     @Column(name = "office_contact_person_name", length = 50)
+    @Pattern(
+            regexp = "^[A-Za-z][A-Za-z\\s.'-]*$",
+            message = "Must contain only letters and valid name characters"
+    )
     private String officeContactPersonName;
 
     /** The contact phone number of the branch office; required, must be exactly 10 digits. */

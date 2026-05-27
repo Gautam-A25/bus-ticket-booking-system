@@ -1,6 +1,8 @@
 package com.busticket.busticketbooking.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * JPA entity representing the {@code users} table in the database.
@@ -21,16 +23,16 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    /** Unique login name; must not be null and is enforced as unique at the DB level. */
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Username is required")
+    @Size(max = 50, message = "Username must not exceed 50 characters")
     private String username;
 
-    /** BCrypt-hashed password — never stored in plain text. */
-    @Column(nullable = false)
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, max = 255, message = "Password must be between 8 and 255 characters")
     private String password;
 
-    /** Role assigned to this user (e.g., "USER" or "ADMIN"). */
-    @Column(nullable = false)
+    @NotBlank(message = "Role is required")
+    @Size(max = 20, message = "Role must not exceed 20 characters")
     private String role;
 
     /** Whether this account is active; disabled accounts cannot log in. Defaults to {@code true}. */
