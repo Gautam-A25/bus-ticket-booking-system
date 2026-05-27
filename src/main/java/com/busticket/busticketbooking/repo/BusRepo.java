@@ -3,44 +3,24 @@ package com.busticket.busticketbooking.repo;
 import com.busticket.busticketbooking.entity.Bus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
-/*
- * Repository layer is used to interact with database.
+/**
+ * Repository interface for {@link Bus} database operations.
  *
- * JpaRepository provides built-in CRUD operations like:
- *
- * save()
- * findById()
- * findAll()
- * deleteById()
- * existsById()
- *
- * We do not need to write SQL queries manually.
+ * <p>Handles data lookup for physical vehicles assigned to agency branches.</p>
  */
-
-/*
- * BusRepo manages Bus entity.
- *
- * <Bus, Integer>
- *
- * Bus      -> Entity class
- * Integer  -> Primary key datatype
- */
+@Repository
 public interface BusRepo extends JpaRepository<Bus, Integer> {
 
-    /*
-     * Custom finder method.
+    /**
+     * Custom finder method to fetch all buses belonging to a particular office ID.
      *
-     * Spring Data JPA automatically creates query
-     * based on method name.
+     * <p>Equivalent to SQL: {@code SELECT * FROM buses WHERE office_id = ?}</p>
      *
-     * This method fetches all buses belonging
-     * to a particular office ID.
-     *
-     * Equivalent SQL:
-     *
-     * SELECT * FROM buses WHERE office_id = ?
+     * @param officeId ID of the agency office
+     * @return a list of buses owned by the office
      */
     List<Bus> findByOffice_Id(Integer officeId);
 

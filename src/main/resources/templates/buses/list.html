@@ -5,13 +5,11 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Bus Management</title>
 
-    <link rel="stylesheet"
-          th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
 
 </head>
 
@@ -49,8 +47,7 @@
 
         <div class="header-right">
 
-            <a class="back-btn"
-               th:href="@{/}">
+            <a class="back-btn" th:href="@{/}">
 
                 ← Dashboard
 
@@ -98,27 +95,25 @@
 
             <div class="stat-item">
 
-                <span class="stat-val"
-                      th:text="${busPage.totalElements}">
-                    0
-                </span>
+                    <span class="stat-val" th:text="${busPage.totalElements}">
+                        0
+                    </span>
 
                 <span class="stat-label">
-                    Total Records
-                </span>
+                        Total Records
+                    </span>
 
             </div>
 
             <div class="stat-item">
 
-                <span class="stat-val"
-                      th:text="${busPage.totalPages}">
-                    0
-                </span>
+                    <span class="stat-val" th:text="${busPage.totalPages}">
+                        0
+                    </span>
 
                 <span class="stat-label">
-                    Pages
-                </span>
+                        Pages
+                    </span>
 
             </div>
 
@@ -128,59 +123,40 @@
 
     <!-- SUCCESS MESSAGE -->
 
-    <div th:if="${successMessage}"
-         class="alert success-alert"
-         th:text="${successMessage}">
+    <div th:if="${successMessage}" class="alert success-alert" th:text="${successMessage}">
     </div>
 
     <!-- ERROR MESSAGE -->
 
-    <div th:if="${errorMessage}"
-         class="alert error-alert"
-         th:text="${errorMessage}">
+    <div th:if="${errorMessage}" class="alert error-alert" th:text="${errorMessage}">
     </div>
 
     <!-- TOOLBAR -->
 
     <section class="crud-toolbar">
-
         <div>
-
-            <h2 class="section-title">
-                Active Fleet
-            </h2>
-
+            <h2 class="section-title">Active Fleet</h2>
             <p class="crud-note">
-
-                Configure buses, transport types,
-                and office allocations.
-
+                Configure buses, transport types, and office allocations.
             </p>
-
         </div>
 
         <div class="crud-toolbar-actions">
+            <form th:action="@{/ui/buses}" method="get"
+                  style="display: inline-flex; align-items: center; gap: 0.5rem; margin-right: 0.5rem;">
+                <input type="number" name="searchId" th:value="${searchId}" placeholder="ID..." required>
+                <button type="submit" class="back-btn">Find</button>
+                <a th:if="${searchId != null}" th:href="@{/ui/buses}" class="back-btn">Clear</a>
+            </form>
 
-            <a class="back-btn"
-               th:href="@{/modules/bus}">
-
+            <a class="back-btn" th:href="@{/modules/bus}">
                 View Module Endpoints
-
             </a>
 
-            <a class="card-cta"
-               th:href="@{/ui/buses/new}">
-
-                Add Bus
-
-                <span class="card-cta-arrow">
-                    →
-                </span>
-
+            <a class="card-cta" th:href="@{/ui/buses/new}">
+                Add Bus <span class="card-cta-arrow">→</span>
             </a>
-
         </div>
-
     </section>
 
     <!-- TABLE -->
@@ -212,8 +188,7 @@
 
                 <tr th:if="${busPage.totalElements == 0}">
 
-                    <td colspan="6"
-                        class="empty-state">
+                    <td colspan="6" class="empty-state">
 
                         No buses found yet.
 
@@ -235,11 +210,11 @@
 
                     <td>
 
-                        <span class="badge method-get">
+                                <span class="badge method-get">
 
-                            Office #<span th:text="${bus.officeId}"></span>
+                                    Office #<span th:text="${bus.officeId}"></span>
 
-                        </span>
+                                </span>
 
                     </td>
 
@@ -249,9 +224,7 @@
 
                             <!-- EDIT -->
 
-                            <a class="crud-action edit-action"
-
-                               th:href="@{/ui/buses/{id}/edit(id=${bus.id})}">
+                            <a class="crud-action edit-action" th:href="@{/ui/buses/{id}/edit(id=${bus.id})}">
 
                                 Edit
 
@@ -259,16 +232,11 @@
 
                             <!-- DELETE -->
 
-                            <form th:action="@{/ui/buses/{id}(id=${bus.id})}"
-                                  method="post"
-                                  class="inline-form">
+                            <form th:action="@{/ui/buses/{id}(id=${bus.id})}" method="post" class="inline-form">
 
-                                <input type="hidden"
-                                       name="_method"
-                                       value="delete">
+                                <input type="hidden" name="_method" value="delete">
 
-                                <button type="submit"
-                                        class="crud-action delete-action"
+                                <button type="submit" class="crud-action delete-action"
                                         onclick="return confirm('Delete this bus?')">
 
                                     Delete
@@ -293,15 +261,11 @@
 
     <!-- PAGINATION -->
 
-    <section class="pagination-wrap"
-             th:if="${busPage.totalPages > 1}">
+    <section class="pagination-wrap" th:if="${busPage.totalPages > 1}">
 
         <!-- PREVIOUS -->
 
-        <a class="page-link nav-link"
-
-           th:href="@{/ui/buses(page=${currentPage - 1}, size=${pageSize})}"
-
+        <a class="page-link nav-link" th:href="@{/ui/buses(page=${currentPage - 1}, size=${pageSize})}"
            th:classappend="${busPage.first} ? ' disabled' : ''">
 
             ‹ Previous
@@ -312,14 +276,8 @@
 
         <div class="pagination-pages">
 
-            <a class="page-link"
-
-               th:each="pageNum : ${#numbers.sequence(1, busPage.totalPages)}"
-
-               th:href="@{/ui/buses(page=${pageNum}, size=${pageSize})}"
-
-               th:text="${pageNum}"
-
+            <a class="page-link" th:each="pageNum : ${#numbers.sequence(1, busPage.totalPages)}"
+               th:href="@{/ui/buses(page=${pageNum}, size=${pageSize})}" th:text="${pageNum}"
                th:classappend="${pageNum == currentPage} ? ' active' : ''">
 
                 1
@@ -330,10 +288,7 @@
 
         <!-- NEXT -->
 
-        <a class="page-link nav-link"
-
-           th:href="@{/ui/buses(page=${currentPage + 1}, size=${pageSize})}"
-
+        <a class="page-link nav-link" th:href="@{/ui/buses(page=${currentPage + 1}, size=${pageSize})}"
            th:classappend="${busPage.last} ? ' disabled' : ''">
 
             Next ›

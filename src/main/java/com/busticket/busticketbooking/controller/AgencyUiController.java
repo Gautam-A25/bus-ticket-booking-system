@@ -18,13 +18,27 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.PageImpl;
+import java.util.List;
 
+/**
+ * Web UI Controller for managing transport agencies in the browser.
+ *
+ * <p>Uses Thymeleaf templates to expose visual tables, registration layouts,
+ * and update forms for partner transport agency profiles.</p>
+ */
 @Controller
 @RequestMapping("/ui/agencies")
 public class AgencyUiController {
 
+    /** Service layer for agency CRUD operations. */
     private final AgencyService agencyService;
 
+    /**
+     * Constructor injection for AgencyService dependency.
+     *
+     * @param agencyService the agency service layer bean
+     */
     public AgencyUiController(AgencyService agencyService) {
         this.agencyService = agencyService;
     }
@@ -33,10 +47,25 @@ public class AgencyUiController {
     public String listAgencies(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "6") int size,
+            @RequestParam(name = "searchId", required = false) Integer searchId,
             Model model
     ) {
         int requestedPage = Math.max(page, 1);
         int safePageIndex = requestedPage - 1;
+
+        if (searchId != null) {
+            try {
+                AgencyResponseDTO existing = agencyService.getAgencyById(searchId);
+                Page<AgencyResponseDTO> agencyPage = new PageImpl<>(List.of(existing), org.springframework.data.domain.PageRequest.of(0, 1), 1);
+                model.addAttribute("agencyPage", agencyPage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "agency/list";
+            } catch (ResourceNotFoundException ex) {
+                model.addAttribute("errorMessage", ex.getMessage());
+            }
+        }
 
         Page<AgencyResponseDTO> agencyPage = agencyService.getAgencyPage(safePageIndex, size);
 

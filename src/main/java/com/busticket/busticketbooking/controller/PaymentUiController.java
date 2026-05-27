@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.PageImpl;
+import java.util.List;
 
 @Controller
 @RequestMapping("/ui/payments")
@@ -34,10 +36,25 @@ public class PaymentUiController {
     public String listPayments(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "8") int size,
+            @RequestParam(name = "searchId", required = false) Integer searchId,
             Model model
     ) {
         int requestedPage = Math.max(page, 1);
         int safePageIndex = requestedPage - 1;
+
+        if (searchId != null) {
+            PaymentResponseDTO existing = paymentService.getPaymentDetails(searchId).orElse(null);
+            if (existing != null) {
+                Page<PaymentResponseDTO> paymentPage = new PageImpl<>(List.of(existing), org.springframework.data.domain.PageRequest.of(0, 1), 1);
+                model.addAttribute("paymentPage", paymentPage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "payment/list";
+            } else {
+                model.addAttribute("errorMessage", "Payment with ID " + searchId + " not found");
+            }
+        }
 
         Page<PaymentResponseDTO> paymentPage = paymentService.getPaymentPage(safePageIndex, size);
 

@@ -73,6 +73,15 @@
         </div>
 
         <div class="crud-toolbar-actions">
+            <form th:action="@{/ui/addresses}" method="get"
+                  style="display: inline-flex; align-items: center; gap: 0.5rem; margin-right: 0.5rem;">
+                <input type="number" name="searchId" th:value="${searchId}" placeholder="ID..." required
+                       style="width: 80px; padding: 0.45rem 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: #fff; font-size: 0.85rem; outline: none; transition: all 0.2s;"
+                       onfocus="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.background='rgba(255,255,255,0.08)'"
+                       onblur="this.style.borderColor='rgba(255,255,255,0.15)'; this.style.background='rgba(255,255,255,0.05)'">
+                <button type="submit" class="back-btn" style="padding: 0.45rem 0.9rem; font-size: 0.85rem; height: 34px; line-height: 1; border-radius: 8px; cursor: pointer;">Find</button>
+                <a th:if="${searchId != null}" th:href="@{/ui/addresses}" class="back-btn" style="padding: 0.45rem 0.9rem; font-size: 0.85rem; height: 34px; line-height: 1; border-radius: 8px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1);">Clear</a>
+            </form>
             <a class="back-btn" th:href="@{/modules/address}">View Module Endpoints</a>
             <a class="card-cta" th:href="@{/ui/addresses/new}">
                 Create Address

@@ -12,10 +12,24 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// Repository layer handles custom report queries
+import org.springframework.stereotype.Repository;
+
+/**
+ * Repository interface for executing analytical report queries.
+ *
+ * <p>Uses custom JPQL constructor queries to map raw join results directly into DTOs
+ * for trip occupancy, agency revenue, and frequent customers.</p>
+ */
+@Repository
 public interface ReportRepo extends JpaRepository<Booking, Integer> {
 
-    // Generates occupancy report for trips on a specific date
+    /**
+     * Generates a trip occupancy report for a specific date, calculating
+     * capacity, booked seats, available seats, and booked occupancy percentages.
+     *
+     * @param tripDate the date of the trips
+     * @return a list of {@link TripOccupancyReportResponseDTO} records
+     */
     @Query("""
             SELECT new com.busticket.busticketbooking.dto.ReportDTO.TripOccupancyReportResponseDTO(
                 t.id,
@@ -33,14 +47,17 @@ public interface ReportRepo extends JpaRepository<Booking, Integer> {
             GROUP BY t.id, r.fromCity, r.toCity, bus.capacity
             """)
     List<TripOccupancyReportResponseDTO> getTripOccupancyReport(
-
-            // Accepts trip date parameter for filtering
             @Param("tripDate") LocalDate tripDate
     );
 
-
-
-    // Generates agency-wise revenue report within given date range
+    /**
+     * Generates an agency-wise revenue report within a given date range,
+     * calculating total amount collected and total bookings.
+     *
+     * @param fromDate start date and time
+     * @param toDate   end date and time
+     * @return a list of {@link RevenueByAgencyResponseDTO} records ordered by revenue descending
+     */
     @Query("""
             SELECT new com.busticket.busticketbooking.dto.ReportDTO.RevenueByAgencyResponseDTO(
                 a.id,
@@ -59,17 +76,15 @@ public interface ReportRepo extends JpaRepository<Booking, Integer> {
             ORDER BY SUM(p.amount) DESC
             """)
     List<RevenueByAgencyResponseDTO> getRevenueByAgency(
-
-            // Start date and time for revenue filtering
             @Param("fromDate") LocalDateTime fromDate,
-
-            // End date and time for revenue filtering
             @Param("toDate") LocalDateTime toDate
     );
 
-
-
-    // Fetches customers with highest booking count
+    /**
+     * Retrieves the top customers who have booked the most trips and spent the most money.
+     *
+     * @return a list of {@link FrequentCustomerResponseDTO} records ordered by booking count descending
+     */
     @Query("""
             SELECT new com.busticket.busticketbooking.dto.ReportDTO.FrequentCustomerResponseDTO(
                 c.id,

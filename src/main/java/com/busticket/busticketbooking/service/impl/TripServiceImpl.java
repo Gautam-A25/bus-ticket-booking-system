@@ -34,6 +34,12 @@ import java.util.List;
 
 import java.util.stream.Collectors;
 
+/**
+ * Concrete implementation of {@link TripService}.
+ *
+ * <p>Manages all business logic related to bus journeys (Trips), including creation,
+ * updates, search capability, seat booking availability status, and closing trips.</p>
+ */
 @Service
 public class TripServiceImpl
         implements TripService {
@@ -50,8 +56,8 @@ public class TripServiceImpl
     @Autowired
     private ReviewRepo reviewRepo;
 
-    /*
-     * Get all trips
+    /**
+     * {@inheritDoc}
      */
     @Override
     public List<TripResponseDTO> getAllTrips() {
@@ -64,8 +70,8 @@ public class TripServiceImpl
                 .collect(Collectors.toList());
     }
 
-    /*
-     * Get trip by ID
+    /**
+     * {@inheritDoc}
      */
     @Override
     public TripResponseDTO getTripById(
@@ -80,8 +86,8 @@ public class TripServiceImpl
         return mapToResponseDto(trip);
     }
 
-    /*
-     * Add trip
+    /**
+     * {@inheritDoc}
      */
     @Override
     public TripResponseDTO addTrip(
@@ -96,8 +102,8 @@ public class TripServiceImpl
         return mapToResponseDto(savedTrip);
     }
 
-    /*
-     * Update trip
+    /**
+     * {@inheritDoc}
      */
     @Override
     public TripResponseDTO updateTrip(
@@ -157,8 +163,8 @@ public class TripServiceImpl
         return mapToResponseDto(updatedTrip);
     }
 
-    /*
-     * Close trip
+    /**
+     * {@inheritDoc}
      */
     @Override
     public String closeTrip(Integer id) {
@@ -188,8 +194,8 @@ public class TripServiceImpl
                 "Trip Date = " + trip.getTripDate();
     }
 
-    /*
-     * Search trips without date
+    /**
+     * {@inheritDoc}
      */
     @Override
     public List<TripResponseDTO> searchTrips(
@@ -208,8 +214,8 @@ public class TripServiceImpl
                 .collect(Collectors.toList());
     }
 
-    /*
-     * Search trips with date
+    /**
+     * {@inheritDoc}
      */
     @Override
     public List<TripResponseDTO> searchTrips(
@@ -232,8 +238,8 @@ public class TripServiceImpl
                 .collect(Collectors.toList());
     }
 
-    /*
-     * Seat availability
+    /**
+     * {@inheritDoc}
      */
     @Override
     public List<SeatAvailabilityDTO> getSeatAvailability(
@@ -277,8 +283,8 @@ public class TripServiceImpl
 
         return availability;
     }
-    /*
-     * Delete trip
+    /**
+     * {@inheritDoc}
      */
     @Override
     @Transactional
@@ -303,8 +309,9 @@ public class TripServiceImpl
 
         tripRepo.delete(trip);
     }
-    /*
-     * Get booked seats
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public List<Integer> getBookedSeats(
@@ -328,8 +335,8 @@ public class TripServiceImpl
                 .toList();
     }
 
-    /*
-     * Get available seat list
+    /**
+     * {@inheritDoc}
      */
     @Override
     public List<Integer> getAvailableSeatList(
@@ -369,8 +376,11 @@ public class TripServiceImpl
         return availableSeats;
     }
 
-    /*
-     * Map entity to response DTO
+    /**
+     * Maps a {@link Trip} entity to a {@link TripResponseDTO}.
+     *
+     * @param trip the Trip entity to map
+     * @return the mapped TripResponseDTO
      */
     private TripResponseDTO mapToResponseDto(
             Trip trip) {
@@ -416,8 +426,11 @@ public class TripServiceImpl
         return dto;
     }
 
-    /*
-     * Map DTO to entity
+    /**
+     * Maps a {@link TripRequestDTO} to a {@link Trip} entity.
+     *
+     * @param dto the TripRequestDTO to map
+     * @return the mapped Trip entity
      */
     private Trip mapToEntity(
             TripRequestDTO dto) {
@@ -463,8 +476,11 @@ public class TripServiceImpl
         return trip;
     }
 
-    /*
-     * Create route object
+    /**
+     * Creates a skeleton {@link Route} entity with the given ID.
+     *
+     * @param id the ID of the route
+     * @return a skeleton Route entity
      */
     private Route createRoute(
             Integer id) {
@@ -477,8 +493,11 @@ public class TripServiceImpl
         return route;
     }
 
-    /*
-     * Create bus object
+    /**
+     * Creates a skeleton {@link Bus} entity with the given ID.
+     *
+     * @param id the ID of the bus
+     * @return a skeleton Bus entity
      */
     private Bus createBus(
             Integer id) {
@@ -491,8 +510,11 @@ public class TripServiceImpl
         return bus;
     }
 
-    /*
-     * Create address object
+    /**
+     * Creates a skeleton {@link Address} entity with the given ID.
+     *
+     * @param id the ID of the address
+     * @return a skeleton Address entity
      */
     private Address createAddress(
             Integer id) {
@@ -505,8 +527,11 @@ public class TripServiceImpl
         return address;
     }
 
-    /*
-     * Create driver object
+    /**
+     * Creates a skeleton {@link Driver} entity with the given ID.
+     *
+     * @param id the ID of the driver
+     * @return a skeleton Driver entity
      */
     private Driver createDriver(
             Integer id) {

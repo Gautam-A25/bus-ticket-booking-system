@@ -21,6 +21,20 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Concrete implementation of {@link RouteService}.
+ *
+ * <p>Routes define the city-to-city path and are linked to {@code Trip}s.
+ * This class uses {@code @Autowired} field injection for all repositories
+ * because it was originally written without constructor injection.</p>
+ *
+ * <p><b>Note:</b> {@code getRouteById} and {@code updateRoute} throw
+ * {@link RuntimeException} instead of the custom {@link ResourceNotFoundException};
+ * these could be unified in a future refactor.</p>
+ *
+ * <p><b>Cascade-delete in {@code deleteRoute}:</b> Trips linked to the route are
+ * deleted first (with their bookings, payments, and reviews), then the route itself.</p>
+ */
 @Service
 public class RouteServiceImpl implements RouteService {
 
@@ -36,45 +50,40 @@ public class RouteServiceImpl implements RouteService {
     @Autowired
     private ReviewRepo reviewRepo;
 
+    /** Returns all routes in the system as a list of response DTOs. */
     @Override
     public List<RouteResponseDTO> getAllRoutes() {
-
         List<Route> routes = routeRepo.findAll();
-
         return routes.stream()
                 .map(this::mapToResponseDto)
                 .collect(Collectors.toList());
     }
 
+    /** Fetches a route by ID; throws {@link RuntimeException} if not found. */
     @Override
     public RouteResponseDTO getRouteById(Integer id) {
-
         Route route = routeRepo.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Route not found with id: " + id));
-
         return mapToResponseDto(route);
     }
 
+    /** Creates and persists a new route from the given DTO. */
     @Override
     public RouteResponseDTO addRoute(RouteRequestDTO routeRequestDto) {
-
         Route route = new Route();
-
         route.setFromCity(routeRequestDto.getFromCity());
         route.setToCity(routeRequestDto.getToCity());
         route.setBreakPoints(routeRequestDto.getBreakPoints());
         route.setDuration(routeRequestDto.getDuration());
-
         Route savedRoute = routeRepo.save(route);
-
         return mapToResponseDto(savedRoute);
     }
 
+    /** Updates all fields of an existing route; throws {@link RuntimeException} if not found. */
     @Override
     public RouteResponseDTO updateRoute(Integer id,
                                         RouteRequestDTO routeRequestDto) {
-
         Route route = routeRepo.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Route not found with id: " + id));
@@ -85,7 +94,6 @@ public class RouteServiceImpl implements RouteService {
         route.setDuration(routeRequestDto.getDuration());
 
         Route updatedRoute = routeRepo.save(route);
-
         return mapToResponseDto(updatedRoute);
     }
 
@@ -130,16 +138,17 @@ public class RouteServiceImpl implements RouteService {
         return routeDetails;
     }
 
+    /**
+     * Private helper that maps a {@link Route} entity to its response DTO.
+     * Used internally by all read operations.
+     */
     private RouteResponseDTO mapToResponseDto(Route route) {
-
         RouteResponseDTO dto = new RouteResponseDTO();
-
         dto.setId(route.getId());
         dto.setFromCity(route.getFromCity());
         dto.setToCity(route.getToCity());
         dto.setBreakPoints(route.getBreakPoints());
         dto.setDuration(route.getDuration());
-
         return dto;
     }
 }

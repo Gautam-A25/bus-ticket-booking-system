@@ -6,74 +6,71 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-/*
- * Service layer contains business logic of application.
+/**
+ * Service interface defining all bus management operations.
  *
- * Controller calls Service layer.
- * Service layer communicates with Repository layer.
+ * <p>A {@code Bus} belongs to an {@code AgencyOffice} and is assigned to
+ * {@code Trip}s. Deleting a bus cascades through all dependent trips,
+ * bookings, payments, and reviews to maintain referential integrity.</p>
  *
- * This interface defines all operations
- * related to Bus module.
+ * <p>The service layer contains business logic; the controller delegates
+ * to this interface, and the repository layer performs the actual DB operations.</p>
  */
 public interface BusService {
 
-    /*
-     * Creates and saves a new bus.
+    /**
+     * Creates and persists a new bus.
      *
-     * Parameter:
-     * dto -> Contains bus request data received from client.
-     *
-     * Returns:
-     * Saved bus response DTO.
+     * @param dto contains bus request data received from client
+     * @return the saved bus response DTO
+     * @throws com.busticket.busticketbooking.exception.ResourceNotFoundException if the associated agency office is not found
      */
     BusResponseDTO createBus(BusRequestDTO dto);
 
-    /*
-     * Fetches all buses from database.
+    /**
+     * Retrieves all buses in the system.
      *
-     * Returns:
-     * List of all bus response DTOs.
+     * @return a list of all bus response DTOs
      */
     List<BusResponseDTO> getAllBuses();
 
-    /*
-     * Fetches a single bus using bus ID.
+    /**
+     * Retrieves a single bus by its ID.
      *
-     * Parameter:
-     * id -> Primary key of bus.
-     *
-     * Returns:
-     * BusResponseDTO containing bus details.
+     * @param id primary key of the bus
+     * @return the bus response DTO
+     * @throws com.busticket.busticketbooking.exception.ResourceNotFoundException if the bus is not found
      */
     BusResponseDTO getBusById(Integer id);
 
-    /*
-     * Fetches all buses belonging to a specific office.
+    /**
+     * Retrieves all buses belonging to a specific agency office.
      *
-     * Parameter:
-     * officeId -> ID of agency office.
-     *
-     * Returns:
-     * List of buses for that office.
+     * @param officeId ID of the agency office
+     * @return a list of buses for that office
+     * @throws com.busticket.busticketbooking.exception.ResourceNotFoundException if the agency office is not found
      */
     List<BusResponseDTO> getBusesByOffice(Integer officeId);
 
-    /*
-     * Updates existing bus details.
+    /**
+     * Updates an existing bus's details.
      *
-     * Parameters:
-     * busId -> ID of bus to update
-     * dto   -> Updated request data
-     *
-     * Returns:
-     * Updated BusResponseDTO
+     * @param busId ID of the bus to update
+     * @param dto   updated bus details
+     * @return the updated bus response DTO
+     * @throws com.busticket.busticketbooking.exception.ResourceNotFoundException if the bus or new agency office is not found
      */
     BusResponseDTO updateBus(
             Integer busId,
             BusRequestDTO dto
     );
 
+    /** Deletes a bus and cascades through all dependent trips, bookings, payments, and reviews.
+     *
+     * @return a formatted summary string of the deleted record
+     */
     String deleteBus(Integer id);
 
+    /** Returns a paginated slice of all buses. */
     Page<BusResponseDTO> getBusPage(int page, int size);
 }

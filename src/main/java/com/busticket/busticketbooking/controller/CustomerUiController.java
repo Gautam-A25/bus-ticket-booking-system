@@ -18,13 +18,27 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.PageImpl;
+import java.util.List;
 
+/**
+ * Web UI Controller that handles browser-based CRUD requests for Customer profiles.
+ *
+ * <p>Exposes interactive Thymeleaf-based views for listing customer records, managing passenger accounts,
+ * and performing customer deactivation.</p>
+ */
 @Controller
 @RequestMapping("/ui/customers")
 public class CustomerUiController {
 
+    /** Service layer for customer database operations. */
     private final CustomerService customerService;
 
+    /**
+     * Constructor injection for CustomerService dependency.
+     *
+     * @param customerService the customer service layer bean
+     */
     public CustomerUiController(CustomerService customerService) {
         this.customerService = customerService;
     }
@@ -33,11 +47,26 @@ public class CustomerUiController {
     public String listCustomers(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "6") int size,
+            @RequestParam(name = "searchId", required = false) Integer searchId,
             Model model
     ) {
 
         int requestedPage = Math.max(page, 1);
         int safePageIndex = requestedPage - 1;
+
+        if (searchId != null) {
+            try {
+                CustomerResponseDTO existing = customerService.getCustomerById(searchId);
+                Page<CustomerResponseDTO> customerPage = new PageImpl<>(List.of(existing), org.springframework.data.domain.PageRequest.of(0, 1), 1);
+                model.addAttribute("customerPage", customerPage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "customer/list";
+            } catch (ResourceNotFoundException ex) {
+                model.addAttribute("errorMessage", ex.getMessage());
+            }
+        }
 
         Page<CustomerResponseDTO> customerPage =
                 customerService.getCustomerPage(safePageIndex, size);

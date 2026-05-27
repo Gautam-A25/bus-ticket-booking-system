@@ -46,9 +46,11 @@ public class Payment {
     @Column(name = "payment_status", columnDefinition = "ENUM('Success', 'Failed')")
     private PaymentStatus paymentStatus;
 
+    /** Default constructor required by JPA/Hibernate. */
     public Payment() {
     }
 
+    /** Parameterized constructor for building a Payment with all fields set. */
     public Payment(Integer id, Booking booking, Customer customer, BigDecimal amount, LocalDateTime paymentDate, PaymentStatus paymentStatus) {
         this.id = id;
         this.booking = booking;
@@ -120,11 +122,13 @@ public class Payment {
         return id != null && id.equals(payment.id);
     }
 
+    /** Generates a stable hash code based on the entity class — consistent with JPA proxy safety. */
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
 
+    /** Returns a human-readable string of the payment record; useful for logging and debugging. */
     @Override
     public String toString() {
         return "Payment{" +

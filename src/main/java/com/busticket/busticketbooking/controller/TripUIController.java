@@ -24,6 +24,8 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import org.springframework.data.domain.PageImpl;
 
 import java.math.BigDecimal;
 
@@ -53,7 +55,24 @@ public class TripUIController {
             @RequestParam(defaultValue = "5")
             int size,
 
+            @RequestParam(name = "searchId", required = false)
+            Integer searchId,
+
             Model model) {
+
+        if (searchId != null) {
+            java.util.Optional<Trip> existing = tripRepo.findById(searchId);
+            if (existing.isPresent()) {
+                Page<Trip> tripPage = new PageImpl<>(List.of(existing.get()), PageRequest.of(0, 1), 1);
+                model.addAttribute("tripPage", tripPage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "trips/list";
+            } else {
+                model.addAttribute("errorMessage", "Trip with ID " + searchId + " not found");
+            }
+        }
 
         Pageable pageable =
                 PageRequest.of(page - 1, size);
@@ -231,35 +250,25 @@ public String createTrip(
     }
 }
 
-    /*
-     * Show edit form
-     */
     @GetMapping("/{id}/edit")
     public String showEditForm(
-
             @PathVariable Integer id,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            Trip trip = tripRepo.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Trip with ID " + id + " not found"));
 
-            Model model) {
+            model.addAttribute("trip", trip);
+            model.addAttribute("tripId", id);
+            model.addAttribute("isEdit", true);
 
-        Trip trip =
-                tripRepo.findById(id)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Trip not found"));
-
-        model.addAttribute(
-                "trip",
-                trip);
-
-        model.addAttribute(
-                "tripId",
-                id);
-
-        model.addAttribute(
-                "isEdit",
-                true);
-
-        return "trips/form";
+            return "trips/form";
+        } catch (ResourceNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/ui/trips";
+        }
     }
 
     /*
@@ -398,7 +407,7 @@ public String updateTrip(
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    "Trip deleted successfully.");
+                    "TRIP CLOSED SUCCESSFULLY");
 
         } catch (Exception ex) {
             ex.printStackTrace();

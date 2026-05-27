@@ -22,17 +22,32 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
+/**
+ * Web UI Controller for managing regional Agency Offices in the browser.
+ *
+ * <p>Exposes interactive Thymeleaf-based layouts for viewing, registering, and deactivating
+ * regional branches under partner agencies.</p>
+ */
 @Controller
 @RequestMapping("/ui/offices")
 public class AgencyOfficeUiController {
 
+    /** Service layer for agency office database operations. */
     private final AgencyOfficeService agencyOfficeService;
     private final AgencyService agencyService;
     private final AddressService addressService;
 
+    /**
+     * Constructor injection for dependency services.
+     *
+     * @param agencyOfficeService the agency office service layer bean
+     * @param agencyService       the agency service layer bean
+     * @param addressService      the address service layer bean
+     */
     public AgencyOfficeUiController(
             AgencyOfficeService agencyOfficeService,
             AgencyService agencyService,
@@ -47,10 +62,25 @@ public class AgencyOfficeUiController {
     public String listOffices(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "size", defaultValue = "6") int size,
+            @RequestParam(name = "searchId", required = false) Integer searchId,
             Model model
     ) {
         int requestedPage = Math.max(page, 1);
         int safePageIndex = requestedPage - 1;
+
+        if (searchId != null) {
+            try {
+                AgencyOfficeResponseDTO existing = agencyOfficeService.getAgencyOfficeById(searchId);
+                Page<AgencyOfficeResponseDTO> officePage = new PageImpl<>(List.of(existing), org.springframework.data.domain.PageRequest.of(0, 1), 1);
+                model.addAttribute("officePage", officePage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "offices/list";
+            } catch (ResourceNotFoundException ex) {
+                model.addAttribute("errorMessage", ex.getMessage());
+            }
+        }
 
         Page<AgencyOfficeResponseDTO> officePage = agencyOfficeService.getAgencyOfficePage(safePageIndex, size);
 

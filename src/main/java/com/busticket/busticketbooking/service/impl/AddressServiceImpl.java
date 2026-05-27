@@ -30,6 +30,25 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Concrete implementation of {@link AddressService}.
+ *
+ * <p><b>Note on field injection:</b> The primary repository ({@code addressRepo}) uses
+ * constructor injection (preferred). The cascade-delete repositories (driver, office,
+ * customer, trip, booking, payment, review) use {@code @Autowired} field injection
+ * because they are only needed for the transactional {@code deleteAddress} method
+ * and were added incrementally.</p>
+ *
+ * <p><b>Cascade-delete strategy in {@code deleteAddress}:</b></p>
+ * <ol>
+ *   <li>Null-out the address FK on referencing {@code Driver}, {@code AgencyOffice},
+ *       and {@code Customer} records (nullable FKs).</li>
+ *   <li>For {@code Trip} records that use this address as boarding or dropping point
+ *       (non-nullable FK), cascade-delete their bookings, payments, and reviews first,
+ *       then delete the trip itself.</li>
+ *   <li>Finally delete the address record.</li>
+ * </ol>
+ */
 @Service
 public class AddressServiceImpl implements AddressService {
 
@@ -50,54 +69,63 @@ public class AddressServiceImpl implements AddressService {
         @Autowired
         private ReviewRepo reviewRepo;
 
-        public AddressServiceImpl(AddressRepo addressRepo) {
-                this.addressRepo = addressRepo;
-        }
+    /**
+     * Constructor injection for the primary repository.
+     * Additional repos are field-injected via {@code @Autowired} above.
+     */
+    public AddressServiceImpl(AddressRepo addressRepo) {
+            this.addressRepo = addressRepo;
+    }
 
-        @Override
-        public AddressResponseDTO addAddress(AddressRequestDTO addressRequestDTO) {
-                Address address = AddressMapper.toEntity(addressRequestDTO);
-                Address savedAddress = addressRepo.save(address);
-                return AddressMapper.toResponseDTO(savedAddress);
-        }
+    /** Creates and persists a new address; maps from DTO to entity via {@link com.busticket.busticketbooking.mapper.AddressMapper}. */
+    @Override
+    public AddressResponseDTO addAddress(AddressRequestDTO addressRequestDTO) {
+            Address address = AddressMapper.toEntity(addressRequestDTO);
+            Address savedAddress = addressRepo.save(address);
+            return AddressMapper.toResponseDTO(savedAddress);
+    }
 
-        @Override
-        public AddressResponseDTO getAddressById(Integer id) {
-                Address address = addressRepo.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Address with ID " + id + " not found"));
-                return AddressMapper.toResponseDTO(address);
-        }
+    /** Fetches an address by ID; throws {@link ResourceNotFoundException} if not found. */
+    @Override
+    public AddressResponseDTO getAddressById(Integer id) {
+            Address address = addressRepo.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException(
+                                            "Address with ID " + id + " not found"));
+            return AddressMapper.toResponseDTO(address);
+    }
 
-        @Override
-        public List<AddressResponseDTO> getAllAddresses() {
-                return addressRepo.findAll()
-                                .stream()
-                                .map(AddressMapper::toResponseDTO)
-                                .collect(Collectors.toList());
-        }
+    /** Fetches all addresses and converts each entity to a response DTO via a stream. */
+    @Override
+    public List<AddressResponseDTO> getAllAddresses() {
+            return addressRepo.findAll()
+                            .stream()
+                            .map(AddressMapper::toResponseDTO)
+                            .collect(Collectors.toList());
+    }
 
-        @Override
-        public Page<AddressResponseDTO> getAddressPage(int page, int size) {
-                return addressRepo.findAll(
-                                PageRequest.of(page, size, Sort.by("id").ascending()))
-                                .map(AddressMapper::toResponseDTO);
-        }
+    /** Returns a paginated, ID-ascending page of addresses. */
+    @Override
+    public Page<AddressResponseDTO> getAddressPage(int page, int size) {
+            return addressRepo.findAll(
+                            PageRequest.of(page, size, Sort.by("id").ascending()))
+                            .map(AddressMapper::toResponseDTO);
+    }
 
-        @Override
-        public AddressResponseDTO updateAddress(Integer id, AddressRequestDTO addressRequestDTO) {
-                Address existingAddress = addressRepo.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                "Address with ID " + id + " not found"));
+    /** Updates all four fields of an existing address; throws 404 if not found. */
+    @Override
+    public AddressResponseDTO updateAddress(Integer id, AddressRequestDTO addressRequestDTO) {
+            Address existingAddress = addressRepo.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException(
+                                            "Address with ID " + id + " not found"));
 
-                existingAddress.setAddress(addressRequestDTO.getAddress());
-                existingAddress.setCity(addressRequestDTO.getCity());
-                existingAddress.setState(addressRequestDTO.getState());
-                existingAddress.setZipCode(addressRequestDTO.getZipCode());
+            existingAddress.setAddress(addressRequestDTO.getAddress());
+            existingAddress.setCity(addressRequestDTO.getCity());
+            existingAddress.setState(addressRequestDTO.getState());
+            existingAddress.setZipCode(addressRequestDTO.getZipCode());
 
-                Address updatedAddress = addressRepo.save(existingAddress);
-                return AddressMapper.toResponseDTO(updatedAddress);
-        }
+            Address updatedAddress = addressRepo.save(existingAddress);
+            return AddressMapper.toResponseDTO(updatedAddress);
+    }
 
         @Override
         @Transactional

@@ -59,6 +59,7 @@ import jakarta.validation.Valid;
  * Spring Page object for pagination
  */
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 /*
  * Marks this class as MVC Controller
@@ -153,6 +154,11 @@ public class DriverUiController {
             @RequestParam(name = "size", defaultValue = "6") int size,
 
             /*
+             * Optional search ID to filter the table
+             */
+            @RequestParam(name = "searchId", required = false) Integer searchId,
+
+            /*
              * Model object to send data to UI
              */
             Model model) {
@@ -166,6 +172,20 @@ public class DriverUiController {
          * Spring pagination starts from 0
          */
         int safePageIndex = requestedPage - 1;
+
+        if (searchId != null) {
+            try {
+                DriverResponseDTO existing = driverService.getDriverById(searchId);
+                Page<DriverResponseDTO> driverPage = new PageImpl<>(List.of(existing), org.springframework.data.domain.PageRequest.of(0, 1), 1);
+                model.addAttribute("driverPage", driverPage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "driver/list";
+            } catch (ResourceNotFoundException ex) {
+                model.addAttribute("errorMessage", ex.getMessage());
+            }
+        }
 
         /*
          * Fetch paginated drivers

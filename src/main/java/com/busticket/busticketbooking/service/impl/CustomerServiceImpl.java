@@ -23,22 +23,34 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-// Service layer handles customer business logic
+/**
+ * Concrete implementation of {@link CustomerService}.
+ *
+ * <p>Handles customer registration, updates, retrieval, and deletion.
+ * Validates email uniqueness on creation. Cascades deletion to any reviews
+ * or payments left by the customer to preserve referential integrity.</p>
+ */
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
-        // Repository object for customer database operations
+        /** Repository for customer database operations. */
         private final CustomerRepo customerRepo;
 
-        // Repository object for address database operations
+        /** Repository for address database operations. */
         private final AddressRepo addressRepo;
 
         @Autowired
         private PaymentRepo paymentRepo;
+
         @Autowired
         private ReviewRepo reviewRepo;
 
-        // Constructor Injection
+        /**
+         * Constructs a CustomerServiceImpl with required repositories.
+         *
+         * @param customerRepo repository for customer data access
+         * @param addressRepo  repository for address data access
+         */
         public CustomerServiceImpl(
                         CustomerRepo customerRepo,
                         AddressRepo addressRepo) {
@@ -46,121 +58,102 @@ public class CustomerServiceImpl implements CustomerService {
                 this.addressRepo = addressRepo;
         }
 
-        // Creates a new customer record
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public CustomerResponseDTO createCustomer(
                         CustomerRequestDTO customerRequestDTO) {
 
-                // Checks whether customer email already exists
+                // Enforce email uniqueness check
                 if (customerRepo.existsByEmail(customerRequestDTO.getEmail())) {
                         throw new DuplicateResourceException(
                                         "Customer with email " + customerRequestDTO.getEmail() + " already exists");
                 }
 
-                // Fetches address using address ID
+                // Retrieve and validate address
                 Address address = addressRepo.findById(customerRequestDTO.getAddressId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Address with ID " + customerRequestDTO.getAddressId() + " not found"));
 
-                // Converts DTO object into entity object
+                // Map DTO to entity and save
                 Customer customer = CustomerMapper.mapToEntity(
                                 customerRequestDTO,
                                 address);
 
-                // Saves customer into database
                 Customer savedCustomer = customerRepo.save(customer);
-
-                // Converts entity into response DTO
                 return CustomerMapper.mapToResponseDTO(savedCustomer);
         }
 
-        // Fetches customer records using pagination
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Page<CustomerResponseDTO> getCustomerPage(int page, int size) {
-
-                // Creates pageable object using page number and size
                 Pageable pageable = PageRequest.of(page, size);
-
-                return customerRepo
-                                .findAll(pageable)
-
-                                // Converts entity objects into response DTOs
+                return customerRepo.findAll(pageable)
                                 .map(CustomerMapper::mapToResponseDTO);
         }
 
-        // Fetches all customer records
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public List<CustomerResponseDTO> getAllCustomers() {
-
                 return customerRepo.findAll()
                                 .stream()
-
-                                // Converts entity into response DTO
                                 .map(CustomerMapper::mapToResponseDTO)
-
                                 .toList();
         }
 
-        // Fetches customer details using customer ID
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public CustomerResponseDTO getCustomerById(
                         Integer customerId) {
-
-                // Fetches customer using customer ID
                 Customer customer = customerRepo.findById(customerId)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Customer with ID " + customerId + " not found"));
-
-                // Converts entity into response DTO
                 return CustomerMapper.mapToResponseDTO(customer);
         }
 
-        // Updates existing customer details
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public CustomerResponseDTO updateCustomer(
                         Integer customerId,
                         CustomerRequestDTO customerRequestDTO) {
 
-                // Fetches customer using customer ID
                 Customer customer = customerRepo.findById(customerId)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Customer with ID " + customerId + " not found"));
 
-                // Fetches address using address ID
                 Address address = addressRepo.findById(customerRequestDTO.getAddressId())
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Address with ID " + customerRequestDTO.getAddressId() + " not found"));
 
-                // Updates customer name
                 customer.setName(customerRequestDTO.getName());
-
-                // Updates customer email
                 customer.setEmail(customerRequestDTO.getEmail());
-
-                // Updates customer phone number
                 customer.setPhone(customerRequestDTO.getPhone());
-
-                // Updates associated address
                 customer.setAddress(address);
 
-                // Saves updated customer into database
                 Customer updatedCustomer = customerRepo.save(customer);
-
-                // Converts entity into response DTO
                 return CustomerMapper.mapToResponseDTO(updatedCustomer);
         }
 
-        // Deletes customer record using customer ID
+        /**
+         * {@inheritDoc}
+         */
         @Override
         @Transactional
         public String deleteCustomer(Integer customerId) {
 
-                // Fetches customer using customer ID
                 Customer customer = customerRepo.findById(customerId)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "Customer with ID " + customerId + " not found"));
 
-                // Creates customer deletion message
                 String customerDetails = "Customer Deleted Successfully : \n" +
                                 "ID = " + customer.getId() + "\n" +
                                 "Name = " + customer.getName() + "\n" +
@@ -179,7 +172,7 @@ public class CustomerServiceImpl implements CustomerService {
                 List<Payment> payments = paymentRepo.findByCustomerId(customerId);
                 paymentRepo.deleteAll(payments);
 
-                // Delete customer from database
+                // Remove customer record
                 customerRepo.delete(customer);
 
                 return customerDetails;

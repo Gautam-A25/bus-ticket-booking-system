@@ -30,6 +30,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Concrete implementation of {@link AgencyService}.
+ *
+ * <p><b>Cascade-delete strategy in {@code deleteAgency}:</b></p>
+ * <ol>
+ *   <li>For each office of the agency:</li>
+ *   <li>&nbsp;&nbsp;Delete each driver's trips (with their bookings, payments, reviews),
+ *       then the driver.</li>
+ *   <li>&nbsp;&nbsp;Delete each bus's trips (with their bookings, payments, reviews),
+ *       then the bus.</li>
+ *   <li>&nbsp;&nbsp;Delete the office itself.</li>
+ *   <li>Finally delete the agency.</li>
+ * </ol>
+ *
+ * <p>The entire delete is wrapped in a {@code @Transactional} boundary to ensure
+ * atomicity — either everything is deleted or nothing is.</p>
+ */
 @Service
 public class AgencyServiceImpl implements AgencyService {
 
@@ -50,10 +67,12 @@ public class AgencyServiceImpl implements AgencyService {
     @Autowired
     private ReviewRepo reviewRepo;
 
+    /** Constructor injection for the primary agency repository. */
     public AgencyServiceImpl(AgencyRepo agencyRepo) {
         this.agencyRepo = agencyRepo;
     }
 
+    /** Creates and persists a new agency; maps from DTO to entity via {@link com.busticket.busticketbooking.mapper.AgencyMapper}. */
     @Override
     public AgencyResponseDTO addAgency(AgencyRequestDTO agencyRequestDTO) {
         Agency agency = AgencyMapper.toEntity(agencyRequestDTO);
@@ -61,6 +80,7 @@ public class AgencyServiceImpl implements AgencyService {
         return AgencyMapper.toResponseDTO(savedAgency);
     }
 
+    /** Fetches an agency by ID; throws {@link ResourceNotFoundException} if not found. */
     @Override
     public AgencyResponseDTO getAgencyById(Integer id) {
         Agency agency = agencyRepo.findById(id)
@@ -68,6 +88,7 @@ public class AgencyServiceImpl implements AgencyService {
         return AgencyMapper.toResponseDTO(agency);
     }
 
+    /** Fetches all agencies and converts each to a response DTO. */
     @Override
     public List<AgencyResponseDTO> getAllAgencies() {
         return agencyRepo.findAll()
@@ -76,6 +97,7 @@ public class AgencyServiceImpl implements AgencyService {
                 .collect(Collectors.toList());
     }
 
+    /** Returns a paginated, ID-ascending page of agencies. */
     @Override
     public Page<AgencyResponseDTO> getAgencyPage(int page, int size) {
         return agencyRepo.findAll(
@@ -84,6 +106,7 @@ public class AgencyServiceImpl implements AgencyService {
                 .map(AgencyMapper::toResponseDTO);
     }
 
+    /** Updates name, contact person, email, and phone; throws 404 if not found. */
     @Override
     public AgencyResponseDTO updateAgency(Integer id, AgencyRequestDTO agencyRequestDTO) {
         Agency existingAgency = agencyRepo.findById(id)

@@ -6,25 +6,34 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+/**
+ * JPA entity representing the {@code agency_offices} table in the database.
+ *
+ * <p>An AgencyOffice is a physical regional branch office operated by an {@link Agency}.</p>
+ */
 @Entity
 @Table(name = "agency_offices")
 public class AgencyOffice {
 
+    /** Auto-generated primary key for the agency office record. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "office_id")
     private Integer id;
 
+    /** The parent agency that operates this branch office. */
     @ManyToOne
     @JoinColumn(name = "agency_id")
     private Agency agency;
 
+    /** The contact email address of the branch office; required, must be valid syntax format. */
     @NotBlank
     @Email(message = "Office email must be valid")
     @Size(max = 100, message = "Office email must not exceed 100 characters")
     @Column(name = "office_mail", length = 100)
     private String officeMail;
 
+    /** The name of the primary contact person for this branch office. */
     @Size(max = 50, message = "Office contact person name must not exceed 50 characters")
     @Column(name = "office_contact_person_name", length = 50)
     @Pattern(
@@ -33,18 +42,33 @@ public class AgencyOffice {
     )
     private String officeContactPersonName;
 
+    /** The contact phone number of the branch office; required, must be exactly 10 digits. */
     @Pattern(regexp = "^\\d{10}$", message = "Office contact number must contain exactly 10 digits")
     @Size(max = 10, message = "Office contact number must not exceed 10 characters")
     @Column(name = "office_contact_number", columnDefinition = "CHAR(10)", length = 10)
     private String officeContactNumber;
 
+    /** The physical address location of this branch office. */
     @ManyToOne
     @JoinColumn(name = "office_address_id")
     private Address address;
 
+    /**
+     * Default no-argument constructor required by Hibernate/JPA.
+     */
     public AgencyOffice() {
     }
 
+    /**
+     * Parameterized constructor to fully initialize an AgencyOffice.
+     *
+     * @param id                      the office ID
+     * @param agency                  the parent transport agency
+     * @param officeMail              the contact email of the office
+     * @param officeContactPersonName the contact person's name
+     * @param officeContactNumber    the office contact phone number
+     * @param address                 the physical address of the office
+     */
     public AgencyOffice(Integer id, Agency agency, String officeMail, String officeContactPersonName, String officeContactNumber, Address address) {
         this.id = id;
         this.agency = agency;

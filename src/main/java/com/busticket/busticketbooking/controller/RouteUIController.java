@@ -21,6 +21,9 @@ import org.springframework.validation.BindingResult;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.busticket.busticketbooking.exception.ResourceNotFoundException;
+import org.springframework.data.domain.PageImpl;
+import java.util.List;
 
 @Controller
 @RequestMapping("/ui/routes")
@@ -43,7 +46,24 @@ public class RouteUIController {
             @RequestParam(defaultValue = "5")
             int size,
 
+            @RequestParam(name = "searchId", required = false)
+            Integer searchId,
+
             Model model) {
+
+        if (searchId != null) {
+            java.util.Optional<Route> existing = routeRepo.findById(searchId);
+            if (existing.isPresent()) {
+                Page<Route> routePage = new PageImpl<>(List.of(existing.get()), PageRequest.of(0, 1), 1);
+                model.addAttribute("routePage", routePage);
+                model.addAttribute("currentPage", 1);
+                model.addAttribute("pageSize", size);
+                model.addAttribute("searchId", searchId);
+                return "routes/list";
+            } else {
+                model.addAttribute("errorMessage", "Route with ID " + searchId + " not found");
+            }
+        }
 
         Pageable pageable =
                 PageRequest.of(page - 1, size);
@@ -132,36 +152,23 @@ public class RouteUIController {
      */
     @GetMapping("/{id}/edit")
     public String showEditForm(
-
             @PathVariable Integer id,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        try {
+            Route route = routeRepo.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Route with ID " + id + " not found"));
 
-            Model model) {
+            model.addAttribute("route", route);
+            model.addAttribute("routeId", id);
+            model.addAttribute("isEdit", true);
 
-        /*
-         * Fetch route from database
-         */
-        Route route =
-                routeRepo.findById(id)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Route not found"));
-
-        /*
-         * Send route data to UI
-         */
-        model.addAttribute(
-                "route",
-                route);
-
-        model.addAttribute(
-                "routeId",
-                id);
-
-        model.addAttribute(
-                "isEdit",
-                true);
-
-        return "routes/form";
+            return "routes/form";
+        } catch (ResourceNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/ui/routes";
+        }
     }
 
     /*

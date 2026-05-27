@@ -15,12 +15,24 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Web UI Controller that serves high-impact reports and analytical insights on the web front-end.
+ *
+ * <p>Serves dynamic occupancy maps, revenue aggregates by partner agency, and frequent customer lists
+ * in a premium dashboard layout.</p>
+ */
 @Controller
 @RequestMapping("/ui/reports")
 public class ReportUiController {
 
+    /** Service layer for report data calculations and multi-join lookups. */
     private final ReportService reportService;
 
+    /**
+     * Constructor injection for ReportService dependency.
+     *
+     * @param reportService the report service layer bean
+     */
     public ReportUiController(ReportService reportService) {
         this.reportService = reportService;
     }
